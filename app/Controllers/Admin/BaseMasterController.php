@@ -1,7 +1,11 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
 # use CodeIgniter\Model;
 
 abstract class BaseMasterController extends BaseController
@@ -9,21 +13,23 @@ abstract class BaseMasterController extends BaseController
     protected $model;
     protected $modelClass;
     protected $title = 'Data Master';
-    protected $routePrefix = 'admin.master.'; // untuk redirect
+    protected $routePrefix = 'admin.master.';
     protected $viewPath = 'admin/master';
-    protected $fields = [];   // definisi field untuk form
-    protected $useModal = false; // default pakai halaman penuh
+    protected $fields = [];
+    protected $useModal = false;
+    protected $dropdowns = [];  // key = field name, value = array options atau closure
 
-    public function initController(...)
-    {
-        parent::initController(...);
-        // Inisialisasi model
+    public function initController(
+        RequestInterface $request,
+        ResponseInterface $response,
+        LoggerInterface $logger
+    ) {
+        parent::initController($request, $response, $logger);
         if ($this->modelClass) {
             $this->model = new $this->modelClass();
         }
     }
 
-    // Menampilkan daftar data
     public function index()
     {
         $items = $this->model->findAll();
@@ -33,37 +39,44 @@ abstract class BaseMasterController extends BaseController
             'fields'   => $this->fields,
             'useModal' => $this->useModal,
             'routePrefix' => $this->routePrefix,
-            'editUrl'  => site_url($this->routePrefix . 'edit'), // pattern akan diganti di view
-            'deleteUrl'=> site_url($this->routePrefix . 'delete'),
-            'restoreUrl'=> site_url($this->routePrefix . 'restore'),
+            'addUrl'   => site_url($this->routePrefix . 'create'),
+            'editUrl'  => site_url($this->routePrefix . 'edit/'), // akan ditambah id di view
+            'deleteUrl' => site_url($this->routePrefix . 'delete/'),
+            'restoreUrl' => site_url($this->routePrefix . 'restore/'),
+            'jsonUrl'  => site_url($this->routePrefix . 'json/'), // untuk ambil data via AJAX
         ];
         return $this->renderView($this->viewPath . '/index', $data);
     }
 
-    // Form tambah (halaman penuh)
     public function create()
     {
         $data = [
-            'title' => 'Tambah ' . $this->title,
-            'fields'=> $this->fields,
-            'action'=> site_url($this->routePrefix . 'store'),
-            'item'  => null,
+            'title'     => 'Tambah ' . $this->title,
+            'fields'    => $this->fields,
+            'dropdowns' => $this->resolveDropdowns(),
+            'action'    => site_url($this->routePrefix . 'store'),
+            'item'      => null,
+            'useModal'  => $this->useModal,
+            'routePrefix' => $this->routePrefix,
         ];
+
+        if ($this->useModal) {
+            // Untuk modal, tampilkan halaman index dengan data form via variable
+            // Kita akan render form partial
+            return $this->renderView($this->viewPath . '/form_modal', $data);
+        }
         return $this->renderView($this->viewPath . '/form', $data);
     }
 
-    // Simpan data
     public function store()
     {
         $data = $this->request->getPost();
-        // Validasi sederhana dari model
         if ($this->model->insert($data)) {
             return redirect()->to(site_url($this->routePrefix))->with('success', 'Data berhasil ditambahkan.');
         }
         return redirect()->back()->withInput()->with('errors', $this->model->errors());
     }
 
-    // Form edit
     public function edit($id)
     {
         $item = $this->model->find($id);
@@ -71,15 +84,21 @@ abstract class BaseMasterController extends BaseController
             return redirect()->to(site_url($this->routePrefix))->with('error', 'Data tidak ditemukan.');
         }
         $data = [
-            'title' => 'Edit ' . $this->title,
-            'fields'=> $this->fields,
-            'action'=> site_url($this->routePrefix . 'update/' . $id),
-            'item'  => $item,
+            'title'     => 'Edit ' . $this->title,
+            'fields'    => $this->fields,
+            'dropdowns' => $this->resolveDropdowns(),
+            'action'    => site_url($this->routePrefix . 'update/' . $id),
+            'item'      => $item,
+            'useModal'  => $this->useModal,
+            'routePrefix' => $this->routePrefix,
         ];
+
+        if ($this->useModal) {
+            return $this->renderView($this->viewPath . '/form_modal', $data);
+        }
         return $this->renderView($this->viewPath . '/form', $data);
     }
 
-    // Update data
     public function update($id)
     {
         $data = $this->request->getPost();
@@ -89,17 +108,39 @@ abstract class BaseMasterController extends BaseController
         return redirect()->back()->withInput()->with('errors', $this->model->errors());
     }
 
-    // Soft delete
     public function delete($id)
     {
-        $this->model->delete($id);
+        $this->model->delete($id); // soft delete dari trait
         return redirect()->to(site_url($this->routePrefix))->with('success', 'Data berhasil dihapus.');
     }
 
-    // Restore
     public function restore($id)
     {
         $this->model->update($id, ['deleted_at' => null]);
         return redirect()->to(site_url($this->routePrefix))->with('success', 'Data berhasil dikembalikan.');
+    }
+
+    // Endpoint JSON untuk edit modal (mengambil satu data)
+    public function json($id)
+    {
+        $item = $this->model->find($id);
+        if (!$item) {
+            return $this->response->setJSON(['error' => 'Not found'])->setStatusCode(404);
+        }
+        return $this->response->setJSON($item);
+    }
+
+    // Resolve dropdowns jika ada closure
+    protected function resolveDropdowns(): array
+    {
+        $result = [];
+        foreach ($this->dropdowns as $field => $source) {
+            if ($source instanceof \Closure) {
+                $result[$field] = $source();
+            } else {
+                $result[$field] = $source;
+            }
+        }
+        return $result;
     }
 }

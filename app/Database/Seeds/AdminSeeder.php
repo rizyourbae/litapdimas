@@ -29,6 +29,7 @@ class AdminSeeder extends Seeder
             ['name' => 'admin.access', 'description' => 'Akses panel admin'],
             ['name' => 'users.manage', 'description' => 'Manajemen user'],
             ['name' => 'proposals.view', 'description' => 'Lihat proposal'],
+            ['name' => 'master.manage', 'description' => 'Mengelola Data Master'],
         ];
         foreach ($permissions as $p) {
             $permModel->insert($p);

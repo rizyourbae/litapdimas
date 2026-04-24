@@ -3,6 +3,7 @@
 namespace Config;
 
 use App\Services\AuthService;
+use App\Services\User\UserService;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -37,5 +38,13 @@ class Services extends BaseService
             return static::getSharedInstance('auth');
         }
         return new AuthService();
+    }
+
+    public static function userService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('userService');
+        }
+        return new UserService();
     }
 }

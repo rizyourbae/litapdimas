@@ -28,6 +28,25 @@
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/css/adminlte.css') ?>">
 
-    <!-- Custom CSS (opsional) -->
-    <link rel="stylesheet" href="<?= base_url('assets/custom/css/style.css') ?>">
+    <!-- Select2 + Bootstrap 5 theme -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        crossorigin="anonymous">
+
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.min.css"
+        crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?= base_url('custom/css/style.css') ?>">
+
+    <!-- Flatpickr Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+
+    <!-- Page-specific Styles (Optional) -->
+    <?= $this->renderSection('styles') ?>
 </head>

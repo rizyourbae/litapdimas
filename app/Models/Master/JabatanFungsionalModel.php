@@ -7,13 +7,13 @@ use App\Models\Traits\SoftDeleteTrait;
 use App\Models\Traits\HasUserstampsTrait;
 use App\Models\Traits\HasMasterValidation;
 
-class ProfesiModel extends BaseModel
+class JabatanFungsionalModel extends BaseModel
 {
     use SoftDeleteTrait;
     use HasUserstampsTrait;
     use HasMasterValidation;
 
-    protected $table      = 'master_profesi';
+    protected $table      = 'master_jabatan_fungsional';
     protected $allowedFields = ['uuid', 'nama', 'created_by', 'updated_by'];
 
     public function __construct()

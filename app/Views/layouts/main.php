@@ -25,13 +25,20 @@
             <!-- App Content -->
             <div class="app-content">
                 <div class="container-fluid">
+                    <?= $this->include('layouts/partials/_alerts') ?>
                     <?= $this->renderSection('content') ?>
                 </div>
             </div>
         </main>
 
         <?= $this->include('layouts/partials/_footer') ?>
+
+        <!-- Global Scripts & Libraries -->
+        <?= $this->include('layouts/partials/_scripts') ?>
     </div>
+
+    <!-- Page-specific Scripts (Optional) -->
+    <?= $this->renderSection('scripts') ?>
 </body>
 
 </html>

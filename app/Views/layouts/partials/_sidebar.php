@@ -14,9 +14,9 @@ if (empty($menu)) {
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <div class="sidebar-brand">
         <a href="<?= site_url() ?>" class="brand-link">
-            <img src="<?= base_url('assets/adminlte/assets/img/AdminLTELogo.png') ?>"
+            <img src="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>"
                 alt="Logo" class="brand-image opacity-75 shadow">
-            <span class="brand-text fw-light">Litapdimas</span>
+            <span class="brand-text fw-light">LITAPDIMAS</span>
         </a>
     </div>
 

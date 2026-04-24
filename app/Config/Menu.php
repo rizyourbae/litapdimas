@@ -33,5 +33,33 @@ class Menu extends BaseConfig
                 ['label' => 'Review', 'url' => 'admin/review', 'icon' => 'bi-circle'],
             ],
         ],
+        [
+            'label' => 'Data Master',
+            'icon'  => 'bi-database',
+            'url'   => '#',
+            'permission' => 'master.manage',
+            'children' => [
+                [
+                    'label'      => 'Referensi',
+                    'url'        => 'admin/master/referensi',
+                    'icon'       => 'bi-tags',
+                    'permission' => 'master.manage',
+                    'description' => 'Profesi, Bidang Ilmu, Jabatan Fungsional',
+                ],
+                [
+                    'label'      => 'Akademik',
+                    'url'        => 'admin/master/akademik',
+                    'icon'       => 'bi-mortarboard',
+                    'permission' => 'master.manage',
+                    'description' => 'Fakultas & Program Studi',
+                ],
+                [
+                    'label'      => 'Unit Kerja',
+                    'url'        => 'admin/master/unit-kerja',
+                    'icon'       => 'bi-diagram-3',
+                    'permission' => 'master.manage',
+                ],
+            ]
+        ]
     ];
 }
