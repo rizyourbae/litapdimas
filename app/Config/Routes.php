@@ -16,10 +16,37 @@ $routes->match(['GET', 'POST'], 'login', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
 
 // ============================================================
+// Smart Dashboard Redirect (berdasarkan role)
+// ============================================================
+$routes->get('dashboard', 'HomeController::dashboard', ['filter' => 'auth']);
+
+// ============================================================
+// Profile Routes (universal - semua role yang punya profile.manage)
+// ============================================================
+$routes->group('profile', ['filter' => 'auth:profile.manage'], function ($routes) {
+    $routes->get('/',       'Profile\ProfileController::index',  ['as' => 'profile.edit']);
+    $routes->post('update', 'Profile\ProfileController::update', ['as' => 'profile.update']);
+});
+
+// ============================================================
 // Admin Routes
 // ============================================================
-$routes->group('admin', ['filter' => 'auth'], function ($routes) {
+$routes->group('admin', ['filter' => 'auth:admin.access'], function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
+});
+
+// ============================================================
+// Dosen Routes
+// ============================================================
+$routes->group('dosen', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('dashboard', 'Dosen\DashboardController::index');
+});
+
+// ============================================================
+// Reviewer Routes
+// ============================================================
+$routes->group('reviewer', ['filter' => 'auth:reviewer.access'], function ($routes) {
+    $routes->get('dashboard', 'Reviewer\DashboardController::index');
 });
 
 // ============================================================

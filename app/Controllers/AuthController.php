@@ -21,7 +21,7 @@ class AuthController extends BaseController
             }
 
             if (service('auth')->attempt($username, $password)) {
-                return redirect()->to('admin/dashboard')->with('success', 'Selamat datang!');
+                return redirect()->to('dashboard')->with('success', 'Selamat datang!');
             }
 
             return redirect()->back()->withInput()->with('error', 'Login gagal. Periksa kembali username dan password.');

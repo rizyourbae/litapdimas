@@ -7,43 +7,40 @@ use CodeIgniter\Config\BaseConfig;
 class Menu extends BaseConfig
 {
     public $sidebar = [
+        // ============================================================
+        // SEMUA ROLE: Dashboard (akses berdasarkan dashboard.access)
+        // ============================================================
         [
-            'label' => 'Dashboard',
-            'icon'  => 'bi-speedometer',
-            'url'   => 'admin/dashboard',
+            'label'      => 'Dashboard',
+            'icon'       => 'bi-speedometer',
+            'url'        => 'dashboard',
             'permission' => 'dashboard.access',
         ],
+
+        // ============================================================
+        // ADMIN: Manajemen User & Data Master
+        // ============================================================
         [
-            'label' => 'Manajemen User',
-            'icon'  => 'bi-people-fill',
-            'url'   => '#', // parent menu
+            'label'      => 'Manajemen User',
+            'icon'       => 'bi-people-fill',
+            'url'        => '#',
             'permission' => 'users.manage',
-            'children' => [
-                ['label' => 'Semua User', 'url' => 'admin/users', 'icon' => 'bi-circle'],
+            'children'   => [
+                ['label' => 'Semua User',  'url' => 'admin/users',        'icon' => 'bi-circle'],
                 ['label' => 'Tambah User', 'url' => 'admin/users/create', 'icon' => 'bi-circle'],
             ],
         ],
         [
-            'label' => 'Proposal',
-            'icon'  => 'bi-file-earmark-text',
-            'url'   => '#',
-            'permission' => 'proposals.access',
-            'children' => [
-                ['label' => 'Daftar Proposal', 'url' => 'admin/proposals', 'icon' => 'bi-circle'],
-                ['label' => 'Review', 'url' => 'admin/review', 'icon' => 'bi-circle'],
-            ],
-        ],
-        [
-            'label' => 'Data Master',
-            'icon'  => 'bi-database',
-            'url'   => '#',
+            'label'      => 'Data Master',
+            'icon'       => 'bi-database',
+            'url'        => '#',
             'permission' => 'master.manage',
-            'children' => [
+            'children'   => [
                 [
-                    'label'      => 'Referensi',
-                    'url'        => 'admin/master/referensi',
-                    'icon'       => 'bi-tags',
-                    'permission' => 'master.manage',
+                    'label'       => 'Referensi',
+                    'url'         => 'admin/master/referensi',
+                    'icon'        => 'bi-tags',
+                    'permission'  => 'master.manage',
                     'description' => 'Profesi, Bidang Ilmu, Jabatan Fungsional',
                 ],
                 [
@@ -59,7 +56,41 @@ class Menu extends BaseConfig
                     'icon'       => 'bi-diagram-3',
                     'permission' => 'master.manage',
                 ],
-            ]
-        ]
+            ],
+        ],
+
+        // ============================================================
+        // DOSEN: Proposal & Profil
+        // ============================================================
+        [
+            'label'      => 'Proposal Saya',
+            'icon'       => 'bi-file-earmark-text',
+            'url'        => '#',
+            'permission' => 'dosen.access',
+            'children'   => [
+                ['label' => 'Daftar Proposal', 'url' => 'dosen/proposals',        'icon' => 'bi-circle'],
+                ['label' => 'Ajukan Proposal', 'url' => 'dosen/proposals/create', 'icon' => 'bi-circle'],
+            ],
+        ],
+        [
+            'label'      => 'Profil Saya',
+            'icon'       => 'bi-person-circle',
+            'url'        => 'profile',
+            'permission' => 'profile.manage',
+        ],
+
+        // ============================================================
+        // REVIEWER: Antrian & Riwayat Review
+        // ============================================================
+        [
+            'label'      => 'Antrian Review',
+            'icon'       => 'bi-clipboard2-check',
+            'url'        => '#',
+            'permission' => 'reviewer.access',
+            'children'   => [
+                ['label' => 'Menunggu Review', 'url' => 'reviewer/queue',   'icon' => 'bi-circle'],
+                ['label' => 'Riwayat Review',  'url' => 'reviewer/history', 'icon' => 'bi-circle'],
+            ],
+        ],
     ];
 }

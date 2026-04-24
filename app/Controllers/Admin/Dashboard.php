@@ -8,11 +8,16 @@ class Dashboard extends BaseController
 {
     public function index()
     {
+        $auth = service('auth');
+        $user = $auth->user();
+
+        $roleDisplay = implode(' / ', array_map('ucfirst', $auth->getRoleNames()));
+
         $data = [
-            'title' => 'Dashboard Admin',
+            'title'         => 'Dashboard Admin',
             'currentModule' => 'Admin',
-            'userName' => 'Admin Test',   // nanti dari session
-            'userRole' => 'Administrator',
+            'userName'      => $user['nama_lengkap'] ?? $user['username'],
+            'userRole'      => $roleDisplay ?: 'Administrator',
         ];
 
         return $this->renderView('admin/dashboard', $data);

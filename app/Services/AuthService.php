@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Auth\UserModel;
-# use App\Models\Auth\RoleModel;
+use App\Models\Auth\RoleModel;
 use App\Models\Auth\PermissionModel;
 use App\Models\Auth\UserRoleModel;
 use App\Models\Auth\RolePermissionModel;
@@ -14,6 +14,7 @@ class AuthService
 {
     protected $session;
     protected $userModel;
+    protected $roleModel;
     protected $userRoleModel;
     protected $rolePermissionModel;
 
@@ -23,6 +24,7 @@ class AuthService
             $this->session = Services::session();
         }
         $this->userModel = new UserModel();
+        $this->roleModel = new RoleModel();
         $this->userRoleModel = new UserRoleModel();
         $this->rolePermissionModel = new RolePermissionModel();
     }
@@ -54,11 +56,19 @@ class AuthService
 
     protected function setUserSession(array $user)
     {
-        $roles = $this->userRoleModel->where('user_id', $user['id'])->findAll();
-        $roleIds = array_column($roles, 'role_id');
+        $userRoles = $this->userRoleModel->where('user_id', $user['id'])->findAll();
+        $roleIds   = array_column($userRoles, 'role_id');
+
+        // Ambil nama-nama role
+        $roleNames = [];
+        if (!empty($roleIds)) {
+            $roleNames = $this->roleModel->whereIn('id', $roleIds)->findColumn('name') ?? [];
+        }
+
+        // Ambil permissions dari semua role yang dimiliki
         $permissions = [];
         if (!empty($roleIds)) {
-            $perms = $this->rolePermissionModel->whereIn('role_id', $roleIds)->findAll();
+            $perms   = $this->rolePermissionModel->whereIn('role_id', $roleIds)->findAll();
             $permIds = array_column($perms, 'permission_id');
             if (!empty($permIds)) {
                 $permissions = (new PermissionModel())
@@ -73,7 +83,8 @@ class AuthService
             'username'     => $user['username'],
             'nama_lengkap' => $user['nama_lengkap'],
             'email'        => $user['email'],
-            'roles'        => array_column($roles, 'role_id'), // bisa juga nama role
+            'roles'        => $roleIds,        // array of int IDs (backward compat)
+            'role_names'   => $roleNames,      // array of string names e.g. ['dosen','reviewer']
             'permissions'  => $permissions,
             'logged_in'    => true,
         ];
@@ -106,10 +117,47 @@ class AuthService
         return $this->session->get('user')['logged_in'] ?? false;
     }
 
-    public function hasRole($roleId): bool
+    /**
+     * Perbarui data session user setelah user mengubah profil/akunnya sendiri.
+     * Dipanggil setelah update profil agar navbar nama/role langsung ter-update.
+     */
+    public function refreshSession(int $userId): void
+    {
+        $user = $this->userModel->find($userId);
+        if ($user) {
+            $this->setUserSession($user);
+        }
+    }
+
+    /**
+     * Cek apakah user memiliki role tertentu berdasarkan nama.
+     * Contoh: hasRole('admin'), hasRole('dosen')
+     */
+    public function hasRole(string $roleName): bool
     {
         $user = $this->user();
-        return $user && in_array($roleId, $user['roles'] ?? []);
+        return $user && in_array($roleName, $user['role_names'] ?? []);
+    }
+
+    /**
+     * Cek apakah user memiliki salah satu dari beberapa role.
+     * Contoh: hasAnyRole(['dosen', 'reviewer'])
+     */
+    public function hasAnyRole(array $roleNames): bool
+    {
+        $user = $this->user();
+        if (!$user) {
+            return false;
+        }
+        return !empty(array_intersect($roleNames, $user['role_names'] ?? []));
+    }
+
+    /**
+     * Kembalikan array nama role user yang sedang login.
+     */
+    public function getRoleNames(): array
+    {
+        return $this->user()['role_names'] ?? [];
     }
 
     public function can(string $permission): bool

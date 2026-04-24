@@ -15,16 +15,44 @@ class MenuBuilderService
     }
 
     /**
-     * Bangun menu untuk user yang sedang login (berdasarkan role/permission).
-     * Saat ini belum ada auth, jadi kembalikan menu default (semua item).
+     * Bangun menu untuk user yang sedang login (berdasarkan permission).
      */
     public function buildForUser($user = null): array
     {
         $menu = $this->menuConfig->sidebar;
+        $auth = service('auth');
 
-        // Jika sudah ada user dan sistem permission, kita bisa filter di sini.
-        // Contoh nanti: filter by can($item['permission'])
-        return $this->prepareMenu($menu);
+        // Filter menu berdasarkan permission user (jika tidak login, return kosong)
+        if (!$auth->isLoggedIn()) {
+            return [];
+        }
+
+        $filtered = $this->filterByPermission($menu, $auth);
+        return $this->prepareMenu($filtered);
+    }
+
+    /**
+     * Filter item menu berdasarkan permission user secara rekursif.
+     */
+    protected function filterByPermission(array $items, $auth): array
+    {
+        $result = [];
+        foreach ($items as $item) {
+            $permission = $item['permission'] ?? null;
+
+            // Tampilkan jika tidak ada permission gate atau user memiliki permission
+            if ($permission === null || $auth->can($permission)) {
+                if (!empty($item['children'])) {
+                    $item['children'] = $this->filterByPermission($item['children'], $auth);
+                    // Sembunyikan parent jika tidak ada anak yang lolos filter
+                    if (empty($item['children'])) {
+                        continue;
+                    }
+                }
+                $result[] = $item;
+            }
+        }
+        return $result;
     }
 
     /**

@@ -12,8 +12,14 @@ if (!function_exists('can')) {
     }
 }
 if (!function_exists('has_role')) {
-    function has_role($roleId): bool
+    function has_role(string $roleName): bool
     {
-        return service('auth')->hasRole($roleId);
+        return service('auth')->hasRole($roleName);
+    }
+}
+if (!function_exists('has_any_role')) {
+    function has_any_role(array $roleNames): bool
+    {
+        return service('auth')->hasAnyRole($roleNames);
     }
 }
