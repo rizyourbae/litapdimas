@@ -391,11 +391,10 @@ $BASE_URL = site_url('admin/users');
                     const selectedOption = childSelect.options[childSelect.selectedIndex];
                     if (selectedOption && selectedOption.value !== '' && selectedOption.style.display === 'none') {
                         childSelect.value = '';
+                    }
 
-                        // Trigger Select2 change jika sudah di-init
-                        if ($(childSelect).data('select2')) {
-                            $(childSelect).trigger('change');
-                        }
+                    if (window.Select2Init && typeof window.Select2Init.sync === 'function') {
+                        window.Select2Init.sync(childSelect);
                     }
                 });
 

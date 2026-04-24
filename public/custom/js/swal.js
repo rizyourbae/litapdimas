@@ -41,10 +41,22 @@
     const el = document.getElementById("page-flash");
     if (!el) return;
 
+    const welcome = el.dataset.welcome;
     const success = el.dataset.success;
     const error = el.dataset.error;
     const warning = el.dataset.warning;
     const info = el.dataset.info;
+
+    // Jika ada welcome flash, tampilkan sebagai modal (bukan toast)
+    if (welcome) {
+      Swal.fire({
+        title: welcome,
+        icon: "success",
+        confirmButtonText: "Lanjutkan",
+        allowOutsideClick: false,
+      });
+      return;
+    }
 
     if (success) Toast.fire({ icon: "success", title: success });
     else if (error) Toast.fire({ icon: "error", title: error });

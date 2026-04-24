@@ -1,137 +1,140 @@
 /**
- * Select2 Init Helpers
- * ====================
- * Wrapper untuk inisialisasi Select2 dengan tema Bootstrap 5.
+ * Enhanced Select Helpers
+ * =======================
+ * Wrapper kompatibilitas untuk field `data-select2`, tetapi backend plugin-nya memakai Tom Select.
  *
- * Syarat: jQuery + Select2 + select2-bootstrap-5-theme sudah di-load.
- *
- * Pola penggunaan:
- *   // Inisialisasi semua <select data-select2> di halaman
- *   Select2Init.init();
- *
- *   // Inisialisasi semua select di dalam modal (panggil saat modal 'show.bs.modal')
- *   Select2Init.initModal(modalElement);
- *
- *   // Set nilai Select2 secara programatik
- *   Select2Init.setValue('#mySelect', 42);
+ * API `Select2Init` dipertahankan agar view lama tidak perlu diubah besar-besaran.
  */
 
 (function () {
   "use strict";
 
-  if (typeof $ === "undefined" || !$.fn.select2) {
-    console.warn("[select2-init.js] jQuery atau Select2 belum ter-load.");
+  if (typeof TomSelect === "undefined") {
+    console.warn("[select2-init.js] Tom Select belum ter-load.");
     return;
   }
 
-  // =========================================================
-  // Default config
-  // =========================================================
-  const DEFAULT_OPTIONS = {
-    theme: "bootstrap-5",
-    width: "100%",
-    allowClear: false,
-    language: {
-      noResults: function () {
-        return "Data tidak ditemukan";
-      },
-      searching: function () {
-        return "Mencari...";
-      },
-    },
-  };
+  function toElement(context) {
+    if (!context) return document;
+    if (typeof context === "string") return document.querySelector(context);
+    return context;
+  }
 
-  // =========================================================
-  // Public API
-  // =========================================================
+  function findSelects(context, selector) {
+    const root = toElement(context) || document;
+    const query = selector || "select[data-select2]";
+
+    if (root.matches && root.matches(query)) {
+      return [root];
+    }
+
+    return Array.from(root.querySelectorAll(query));
+  }
+
+  function buildOptions(selectEl, extraOptions) {
+    const placeholderOption = Array.from(selectEl.options).find(function (option) {
+      return option.value === "";
+    });
+
+    return Object.assign(
+      {
+        maxOptions: null,
+        copyClassesToDropdown: true,
+        hidePlaceholder: false,
+        allowEmptyOption: true,
+        placeholder: placeholderOption ? placeholderOption.textContent.trim() : "Pilih opsi",
+        render: {
+          no_results: function () {
+            return '<div class="no-results">Data tidak ditemukan</div>';
+          },
+        },
+      },
+      extraOptions || {},
+    );
+  }
+
+  function initializeOne(selectEl, extraOptions, force) {
+    if (!selectEl) return null;
+
+    if (selectEl.tomselect) {
+      if (!force) return selectEl.tomselect;
+      selectEl.tomselect.destroy();
+    }
+
+    return new TomSelect(selectEl, buildOptions(selectEl, extraOptions));
+  }
+
+  function visibleOptionExists(selectEl, value) {
+    return Array.from(selectEl.options).some(function (option) {
+      return option.value == value && option.style.display !== "none";
+    });
+  }
+
   window.Select2Init = {
-    /**
-     * Inisialisasi semua `<select data-select2>` di dalam kontainer.
-     * @param {HTMLElement|string} [context=document] - Kontainer pencarian
-     */
-    init: function (context) {
-      const $ctx = context ? $(context) : $(document);
-      $ctx.find("select[data-select2]").each(function () {
-        if ($(this).data("select2")) return; // sudah di-init
-        const opts = Object.assign({}, DEFAULT_OPTIONS);
-        $(this).select2(opts);
+    init: function (context, force) {
+      findSelects(context, "select[data-select2]").forEach(function (selectEl) {
+        initializeOne(selectEl, null, !!force);
       });
     },
 
-    /**
-     * Inisialisasi semua `<select>` (tanpa atribut khusus) di dalam modal.
-     * dropdownParent diset ke modal agar dropdown muncul di depan overlay.
-     * @param {HTMLElement} modalEl - Elemen modal DOM
-     */
-    initModal: function (modalEl) {
-      $(modalEl)
-        .find("select")
-        .each(function () {
-          if ($(this).data("select2")) return; // sudah di-init
-          const opts = Object.assign({}, DEFAULT_OPTIONS, {
-            dropdownParent: $(modalEl),
-          });
-          $(this).select2(opts);
-        });
+    refresh: function (context) {
+      this.init(context, true);
     },
 
-    /**
-     * Set nilai select2 secara programatik dan trigger change.
-     * @param {string|HTMLElement} selector
-     * @param {string|number}      value
-     */
+    initModal: function (modalEl) {
+      findSelects(modalEl, "select[data-select2]").forEach(function (selectEl) {
+        initializeOne(selectEl, { dropdownParent: modalEl }, true);
+      });
+    },
+
     setValue: function (selector, value) {
-      const $el = $(selector);
-      if ($el.data("select2")) {
-        $el.val(value).trigger("change");
-      } else {
-        $el.val(value);
+      const selectEl = toElement(selector);
+      if (!selectEl) return;
+
+      if (selectEl.tomselect) {
+        selectEl.tomselect.setValue(value);
+        return;
+      }
+
+      selectEl.value = value;
+      selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+    },
+
+    sync: function (selector) {
+      const selectEl = toElement(selector);
+      if (!selectEl) return;
+
+      const selectedValue = selectEl.value;
+      const modalEl = selectEl.closest(".modal");
+
+      initializeOne(selectEl, modalEl ? { dropdownParent: modalEl } : null, true);
+
+      if (selectedValue !== "" && visibleOptionExists(selectEl, selectedValue) && selectEl.tomselect) {
+        selectEl.tomselect.setValue(selectedValue, true);
       }
     },
 
-    /**
-     * Destroy semua select2 di dalam kontainer (berguna saat modal di-close).
-     * @param {HTMLElement} context
-     */
     destroy: function (context) {
-      $(context)
-        .find("select")
-        .each(function () {
-          if ($(this).data("select2")) {
-            $(this).select2("destroy");
-          }
-        });
+      findSelects(context || document, "select").forEach(function (selectEl) {
+        if (selectEl.tomselect) {
+          selectEl.tomselect.destroy();
+        }
+      });
     },
   };
 
-  // =========================================================
-  // Auto-init elemen global ([data-select2] tanpa modal) saat DOM ready
-  // =========================================================
   document.addEventListener("DOMContentLoaded", function () {
-    console.log("[select2-init.js] Initializing Select2 on DOMContentLoaded");
-    const selectElements = document.querySelectorAll("select[data-select2]");
-    console.log("[select2-init.js] Found " + selectElements.length + " select[data-select2] elements");
-
     Select2Init.init();
 
-    selectElements.forEach(function (el, idx) {
-      console.log("[select2-init.js] Select2 #" + idx + ":", el.name, "initialized:", $(el).data("select2") ? "YES" : "NO");
-    });
-
-    // Handle Bootstrap tabs - reinit Select2 ketika tab ditampilkan
-    const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
-    tabButtons.forEach(function (tabBtn) {
-      tabBtn.addEventListener("show.bs.tab", function (e) {
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tabBtn) {
+      tabBtn.addEventListener("show.bs.tab", function () {
         const targetPane = document.querySelector(this.getAttribute("data-bs-target"));
-        if (targetPane) {
-          console.log("[select2-init.js] Tab shown, reinitializing Select2 in:", this.getAttribute("data-bs-target"));
-          setTimeout(function () {
-            Select2Init.init(targetPane);
-          }, 50);
-        }
+        if (!targetPane) return;
+
+        setTimeout(function () {
+          Select2Init.refresh(targetPane);
+        }, 50);
       });
     });
-
-    console.log("[select2-init.js] Initialization complete");
   });
 })();

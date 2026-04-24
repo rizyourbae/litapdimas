@@ -82,6 +82,10 @@
     if (selectedOption && selectedOption.value !== "" && selectedOption.style.display === "none") {
       childEl.value = "";
     }
+
+    if (window.Select2Init && typeof window.Select2Init.sync === "function") {
+      window.Select2Init.sync(childEl);
+    }
   }
 
   // Export untuk testing atau penggunaan manual

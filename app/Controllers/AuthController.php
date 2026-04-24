@@ -21,7 +21,21 @@ class AuthController extends BaseController
             }
 
             if (service('auth')->attempt($username, $password)) {
-                return redirect()->to('dashboard')->with('success', 'Selamat datang!');
+                $user = service('auth')->user();
+                $displayName = $user['nama_lengkap'] ?? $user['username'] ?? 'User';
+                $auth = service('auth');
+
+                if ($auth->hasRole('admin')) {
+                    $redirectTo = 'admin/dashboard';
+                } elseif ($auth->hasRole('reviewer')) {
+                    $redirectTo = 'reviewer/dashboard';
+                } elseif ($auth->hasRole('dosen')) {
+                    $redirectTo = 'dosen/dashboard';
+                } else {
+                    $redirectTo = 'dashboard';
+                }
+
+                return redirect()->to($redirectTo)->with('welcome', 'Selamat datang, ' . $displayName . '!');
             }
 
             return redirect()->back()->withInput()->with('error', 'Login gagal. Periksa kembali username dan password.');

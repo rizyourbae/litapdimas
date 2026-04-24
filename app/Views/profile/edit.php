@@ -351,9 +351,10 @@ $profil  = $user['profil'] ?? [];
                     const selected = childSelect.options[childSelect.selectedIndex];
                     if (selected && selected.value !== '' && selected.style.display === 'none') {
                         childSelect.value = '';
-                        if (typeof $ !== 'undefined' && $(childSelect).data('select2')) {
-                            $(childSelect).trigger('change');
-                        }
+                    }
+
+                    if (window.Select2Init && typeof window.Select2Init.sync === 'function') {
+                        window.Select2Init.sync(childSelect);
                     }
                 });
 
