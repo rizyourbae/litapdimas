@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb3
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 23, 2026 at 10:58 PM
+-- Host: localhost
+-- Generation Time: Apr 24, 2026 at 08:34 AM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -29,14 +29,36 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `master_bidang_ilmu` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_bidang_ilmu`
+--
+
+INSERT INTO `master_bidang_ilmu` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(5, '997ac988-5ce6-4ec0-8ea3-857822f98d9f', 'Teknik Informatika', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(6, 'b2267cc6-21d4-42fb-8691-fe6d37482c16', 'Sistem Informasi', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, '0295c6bb-bfdb-4ecb-b045-cddd23b7b47c', 'Manajemen', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '534ff3a4-4c31-4c08-a587-2c14b7d281e3', 'Akuntansi', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, '493c40ac-59f5-4596-a485-3667a38b8d3e', 'Ilmu Hukum', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(10, '27f8b745-1a2a-40b7-951c-afec08570af5', 'Pendidikan Agama Islam', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(11, '249bb89d-e09b-4f18-9eea-7100c0aae4f4', 'Ekonomi Syariah', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(12, '58d6d83d-0aa8-4bff-b66e-3ffc55ec17d4', 'Studi Al-Quran dan Tafsir', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(13, 'ccadfa93-3cb2-4f86-bb9c-89f6b35c3437', 'Teknik Informatika', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(14, 'ff3bed71-df1e-4338-b996-7d833cbd207f', 'Sistem Informasi', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(15, '5a9bb710-0494-4728-821a-f2e349230905', 'Manajemen', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(16, '3de1114b-4213-4bf2-941d-6bf6479cece7', 'Akuntansi', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(17, '9090afd9-da34-4b41-b8e0-069920fd8b12', 'Ilmu Hukum', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(18, '43478c4b-d872-4067-9a7a-7f3b11af8509', 'Pendidikan Agama Islam', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(19, '51f16391-1512-45ba-ab9a-8f33465fb7fd', 'Ekonomi Syariah', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(20, '9cf85b2c-2816-4d45-9f9a-89f64dd4eb15', 'Studi Al-Quran dan Tafsir', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -46,14 +68,30 @@ CREATE TABLE `master_bidang_ilmu` (
 
 CREATE TABLE `master_fakultas` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_fakultas`
+--
+
+INSERT INTO `master_fakultas` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(4, '71ececa0-684c-4649-bc11-81413bea5aa7', 'Fakultas Teknik', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(5, 'c481f503-228b-43dc-aba0-afb95c57afe2', 'Fakultas Ekonomi dan Bisnis', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(6, 'c9444e6c-a07b-4a10-b7c9-6be2c0175116', 'Fakultas Ilmu Komputer', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, 'ee37afe1-da74-490e-816a-0adebf9516ae', 'Fakultas Hukum', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '7f16cde7-f1cc-458a-9037-1b24f2df0fe1', 'Fakultas Ushuluddin dan Studi Agama', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, '3988bb3d-aff5-4956-ac86-e948c35eec1d', 'Fakultas Teknik', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(10, '1c4c4993-fbc2-4404-9a76-62f56d9d9d00', 'Fakultas Ekonomi dan Bisnis', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(11, '1f37ea66-a7e7-4b3b-9535-a80b3995ca0c', 'Fakultas Ilmu Komputer', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(12, '51430965-2e04-47ee-a7e0-072093b47ace', 'Fakultas Hukum', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(13, 'fd4f8f32-3477-4583-bb0f-a1aaaed1ca62', 'Fakultas Ushuluddin dan Studi Agama', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -63,14 +101,32 @@ CREATE TABLE `master_fakultas` (
 
 CREATE TABLE `master_jabatan_fungsional` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_jabatan_fungsional`
+--
+
+INSERT INTO `master_jabatan_fungsional` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(5, '23a2491d-4f87-4853-8145-85c33dbc982a', 'Asisten Ahli', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(6, 'b2ae509b-7319-4513-bb9a-5a32fe8e1fda', 'Lektor', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, '4c6fd89a-db19-4822-addb-49f2ed310af4', 'Lektor Kepala', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '0e83805a-adcb-4149-85d5-df79666b6ae8', 'Guru Besar', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, 'da3e591e-662a-4990-80dd-9930c289d5d7', 'Pranata Komputer Ahli Pertama', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(10, '28c3b9e6-a57b-4ec1-8bdf-e6eb71760734', 'Pranata Komputer Ahli Muda', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(11, '5843c3fd-ec74-4a79-bca4-30017eb214ff', 'Asisten Ahli', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(12, 'f6e55e53-b915-495c-a584-4b65d7555d22', 'Lektor', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(13, 'f3f4de11-da00-49c0-a8d5-77da72bce8d6', 'Lektor Kepala', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(14, 'fa12d8ea-a5ed-42e4-b0de-0a8b35321c65', 'Guru Besar', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(15, '6de5f588-c43c-426a-9738-aa72cad0fb3b', 'Pranata Komputer Ahli Pertama', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(16, 'eb813200-c38b-4662-81c4-3b3af24bfd09', 'Pranata Komputer Ahli Muda', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -80,14 +136,31 @@ CREATE TABLE `master_jabatan_fungsional` (
 
 CREATE TABLE `master_profesi` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_profesi`
+--
+
+INSERT INTO `master_profesi` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(5, '1ae71369-976b-425f-9245-1cee3f52c7ac', 'Dosenn', '2026-04-24 01:46:01', '2026-04-24 08:27:08', NULL, NULL, NULL),
+(6, '403f0ed3-c95d-4beb-9979-f9f63a2b7280', 'Pranata Komputer', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, '3b7f5614-f7d5-4340-bb1c-3d2786e2dd4a', 'Pengembang TP', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '46e0c464-76ac-423a-97a3-8666713bd18f', 'Pranata Keuangan', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, 'c10e61d6-b606-4f2d-97d2-bd1431c30220', 'Perancang UU', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(10, 'b981f8d2-0368-45bd-b5cc-ef074d85874d', 'Dosen', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(11, '2ea0901f-ca38-4e07-b22f-c66b3b18b7a4', 'Pranata Komputer', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(12, 'c4454c7b-edfd-480c-bdac-7315bc2be102', 'Pengembang TP', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(13, 'a5ef0227-0acb-49a3-8a13-ce37116a9493', 'Pranata Keuangan', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(14, 'f835a3bf-352f-4ba6-8d13-5b89f3aa8517', 'Perancang UU', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(15, 'b85b06db-9363-441b-8301-8d3f25f7a446', 'Guru', '2026-04-24 07:50:18', '2026-04-24 07:50:18', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -97,8 +170,8 @@ CREATE TABLE `master_profesi` (
 
 CREATE TABLE `master_program_studi` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fakultas_id` int UNSIGNED DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -106,6 +179,24 @@ CREATE TABLE `master_program_studi` (
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_program_studi`
+--
+
+INSERT INTO `master_program_studi` (`id`, `uuid`, `nama`, `fakultas_id`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(3, '25664b1f-8008-4417-aeaa-aed535c11354', 'Teknik Informatika', 4, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(4, '73549701-f348-4d96-900f-8e2470d4e037', 'Sistem Informasi', 6, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(5, '141d0f99-4936-449f-b6ec-a4f0c141fcce', 'Manajemen', 5, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(6, '20998403-70fa-4795-8032-f68c6b7ee580', 'Akuntansi', 5, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, '15740115-b634-4230-8d41-95a51ddac094', 'Ilmu Hukum', 7, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '641b8e53-7143-43b9-84aa-0a96f2328330', 'Studi Agama-Agama', 8, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, 'bc340293-6e6e-4abe-a7a6-259a1e690e7c', 'Teknik Informatika', 9, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(10, '3c819fb8-efb4-4ea6-b619-05ba0be70e05', 'Sistem Informasi', 11, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(11, '1c575fe2-4ceb-4952-a028-22787b2a14cd', 'Manajemen', 10, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(12, 'e6f06127-717e-40a5-adef-7448c8533a52', 'Akuntansi', 10, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(13, 'd7d71048-38d2-45b8-873b-68e0734a85c8', 'Ilmu Hukum', 12, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(14, '76343733-cb98-4e35-a35b-4a9cbcb71934', 'Studi Agama-Agama', 13, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -115,8 +206,8 @@ CREATE TABLE `master_program_studi` (
 
 CREATE TABLE `master_unit_kerja` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nama` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `parent_id` int UNSIGNED DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -124,6 +215,26 @@ CREATE TABLE `master_unit_kerja` (
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `master_unit_kerja`
+--
+
+INSERT INTO `master_unit_kerja` (`id`, `uuid`, `nama`, `parent_id`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(5, 'eb4c1141-b1e5-47fd-9b2d-8533b0d0a06c', 'LPPM', NULL, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(6, '0f7a4630-3eb3-4edc-b9ae-007e71e1a778', 'Lembaga Penelitian dan Pengabdian', 5, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(7, 'd141510b-8ccf-470f-954d-f00a636af247', 'Lembaga Penelitian', 5, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(8, '73eacd13-336d-489f-99b3-4eb3221a6893', 'Lembaga Pengabdian', 5, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(9, '23dae520-6080-4f6b-9d31-e4a24da0f10e', 'Perpustakaan', NULL, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(10, '935e5b19-75c2-4479-92f8-71ab887b7536', 'Biro Akademik dan Kemahasiswaan', NULL, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(11, 'f72a0297-37c7-44dd-bf1a-5c637dd0ed27', 'Biro Keuangan', NULL, '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
+(12, '3ebc874a-6d27-41ab-99c3-a0e8f5910760', 'LPPM', NULL, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(13, 'e1417f76-2f4d-4760-a493-919aad24959e', 'Lembaga Penelitian dan Pengabdian', 12, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(14, '92a29b6f-ac03-4f3a-a2bd-2e9bc8ab6ac3', 'Lembaga Penelitian', 12, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(15, '9cd9bdc1-3159-46e6-bad3-6a7edaee3ebf', 'Lembaga Pengabdian', 12, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(16, '3128685c-49ae-44ac-90e3-fa2e6f4c6788', 'Perpustakaan', NULL, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(17, '8756944f-3748-43b7-bfd0-910fc5fef49f', 'Biro Akademik dan Kemahasiswaan', NULL, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
+(18, '10ff5471-8fcc-4890-9ea6-2dbc6d962557', 'Biro Keuangan', NULL, '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -133,10 +244,10 @@ CREATE TABLE `master_unit_kerja` (
 
 CREATE TABLE `migrations` (
   `id` bigint UNSIGNED NOT NULL,
-  `version` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `class` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `group` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `namespace` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `group` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `namespace` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `time` int NOT NULL,
   `batch` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -156,7 +267,8 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (8, '2026-04-23-143334', 'App\\Database\\Migrations\\CreateMasterJabatanFungsional', 'default', 'App', 1776955123, 2),
 (9, '2026-04-23-143346', 'App\\Database\\Migrations\\CreateMasterFakultas', 'default', 'App', 1776955123, 2),
 (10, '2026-04-23-143354', 'App\\Database\\Migrations\\CreateMasterUnitKerja', 'default', 'App', 1776955123, 2),
-(11, '2026-04-23-143411', 'App\\Database\\Migrations\\CreateMasterProgramStudi', 'default', 'App', 1776955123, 2);
+(11, '2026-04-23-143411', 'App\\Database\\Migrations\\CreateMasterProgramStudi', 'default', 'App', 1776955123, 2),
+(12, '2026-04-24-020623', 'App\\Database\\Migrations\\CreateUserProfiles', 'default', 'App', 1776996420, 3);
 
 -- --------------------------------------------------------
 
@@ -166,9 +278,9 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 
 CREATE TABLE `permissions` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -178,9 +290,10 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `uuid`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(15, 'ef659d4a-4039-4b6c-916c-fb756797b6b8', 'admin.access', 'Akses panel admin', '2026-04-23 13:44:26', '2026-04-23 13:44:26'),
-(16, 'a87e9ce9-3f71-4e63-8f8a-93b42532f740', 'users.manage', 'Manajemen user', '2026-04-23 13:44:26', '2026-04-23 13:44:26'),
-(17, 'edcd6857-a587-4231-a488-ac9748aec11b', 'proposals.view', 'Lihat proposal', '2026-04-23 13:44:26', '2026-04-23 13:44:26');
+(18, 'd43c944a-1fe0-42a3-857d-aeac99296b6a', 'admin.access', 'Akses panel admin', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
+(19, '5611ab16-b685-4591-a2de-494f4b57c31b', 'users.manage', 'Manajemen user', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
+(20, 'daf2ddff-031c-49e6-bcfb-d91658ee874f', 'proposals.view', 'Lihat proposal', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
+(21, 'e20f2b17-ac60-4cf3-ab91-8d5b1bd6906c', 'master.manage', 'Mengelola Data Master', '2026-04-24 01:50:52', '2026-04-24 01:50:52');
 
 -- --------------------------------------------------------
 
@@ -190,9 +303,9 @@ INSERT INTO `permissions` (`id`, `uuid`, `name`, `description`, `created_at`, `u
 
 CREATE TABLE `roles` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -202,7 +315,7 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `uuid`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(5, 'ef5e1caf-a45f-448b-8957-5adafd4eabb8', 'admin', 'Administrator', '2026-04-23 13:44:26', '2026-04-23 13:44:26');
+(6, '1add0d81-83cc-4ddf-a3b1-e800aa8c4964', 'admin', 'Administrator', '2026-04-24 01:50:52', '2026-04-24 01:50:52');
 
 -- --------------------------------------------------------
 
@@ -221,9 +334,10 @@ CREATE TABLE `role_permissions` (
 --
 
 INSERT INTO `role_permissions` (`role_id`, `permission_id`, `created_at`) VALUES
-(5, 15, NULL),
-(5, 16, NULL),
-(5, 17, NULL);
+(6, 18, NULL),
+(6, 19, NULL),
+(6, 20, NULL),
+(6, 21, NULL);
 
 -- --------------------------------------------------------
 
@@ -233,11 +347,11 @@ INSERT INTO `role_permissions` (`role_id`, `permission_id`, `created_at`) VALUES
 
 CREATE TABLE `users` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_lengkap` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_lengkap` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `aktif` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -251,7 +365,50 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengkap`, `aktif`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(5, '9a41e161-84f3-49f5-9b2e-4ab230ec5aa2', 'admin', 'admin@litapdimas.ac.id', '$2y$10$1HOV5LblFQVj9m2/63TW9OjOggBHjIM1OK/26n10Mzn/gWo0es5Pq', 'Administrator', 1, '2026-04-23 13:44:26', '2026-04-23 13:44:26', NULL, NULL, NULL);
+(6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'ADMIN LP2M', 'admin@litapdimas.ac.id', '$2y$10$Vq5J2Mwx8GAQ4KpSxetAjOG0XLsNu0qK0097mp8jmdkm7Prv9XI4.', 'Administrator', 1, '2026-04-24 01:50:52', '2026-04-24 03:00:14', NULL, NULL, NULL),
+(7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-24 03:24:53', NULL, NULL, NULL),
+(8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profiles`
+--
+
+CREATE TABLE `user_profiles` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `foto` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gelar_depan` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gelar_belakang` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `jenis_kelamin` enum('L','P') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tempat_lahir` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
+  `alamat` text COLLATE utf8mb4_general_ci,
+  `no_hp` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nik` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nidn` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nip` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `profesi_id` int UNSIGNED DEFAULT NULL,
+  `bidang_ilmu_id` int UNSIGNED DEFAULT NULL,
+  `fakultas_id` int UNSIGNED DEFAULT NULL,
+  `program_studi_id` int UNSIGNED DEFAULT NULL,
+  `jabatan_fungsional_id` int UNSIGNED DEFAULT NULL,
+  `id_sinta` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `created_by` int UNSIGNED DEFAULT NULL,
+  `updated_by` int UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_profiles`
+--
+
+INSERT INTO `user_profiles` (`id`, `uuid`, `user_id`, `foto`, `gelar_depan`, `gelar_belakang`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `alamat`, `no_hp`, `nik`, `nidn`, `nip`, `profesi_id`, `bidang_ilmu_id`, `fakultas_id`, `program_studi_id`, `jabatan_fungsional_id`, `id_sinta`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(16, '92578a3f-5721-4d9d-a8f5-7c645620588e', 7, NULL, NULL, NULL, NULL, 'Samarinda', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 03:24:53', '2026-04-24 03:24:53', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -270,7 +427,9 @@ CREATE TABLE `user_roles` (
 --
 
 INSERT INTO `user_roles` (`user_id`, `role_id`, `created_at`) VALUES
-(5, 5, NULL);
+(6, 6, NULL),
+(7, 6, NULL),
+(8, 6, NULL);
 
 --
 -- Indexes for dumped tables
@@ -359,6 +518,19 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
+-- Indexes for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `user_profiles_profesi_id_foreign` (`profesi_id`),
+  ADD KEY `user_profiles_bidang_ilmu_id_foreign` (`bidang_ilmu_id`),
+  ADD KEY `user_profiles_fakultas_id_foreign` (`fakultas_id`),
+  ADD KEY `user_profiles_program_studi_id_foreign` (`program_studi_id`),
+  ADD KEY `user_profiles_jabatan_fungsional_id_foreign` (`jabatan_fungsional_id`);
+
+--
 -- Indexes for table `user_roles`
 --
 ALTER TABLE `user_roles`
@@ -373,61 +545,67 @@ ALTER TABLE `user_roles`
 -- AUTO_INCREMENT for table `master_bidang_ilmu`
 --
 ALTER TABLE `master_bidang_ilmu`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `master_fakultas`
 --
 ALTER TABLE `master_fakultas`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `master_jabatan_fungsional`
 --
 ALTER TABLE `master_jabatan_fungsional`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `master_profesi`
 --
 ALTER TABLE `master_profesi`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `master_program_studi`
 --
 ALTER TABLE `master_program_studi`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `master_unit_kerja`
 --
 ALTER TABLE `master_unit_kerja`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
@@ -451,6 +629,17 @@ ALTER TABLE `master_unit_kerja`
 ALTER TABLE `role_permissions`
   ADD CONSTRAINT `role_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `role_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  ADD CONSTRAINT `user_profiles_bidang_ilmu_id_foreign` FOREIGN KEY (`bidang_ilmu_id`) REFERENCES `master_bidang_ilmu` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
+  ADD CONSTRAINT `user_profiles_fakultas_id_foreign` FOREIGN KEY (`fakultas_id`) REFERENCES `master_fakultas` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
+  ADD CONSTRAINT `user_profiles_jabatan_fungsional_id_foreign` FOREIGN KEY (`jabatan_fungsional_id`) REFERENCES `master_jabatan_fungsional` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
+  ADD CONSTRAINT `user_profiles_profesi_id_foreign` FOREIGN KEY (`profesi_id`) REFERENCES `master_profesi` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
+  ADD CONSTRAINT `user_profiles_program_studi_id_foreign` FOREIGN KEY (`program_studi_id`) REFERENCES `master_program_studi` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
+  ADD CONSTRAINT `user_profiles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_roles`
