@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
-    <title><?= esc($title ?? 'Litapdimas') ?> | Litapdimas</title>
+    <title><?= esc($title ?? 'Litapdimas') ?> | LITAPDIMAS</title>
 
     <!-- Fonts -->
     <link rel="stylesheet"

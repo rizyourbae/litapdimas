@@ -2,27 +2,20 @@
 
 namespace App\Services;
 
-# use CodeIgniter\Config\BaseConfig;
-
 class MenuBuilderService
 {
     protected $menuConfig;
 
     public function __construct()
     {
-        // Nanti kita ambil dari Config/Menu.php
         $this->menuConfig = config('Menu');
     }
 
-    /**
-     * Bangun menu untuk user yang sedang login (berdasarkan permission).
-     */
     public function buildForUser($user = null): array
     {
-        $menu = $this->menuConfig->sidebar;
+        $menu = isset($this->menuConfig->sidebar) ? $this->menuConfig->sidebar : [];
         $auth = service('auth');
 
-        // Filter menu berdasarkan permission user (jika tidak login, return kosong)
         if (!$auth->isLoggedIn()) {
             return [];
         }
@@ -31,20 +24,15 @@ class MenuBuilderService
         return $this->prepareMenu($filtered);
     }
 
-    /**
-     * Filter item menu berdasarkan permission user secara rekursif.
-     */
     protected function filterByPermission(array $items, $auth): array
     {
         $result = [];
         foreach ($items as $item) {
             $permission = $item['permission'] ?? null;
 
-            // Tampilkan jika tidak ada permission gate atau user memiliki permission
             if ($permission === null || $auth->can($permission)) {
                 if (!empty($item['children'])) {
                     $item['children'] = $this->filterByPermission($item['children'], $auth);
-                    // Sembunyikan parent jika tidak ada anak yang lolos filter
                     if (empty($item['children'])) {
                         continue;
                     }
@@ -55,36 +43,34 @@ class MenuBuilderService
         return $result;
     }
 
-    /**
-     * Ubah struktur config jadi array sederhana dengan penanda active berdasarkan URI saat ini.
-     */
     protected function prepareMenu(array $items, string $parentUrl = ''): array
     {
-        $request = \Config\Services::request();
-        $currentUrl = $request->getUri()->getPath();
-
         $result = [];
         foreach ($items as $item) {
-            $url = $item['url'] ?? '#';
+            $rawUrl = $item['url'] ?? '#';
+
+            // Format link URL untuk tag href
+            $url = $rawUrl;
             if ($url !== '#' && strpos($url, '://') === false) {
                 $url = site_url($url);
             }
 
-            $isActive = $this->isActive($url, $currentUrl, $item['children'] ?? []);
+            // Panggil logic pengecekan active yang baru
+            $isActive = $this->isActive($rawUrl, $item['children'] ?? []);
 
             $menuItem = [
                 'label'      => $item['label'],
                 'icon'       => $item['icon'] ?? 'bi-circle',
                 'url'        => $url,
                 'active'     => $isActive,
-                'expand'     => $isActive || ($item['expanded'] ?? false), // buka submenu jika aktif
+                'expand'     => $isActive || ($item['expanded'] ?? false),
                 'badge'      => $item['badge'] ?? null,
                 'permission' => $item['permission'] ?? null,
                 'children'   => [],
             ];
 
             if (!empty($item['children'])) {
-                $menuItem['children'] = $this->prepareMenu($item['children'], $url);
+                $menuItem['children'] = $this->prepareMenu($item['children'], $rawUrl);
             }
 
             $result[] = $menuItem;
@@ -93,28 +79,44 @@ class MenuBuilderService
     }
 
     /**
-     * Deteksi apakah menu ini aktif (berdasarkan URL).
-     * Untuk item dengan anak, aktif jika anak ada yang aktif.
+     * LOGIKA BARU YANG KEBAL PELURU (Absolute URL Check)
      */
-    private function isActive(string $url, string $currentUrl, array $children = []): bool
+    private function isActive(string $rawUrl, array $children = []): bool
     {
-        // Jika URL menu bukan '#' dan cocok dengan current URL, aktif.
-        if ($url !== '#' && $currentUrl === parse_url($url, PHP_URL_PATH)) {
-            return true;
-        }
+        if ($rawUrl !== '#') {
+            // 1. Ambil Full URL saat ini (contoh: http://localhost/litapdimas/public/admin/users)
+            $currentUrl = rtrim(current_url(), '/');
 
-        // Jika punya anak, cek secara rekursif
-        foreach ($children as $child) {
-            $childUrl = $child['url'] ?? '#';
-            if ($childUrl !== '#' && $currentUrl === site_url($childUrl)) {
+            // 2. Format target menjadi Full URL
+            $targetUrl = (strpos($rawUrl, '://') !== false) ? $rawUrl : site_url($rawUrl);
+            $targetUrl = rtrim($targetUrl, '/');
+
+            // EXACT MATCH: Kalau URL-nya sama persis, langsung true
+            if ($currentUrl === $targetUrl) {
                 return true;
             }
-            if (!empty($child['children'])) {
-                if ($this->isActive('', $currentUrl, $child['children'])) {
+
+            // SUB-PATH MATCH: Untuk halaman edit/create (contoh target: /admin/users, current: /admin/users/create)
+            // Kita cegah URL Dashboard (/admin) dan Base (/) agar tidak nyala di semua sub-menu
+            $dashboardUrl = rtrim(site_url('admin'), '/');
+            $homeUrl = rtrim(site_url('/'), '/');
+
+            if ($targetUrl !== $dashboardUrl && $targetUrl !== $homeUrl) {
+                // Cek apakah string current_url diawali dengan target_url + '/'
+                if (strpos($currentUrl, $targetUrl . '/') === 0) {
                     return true;
                 }
             }
         }
+
+        // 3. REKURSIF: Kalau submenu ada yang aktif, parent-nya otomatis harus aktif
+        foreach ($children as $child) {
+            $childUrl = $child['url'] ?? '#';
+            if ($this->isActive($childUrl, $child['children'] ?? [])) {
+                return true;
+            }
+        }
+
         return false;
     }
 }

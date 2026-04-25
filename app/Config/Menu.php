@@ -27,7 +27,6 @@ class Menu extends BaseConfig
             'permission' => 'users.manage',
             'children'   => [
                 ['label' => 'Semua User',  'url' => 'admin/users',        'icon' => 'bi-circle'],
-                ['label' => 'Tambah User', 'url' => 'admin/users/create', 'icon' => 'bi-circle'],
             ],
         ],
         [
@@ -60,8 +59,34 @@ class Menu extends BaseConfig
         ],
 
         // ============================================================
+        // ADMIN: Publikasi
+        // ============================================================
+        [
+            'label'      => 'Publikasi',
+            'icon'       => 'bi-journal-richtext',
+            'url'        => '#',
+            'permission' => 'admin.access',
+            'children'   => [
+                ['label' => 'Publikasi', 'url' => 'admin/publikasi',        'icon' => 'bi-circle'],
+                ['label' => 'Kegiatan Mandiri', 'url' => 'admin/kegiatan-mandiri',        'icon' => 'bi-circle'],
+            ],
+        ],
+
+        // ============================================================
         // DOSEN: Proposal & Profil
         // ============================================================
+        [
+            'label'      => 'Akademik',
+            'icon'       => 'bi-mortarboard',
+            'url'        => '#',
+            'permission' => 'dosen.access',
+            'children'   => [
+                ['label' => 'Publikasi',          'url' => 'dosen/publikasi',        'icon' => 'bi-journal-richtext'],
+                ['label' => 'Kegiatan Mandiri',   'url' => 'dosen/kegiatan-mandiri', 'icon' => 'bi-list-check'],
+                ['label' => 'Riwayat Pendidikan',  'url' => 'dosen/riwayat-pendidikan', 'icon' => 'bi-mortarboard'],
+                ['label' => 'Kelengkapan Dokumen', 'url' => 'dosen/kelengkapan-dokumen', 'icon' => 'bi-file-earmark-check'],
+            ],
+        ],
         [
             'label'      => 'Proposal Saya',
             'icon'       => 'bi-file-earmark-text',

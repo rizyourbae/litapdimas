@@ -1,14 +1,9 @@
 <?php
-// $menu adalah array yang dikirim dari controller, untuk sementara kita definisikan default
-$menu = $menu ?? [];
-// Fallback menu statis untuk testing
-if (empty($menu)) {
-    $menu = [
-        ['label' => 'Dashboard', 'icon' => 'bi-speedometer', 'url' => site_url('admin'), 'active' => true],
-        ['label' => 'Manajemen User', 'icon' => 'bi-people', 'url' => site_url('admin/users')],
-        ['label' => 'Proposal', 'icon' => 'bi-file-earmark-text', 'url' => site_url('admin/proposals')],
-    ];
-}
+// Ambil variabel dari controller, jika tidak ada, pakai array kosong
+$sidebarMenu = $sidebarMenu ?? [];
+
+// Jika sidebarMenu kosong, biarkan kosong — jangan tampilkan menu palsu statis.
+// Sidebar yang kosong adalah sinyal bahwa renderView() belum dipanggil di controller.
 ?>
 
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">

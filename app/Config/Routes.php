@@ -7,6 +7,37 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // ============================================================
+// Static Assets Routes (Uploads)
+// ============================================================
+$routes->get('uploads/kelengkapan_dokumen/(:any)', function ($filename) {
+    $filepath = FCPATH . 'uploads/kelengkapan_dokumen/' . $filename;
+    if (!is_file($filepath)) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
+    }
+
+    $mime = mime_content_type($filepath);
+    return service('response')
+        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
+        ->setHeader('Content-Length', filesize($filepath))
+        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
+        ->setBody(file_get_contents($filepath));
+});
+
+$routes->get('uploads/riwayat_pendidikan/(:any)', function ($filename) {
+    $filepath = FCPATH . 'uploads/riwayat_pendidikan/' . $filename;
+    if (!is_file($filepath)) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
+    }
+
+    $mime = mime_content_type($filepath);
+    return service('response')
+        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
+        ->setHeader('Content-Length', filesize($filepath))
+        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
+        ->setBody(file_get_contents($filepath));
+});
+
+// ============================================================
 // Public Routes
 // ============================================================
 $routes->get('/', 'HomeController::index');
@@ -40,6 +71,53 @@ $routes->group('admin', ['filter' => 'auth:admin.access'], function ($routes) {
 // ============================================================
 $routes->group('dosen', ['filter' => 'auth:dosen.access'], function ($routes) {
     $routes->get('dashboard', 'Dosen\DashboardController::index');
+});
+
+// ============================================================
+// Dosen Publikasi Routes
+// ============================================================
+$routes->group('dosen/publikasi', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/',              'Dosen\Publikasi\PublikasiController::index',  ['as' => 'dosen.publikasi.index']);
+    $routes->get('create',         'Dosen\Publikasi\PublikasiController::create', ['as' => 'dosen.publikasi.create']);
+    $routes->get('show/(:any)',    'Dosen\Publikasi\PublikasiController::show/$1', ['as' => 'dosen.publikasi.show']);
+    $routes->post('store',         'Dosen\Publikasi\PublikasiController::store',  ['as' => 'dosen.publikasi.store']);
+    $routes->get('edit/(:any)',    'Dosen\Publikasi\PublikasiController::edit/$1', ['as' => 'dosen.publikasi.edit']);
+    $routes->post('update/(:any)', 'Dosen\Publikasi\PublikasiController::update/$1', ['as' => 'dosen.publikasi.update']);
+    $routes->get('delete/(:any)',  'Dosen\Publikasi\PublikasiController::delete/$1', ['as' => 'dosen.publikasi.delete']);
+});
+
+// ============================================================
+// Dosen Kegiatan Mandiri Routes
+// ============================================================
+$routes->group('dosen/kegiatan-mandiri', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/',              'Dosen\KegiatanMandiri\KegiatanMandiriController::index', ['as' => 'dosen.kegiatan_mandiri.index']);
+    $routes->get('create',         'Dosen\KegiatanMandiri\KegiatanMandiriController::create', ['as' => 'dosen.kegiatan_mandiri.create']);
+    $routes->get('show/(:any)',    'Dosen\KegiatanMandiri\KegiatanMandiriController::show/$1', ['as' => 'dosen.kegiatan_mandiri.show']);
+    $routes->post('store',         'Dosen\KegiatanMandiri\KegiatanMandiriController::store', ['as' => 'dosen.kegiatan_mandiri.store']);
+    $routes->get('edit/(:any)',    'Dosen\KegiatanMandiri\KegiatanMandiriController::edit/$1', ['as' => 'dosen.kegiatan_mandiri.edit']);
+    $routes->post('update/(:any)', 'Dosen\KegiatanMandiri\KegiatanMandiriController::update/$1', ['as' => 'dosen.kegiatan_mandiri.update']);
+    $routes->get('delete/(:any)',  'Dosen\KegiatanMandiri\KegiatanMandiriController::delete/$1', ['as' => 'dosen.kegiatan_mandiri.delete']);
+});
+
+// ============================================================
+// Dosen Riwayat Pendidikan Routes
+// ============================================================
+$routes->group('dosen/riwayat-pendidikan', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/',              'Dosen\RiwayatPendidikan\RiwayatPendidikanController::index',  ['as' => 'dosen.riwayat_pendidikan.index']);
+    $routes->get('create',         'Dosen\RiwayatPendidikan\RiwayatPendidikanController::create', ['as' => 'dosen.riwayat_pendidikan.create']);
+    $routes->post('store',         'Dosen\RiwayatPendidikan\RiwayatPendidikanController::store',  ['as' => 'dosen.riwayat_pendidikan.store']);
+    $routes->get('edit/(:any)',    'Dosen\RiwayatPendidikan\RiwayatPendidikanController::edit/$1', ['as' => 'dosen.riwayat_pendidikan.edit']);
+    $routes->post('update/(:any)', 'Dosen\RiwayatPendidikan\RiwayatPendidikanController::update/$1', ['as' => 'dosen.riwayat_pendidikan.update']);
+    $routes->get('delete/(:any)',  'Dosen\RiwayatPendidikan\RiwayatPendidikanController::delete/$1', ['as' => 'dosen.riwayat_pendidikan.delete']);
+});
+
+// ============================================================
+// Dosen Kelengkapan Dokumen Routes
+// ============================================================
+$routes->group('dosen/kelengkapan-dokumen', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/',              'Dosen\KelengkapanDokumen\KelengkapanDokumenController::index',  ['as' => 'dosen.kelengkapan_dokumen.index']);
+    $routes->get('edit/(:any)',    'Dosen\KelengkapanDokumen\KelengkapanDokumenController::edit/$1', ['as' => 'dosen.kelengkapan_dokumen.edit']);
+    $routes->post('update/(:any)', 'Dosen\KelengkapanDokumen\KelengkapanDokumenController::update/$1', ['as' => 'dosen.kelengkapan_dokumen.update']);
 });
 
 // ============================================================
@@ -84,6 +162,32 @@ $routes->group('admin/master', ['filter' => 'auth:master.manage'], function ($ro
     $routes->get('unit-kerja/delete/(:num)', 'Admin\Master\UnitKerjaController::delete/$1');
     $routes->get('unit-kerja/restore/(:num)', 'Admin\Master\UnitKerjaController::restore/$1');
     $routes->get('unit-kerja/json/(:num)', 'Admin\Master\UnitKerjaController::json/$1');
+});
+
+// ============================================================
+// Admin Publikasi Routes
+// ============================================================
+$routes->group('admin/publikasi', ['filter' => 'auth:admin.access'], function ($routes) {
+    $routes->get('/',              'Admin\Publikasi\PublikasiController::index',  ['as' => 'admin.publikasi.index']);
+    $routes->get('create',         'Admin\Publikasi\PublikasiController::create', ['as' => 'admin.publikasi.create']);
+    $routes->get('show/(:any)',    'Admin\Publikasi\PublikasiController::show/$1', ['as' => 'admin.publikasi.show']);
+    $routes->post('store',         'Admin\Publikasi\PublikasiController::store',  ['as' => 'admin.publikasi.store']);
+    $routes->get('edit/(:any)',    'Admin\Publikasi\PublikasiController::edit/$1', ['as' => 'admin.publikasi.edit']);
+    $routes->post('update/(:any)', 'Admin\Publikasi\PublikasiController::update/$1', ['as' => 'admin.publikasi.update']);
+    $routes->get('delete/(:any)',  'Admin\Publikasi\PublikasiController::delete/$1', ['as' => 'admin.publikasi.delete']);
+});
+
+// ============================================================
+// Admin Kegiatan Mandiri Routes
+// ============================================================
+$routes->group('admin/kegiatan-mandiri', ['filter' => 'auth:admin.access'], function ($routes) {
+    $routes->get('/',              'Admin\KegiatanMandiri\KegiatanMandiriController::index', ['as' => 'admin.kegiatan_mandiri.index']);
+    $routes->get('create',         'Admin\KegiatanMandiri\KegiatanMandiriController::create', ['as' => 'admin.kegiatan_mandiri.create']);
+    $routes->get('show/(:any)',    'Admin\KegiatanMandiri\KegiatanMandiriController::show/$1', ['as' => 'admin.kegiatan_mandiri.show']);
+    $routes->post('store',         'Admin\KegiatanMandiri\KegiatanMandiriController::store', ['as' => 'admin.kegiatan_mandiri.store']);
+    $routes->get('edit/(:any)',    'Admin\KegiatanMandiri\KegiatanMandiriController::edit/$1', ['as' => 'admin.kegiatan_mandiri.edit']);
+    $routes->post('update/(:any)', 'Admin\KegiatanMandiri\KegiatanMandiriController::update/$1', ['as' => 'admin.kegiatan_mandiri.update']);
+    $routes->get('delete/(:any)',  'Admin\KegiatanMandiri\KegiatanMandiriController::delete/$1', ['as' => 'admin.kegiatan_mandiri.delete']);
 });
 
 // ============================================================
