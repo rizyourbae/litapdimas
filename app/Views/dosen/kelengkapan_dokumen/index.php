@@ -30,7 +30,6 @@
                     <tr>
                         <th style="width: 30%;">Jenis Dokumen</th>
                         <th style="width: 15%;">Status</th>
-                        <th style="width: 40%;">File</th>
                         <th style="width: 15%;">Aksi</th>
                     </tr>
                 </thead>
@@ -44,16 +43,6 @@
                                 <span class="badge text-bg-<?= esc($row['status_badge']) ?>">
                                     <?= esc($row['status']) ?>
                                 </span>
-                            </td>
-                            <td>
-                                <?php if ($row['is_uploaded']): ?>
-                                    <a href="<?= esc($row['dokumen_url']) ?>" target="_blank" class="text-success text-decoration-none">
-                                        <i class="bi bi-file-earmark-check"></i>
-                                        <?= esc($row['dokumen_label']) ?>
-                                    </a>
-                                <?php else: ?>
-                                    <span class="text-muted">-</span>
-                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php if ($row['is_uploaded']): ?>

@@ -3,6 +3,7 @@ $auth         = service('auth');
 $sessionUser  = $auth->user();
 $displayName  = $sessionUser['nama_lengkap'] ?? ($sessionUser['username'] ?? 'User');
 $displayRoles = implode(' / ', array_map('ucfirst', $auth->getRoleNames()));
+$photoUrl     = $sessionUser['foto_url'] ?? base_url('assets/adminlte/assets/img/user2-160x160.jpg');
 ?>
 <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
@@ -31,13 +32,13 @@ $displayRoles = implode(' / ', array_map('ucfirst', $auth->getRoleNames()));
             <!-- User Dropdown -->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="<?= base_url('assets/adminlte/assets/img/user2-160x160.jpg') ?>"
+                    <img src="<?= esc($photoUrl) ?>"
                         class="user-image rounded-circle shadow" alt="User">
                     <span class="d-none d-md-inline"><?= esc($displayName) ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <li class="user-header text-bg-primary">
-                        <img src="<?= base_url('assets/adminlte/assets/img/user2-160x160.jpg') ?>"
+                        <img src="<?= esc($photoUrl) ?>"
                             class="rounded-circle shadow" alt="User">
                         <p>
                             <?= esc($displayName) ?>

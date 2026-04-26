@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1deb3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 24, 2026 at 08:34 AM
+-- Host: localhost:3306
+-- Generation Time: Apr 26, 2026 at 02:01 AM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -20,6 +20,65 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_litapdimas`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kegiatan_mandiri`
+--
+
+CREATE TABLE `kegiatan_mandiri` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `tahun` year NOT NULL,
+  `jenis_kegiatan` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `klaster_skala_kegiatan` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `judul_kegiatan` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `anggota_terlibat` text COLLATE utf8mb4_general_ci,
+  `resume_kegiatan` text COLLATE utf8mb4_general_ci,
+  `unit_pelaksana_kegiatan` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mitra_kolaborasi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sumber_dana` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `besaran_dana` bigint UNSIGNED DEFAULT NULL,
+  `tautan_bukti_dukung` text COLLATE utf8mb4_general_ci,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kegiatan_mandiri`
+--
+
+INSERT INTO `kegiatan_mandiri` (`id`, `uuid`, `user_id`, `tahun`, `jenis_kegiatan`, `klaster_skala_kegiatan`, `judul_kegiatan`, `anggota_terlibat`, `resume_kegiatan`, `unit_pelaksana_kegiatan`, `mitra_kolaborasi`, `sumber_dana`, `besaran_dana`, `tautan_bukti_dukung`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '8997472d-29e7-4562-b055-607efcf30a85', 9, '2025', 'Penelitian Mandiri', 'Regional', 'Kegiatan', 'Oke', 'oke', 'UPT', 'Mitra', 'Sumber', 7387383, 'drive.google.com', '2026-04-25 05:16:36', '2026-04-25 05:16:36', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kelengkapan_dokumen`
+--
+
+CREATE TABLE `kelengkapan_dokumen` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `jenis_dokumen` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Sertifikat Dosen, SK Jabatan Fungsional, Kartu NIDN',
+  `dokumen_file` text COLLATE utf8mb4_general_ci COMMENT 'Path ke file dokumen',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kelengkapan_dokumen`
+--
+
+INSERT INTO `kelengkapan_dokumen` (`id`, `uuid`, `user_id`, `jenis_dokumen`, `dokumen_file`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'b6c4300e-a516-4941-b512-6c1c5e8737a5', 9, 'Sertifikat Dosen', 'uploads/kelengkapan_dokumen/1777102063_a1db932a98b789ac13d6.pdf', '2026-04-25 07:06:01', '2026-04-25 07:27:43', NULL),
+(2, 'bdba5dc9-c8d1-41c4-8f1f-5c9a20eebd3b', 9, 'SK Jabatan Fungsional', NULL, '2026-04-25 07:06:01', '2026-04-25 07:06:01', NULL),
+(3, '1dea311a-ecbe-4b9f-aa4d-04791490f0bf', 9, 'Kartu NIDN', NULL, '2026-04-25 07:06:01', '2026-04-25 07:06:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -268,7 +327,15 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (9, '2026-04-23-143346', 'App\\Database\\Migrations\\CreateMasterFakultas', 'default', 'App', 1776955123, 2),
 (10, '2026-04-23-143354', 'App\\Database\\Migrations\\CreateMasterUnitKerja', 'default', 'App', 1776955123, 2),
 (11, '2026-04-23-143411', 'App\\Database\\Migrations\\CreateMasterProgramStudi', 'default', 'App', 1776955123, 2),
-(12, '2026-04-24-020623', 'App\\Database\\Migrations\\CreateUserProfiles', 'default', 'App', 1776996420, 3);
+(12, '2026-04-24-020623', 'App\\Database\\Migrations\\CreateUserProfiles', 'default', 'App', 1776996420, 3),
+(13, '2026-04-24-100000', 'App\\Database\\Migrations\\AddDosenReviewerRoles', 'default', 'App', 1777025755, 4),
+(14, '2026-04-24-110000', 'App\\Database\\Migrations\\AddProfileManageToAdmin', 'default', 'App', 1777027394, 5),
+(15, '2026-04-24-133044', 'App\\Database\\Migrations\\CreatePublikasiTable', 'default', 'App', 1777043179, 6),
+(16, '2026-04-25-091200', 'App\\Database\\Migrations\\AddPenulisKlasterToPublikasi', 'default', 'App', 1777084056, 7),
+(17, '2026-04-25-103000', 'App\\Database\\Migrations\\CreateKegiatanMandiriTable', 'default', 'App', 1777093726, 8),
+(18, '2026-04-25-140000', 'App\\Database\\Migrations\\CreateRiwayatPendidikanTable', 'default', 'App', 1777098895, 9),
+(19, '2026-04-25-150000', 'App\\Database\\Migrations\\CreateKelengkapanDokumenTable', 'default', 'App', 1777099905, 10),
+(20, '2026-04-26-100000', 'App\\Database\\Migrations\\CreateSintaProfilesTable', 'default', 'App', 1777166648, 11);
 
 -- --------------------------------------------------------
 
@@ -293,7 +360,71 @@ INSERT INTO `permissions` (`id`, `uuid`, `name`, `description`, `created_at`, `u
 (18, 'd43c944a-1fe0-42a3-857d-aeac99296b6a', 'admin.access', 'Akses panel admin', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
 (19, '5611ab16-b685-4591-a2de-494f4b57c31b', 'users.manage', 'Manajemen user', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
 (20, 'daf2ddff-031c-49e6-bcfb-d91658ee874f', 'proposals.view', 'Lihat proposal', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
-(21, 'e20f2b17-ac60-4cf3-ab91-8d5b1bd6906c', 'master.manage', 'Mengelola Data Master', '2026-04-24 01:50:52', '2026-04-24 01:50:52');
+(21, 'e20f2b17-ac60-4cf3-ab91-8d5b1bd6906c', 'master.manage', 'Mengelola Data Master', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
+(22, 'f8b1503e-18a6-4851-a845-01fa01e958b2', 'dashboard.access', 'Akses dashboard', '2026-04-24 10:15:55', '2026-04-24 10:15:55'),
+(23, '7e905e48-fc7c-4fa2-b0c6-b3524bf120b1', 'dosen.access', 'Akses panel dosen', '2026-04-24 10:15:55', '2026-04-24 10:15:55'),
+(24, '818a6503-1f48-484a-9f2a-ab8076fa1dec', 'profile.manage', 'Kelola profil sendiri', '2026-04-24 10:15:55', '2026-04-24 10:15:55'),
+(25, '3ab26355-8ca7-4de9-9126-23b54255c493', 'reviewer.access', 'Akses panel reviewer', '2026-04-24 10:15:55', '2026-04-24 10:15:55'),
+(26, 'f2b73f0c-84cb-4782-bfd1-5bcbfabc6ba6', 'reviews.manage', 'Mengelola review proposal', '2026-04-24 10:15:55', '2026-04-24 10:15:55');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `publikasi`
+--
+
+CREATE TABLE `publikasi` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `judul` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `penulis` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `jenis_publikasi` enum('Jurnal','HKI','Prosiding','Buku') COLLATE utf8mb4_general_ci NOT NULL,
+  `tahun` year NOT NULL,
+  `klaster` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sumber_pembiayaan` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `metadata` json DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `publikasi`
+--
+
+INSERT INTO `publikasi` (`id`, `uuid`, `user_id`, `judul`, `penulis`, `jenis_publikasi`, `tahun`, `klaster`, `sumber_pembiayaan`, `metadata`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '97fc65ba-489f-4494-8b98-8de7c093035c', 9, 'Kocak', 'Udin', 'HKI', '2025', 'Nasional', 'Mandiri', '{\"url\": \"www.google.com\", \"no_hki\": \"HKI\"}', '2026-04-25 02:35:09', '2026-04-25 02:35:09', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `riwayat_pendidikan`
+--
+
+CREATE TABLE `riwayat_pendidikan` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `jenjang_pendidikan` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `program_studi` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `institusi` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `tahun_masuk` year NOT NULL,
+  `tahun_lulus` year NOT NULL,
+  `ipk` decimal(3,2) DEFAULT NULL,
+  `dokumen_ijazah` text COLLATE utf8mb4_general_ci,
+  `dokumen_tipe` enum('url','file') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'url',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `riwayat_pendidikan`
+--
+
+INSERT INTO `riwayat_pendidikan` (`id`, `uuid`, `user_id`, `jenjang_pendidikan`, `program_studi`, `institusi`, `tahun_masuk`, `tahun_lulus`, `ipk`, `dokumen_ijazah`, `dokumen_tipe`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'b7d6c39f-5c24-454b-ad8d-db498ee41e70', 9, 'S1', 'Ilmu Komputer', 'UGM', '2017', '2021', 3.50, 'uploads/riwayat_pendidikan/1777102208_13adad45e5d109b36ac8.pdf', 'file', '2026-04-25 06:41:07', '2026-04-25 07:30:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -315,7 +446,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `uuid`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(6, '1add0d81-83cc-4ddf-a3b1-e800aa8c4964', 'admin', 'Administrator', '2026-04-24 01:50:52', '2026-04-24 01:50:52');
+(6, '1add0d81-83cc-4ddf-a3b1-e800aa8c4964', 'admin', 'Administrator', '2026-04-24 01:50:52', '2026-04-24 01:50:52'),
+(7, 'ac9151c8-c201-4dde-acf0-729ccfd8f19b', 'dosen', 'Dosen / Lecturer', '2026-04-24 10:15:55', '2026-04-24 10:15:55'),
+(8, '362ba455-0e32-48fd-8d33-9a314cb934aa', 'reviewer', 'Reviewer Proposal', '2026-04-24 10:15:55', '2026-04-24 10:15:55');
 
 -- --------------------------------------------------------
 
@@ -337,7 +470,48 @@ INSERT INTO `role_permissions` (`role_id`, `permission_id`, `created_at`) VALUES
 (6, 18, NULL),
 (6, 19, NULL),
 (6, 20, NULL),
-(6, 21, NULL);
+(6, 21, NULL),
+(6, 22, NULL),
+(6, 24, NULL),
+(7, 22, NULL),
+(7, 23, NULL),
+(7, 24, NULL),
+(8, 22, NULL),
+(8, 24, NULL),
+(8, 25, NULL),
+(8, 26, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sinta_profiles`
+--
+
+CREATE TABLE `sinta_profiles` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `id_sinta` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_sinta` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sinta_score_all_years` decimal(10,2) DEFAULT NULL,
+  `sinta_score_3_years` decimal(10,2) DEFAULT NULL,
+  `sinta_profile_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status_validasi_sinta` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Belum Sinkron',
+  `sync_status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'never',
+  `sync_error_message` text COLLATE utf8mb4_general_ci,
+  `raw_payload_json` longtext COLLATE utf8mb4_general_ci,
+  `last_synced_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sinta_profiles`
+--
+
+INSERT INTO `sinta_profiles` (`id`, `uuid`, `user_id`, `id_sinta`, `nama_sinta`, `sinta_score_all_years`, `sinta_score_3_years`, `sinta_profile_url`, `status_validasi_sinta`, `sync_status`, `sync_error_message`, `raw_payload_json`, `last_synced_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '0136d0d1-0028-4ae6-a821-7e2b80be1a57', 9, '6824588', 'SUMARNO', 43.00, 13.00, 'https://sinta.kemdiktisaintek.go.id/authors/profile/6824588', 'Tersinkronisasi', 'success', NULL, '{\"nama_sinta\":\"SUMARNO\",\"id_sinta\":\"6824588\",\"sinta_score_all_years\":43,\"sinta_score_3_years\":13,\"status_validasi_sinta\":\"Tersinkronisasi\",\"sinta_profile_url\":\"https:\\/\\/sinta.kemdiktisaintek.go.id\\/authors\\/profile\\/6824588\"}', '2026-04-26 01:35:00', '2026-04-26 01:29:51', '2026-04-26 01:35:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -365,9 +539,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengkap`, `aktif`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'ADMIN LP2M', 'admin@litapdimas.ac.id', '$2y$10$Vq5J2Mwx8GAQ4KpSxetAjOG0XLsNu0qK0097mp8jmdkm7Prv9XI4.', 'Administrator', 1, '2026-04-24 01:50:52', '2026-04-24 03:00:14', NULL, NULL, NULL),
-(7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-24 03:24:53', NULL, NULL, NULL),
-(8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL);
+(6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'ADMIN LP2M', 'admin@litapdimas.ac.id', '$2y$10$4dbqI40cMgV7DrlMiJXp.O32lGMFa948hsaz8TKpLM44Nf2rUH5yO', 'Administrator', 1, '2026-04-24 01:50:52', '2026-04-24 11:40:40', NULL, NULL, NULL),
+(7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-24 12:55:11', NULL, NULL, NULL),
+(8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL),
+(9, 'a892502a-e93b-46b9-a6d5-109425776c85', 'Hernan', 'hernan@uinsi.ac.id', '$2y$10$iEf73ZnIKiPe2YF9TXUCNeKq9n/a4rKkiouBtjqOdYN45.jl8u8kC', 'Hernansyah', 1, '2026-04-24 10:35:53', '2026-04-26 01:53:30', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -377,25 +552,25 @@ INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengka
 
 CREATE TABLE `user_profiles` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_id` int UNSIGNED NOT NULL,
-  `foto` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gelar_depan` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gelar_belakang` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `jenis_kelamin` enum('L','P') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tempat_lahir` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `foto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gelar_depan` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gelar_belakang` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `jenis_kelamin` enum('L','P') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tempat_lahir` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `tanggal_lahir` date DEFAULT NULL,
-  `alamat` text COLLATE utf8mb4_general_ci,
-  `no_hp` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nik` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nidn` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nip` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `alamat` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `no_hp` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nik` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nidn` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `profesi_id` int UNSIGNED DEFAULT NULL,
   `bidang_ilmu_id` int UNSIGNED DEFAULT NULL,
   `fakultas_id` int UNSIGNED DEFAULT NULL,
   `program_studi_id` int UNSIGNED DEFAULT NULL,
   `jabatan_fungsional_id` int UNSIGNED DEFAULT NULL,
-  `id_sinta` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_sinta` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -408,7 +583,8 @@ CREATE TABLE `user_profiles` (
 --
 
 INSERT INTO `user_profiles` (`id`, `uuid`, `user_id`, `foto`, `gelar_depan`, `gelar_belakang`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `alamat`, `no_hp`, `nik`, `nidn`, `nip`, `profesi_id`, `bidang_ilmu_id`, `fakultas_id`, `program_studi_id`, `jabatan_fungsional_id`, `id_sinta`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(16, '92578a3f-5721-4d9d-a8f5-7c645620588e', 7, NULL, NULL, NULL, NULL, 'Samarinda', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 03:24:53', '2026-04-24 03:24:53', NULL, NULL, NULL);
+(16, '92578a3f-5721-4d9d-a8f5-7c645620588e', 7, NULL, NULL, NULL, NULL, 'Samarinda', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 03:24:53', '2026-04-24 12:55:11', NULL, NULL, NULL),
+(17, 'd291e3e5-0c68-4f9c-aae0-24aad1f31806', 9, 'profile/1777168410_c334984727e874276299.png', 'Dr', 'S.Kom', 'L', 'Muara Muntai', '2026-04-24', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 10:48:00', '2026-04-26 01:53:30', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -429,11 +605,28 @@ CREATE TABLE `user_roles` (
 INSERT INTO `user_roles` (`user_id`, `role_id`, `created_at`) VALUES
 (6, 6, NULL),
 (7, 6, NULL),
-(8, 6, NULL);
+(8, 6, NULL),
+(9, 7, NULL);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `kegiatan_mandiri`
+--
+ALTER TABLE `kegiatan_mandiri`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `kegiatan_mandiri_user_id_foreign` (`user_id`);
+
+--
+-- Indexes for table `kelengkapan_dokumen`
+--
+ALTER TABLE `kelengkapan_dokumen`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `kelengkapan_dokumen_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `master_bidang_ilmu`
@@ -494,6 +687,22 @@ ALTER TABLE `permissions`
   ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
+-- Indexes for table `publikasi`
+--
+ALTER TABLE `publikasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `publikasi_user_id_foreign` (`user_id`);
+
+--
+-- Indexes for table `riwayat_pendidikan`
+--
+ALTER TABLE `riwayat_pendidikan`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `riwayat_pendidikan_user_id_foreign` (`user_id`);
+
+--
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -507,6 +716,14 @@ ALTER TABLE `roles`
 ALTER TABLE `role_permissions`
   ADD PRIMARY KEY (`role_id`,`permission_id`),
   ADD KEY `role_permissions_permission_id_foreign` (`permission_id`);
+
+--
+-- Indexes for table `sinta_profiles`
+--
+ALTER TABLE `sinta_profiles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`),
+  ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
 -- Indexes for table `users`
@@ -540,6 +757,18 @@ ALTER TABLE `user_roles`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `kegiatan_mandiri`
+--
+ALTER TABLE `kegiatan_mandiri`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `kelengkapan_dokumen`
+--
+ALTER TABLE `kelengkapan_dokumen`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `master_bidang_ilmu`
@@ -581,35 +810,65 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `publikasi`
+--
+ALTER TABLE `publikasi`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `riwayat_pendidikan`
+--
+ALTER TABLE `riwayat_pendidikan`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `sinta_profiles`
+--
+ALTER TABLE `sinta_profiles`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `kegiatan_mandiri`
+--
+ALTER TABLE `kegiatan_mandiri`
+  ADD CONSTRAINT `kegiatan_mandiri_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `kelengkapan_dokumen`
+--
+ALTER TABLE `kelengkapan_dokumen`
+  ADD CONSTRAINT `kelengkapan_dokumen_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `master_program_studi`
@@ -624,11 +883,29 @@ ALTER TABLE `master_unit_kerja`
   ADD CONSTRAINT `master_unit_kerja_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `master_unit_kerja` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
+-- Constraints for table `publikasi`
+--
+ALTER TABLE `publikasi`
+  ADD CONSTRAINT `publikasi_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `riwayat_pendidikan`
+--
+ALTER TABLE `riwayat_pendidikan`
+  ADD CONSTRAINT `riwayat_pendidikan_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `role_permissions`
 --
 ALTER TABLE `role_permissions`
   ADD CONSTRAINT `role_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `role_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `sinta_profiles`
+--
+ALTER TABLE `sinta_profiles`
+  ADD CONSTRAINT `sinta_profiles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_profiles`

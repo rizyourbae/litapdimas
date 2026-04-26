@@ -7,6 +7,7 @@ use App\Models\Auth\RoleModel;
 use App\Models\Auth\PermissionModel;
 use App\Models\Auth\UserRoleModel;
 use App\Models\Auth\RolePermissionModel;
+use App\Models\User\UserProfileModel;
 use CodeIgniter\Session\Session;
 use Config\Services;
 
@@ -17,6 +18,7 @@ class AuthService
     protected $roleModel;
     protected $userRoleModel;
     protected $rolePermissionModel;
+    protected $userProfileModel;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class AuthService
         $this->roleModel = new RoleModel();
         $this->userRoleModel = new UserRoleModel();
         $this->rolePermissionModel = new RolePermissionModel();
+        $this->userProfileModel = new UserProfileModel();
     }
 
     public function attempt(string $username, string $password): bool
@@ -77,12 +80,20 @@ class AuthService
             }
         }
 
+        $profile = $this->userProfileModel->where('user_id', $user['id'])->first();
+        $photoUrl = base_url('assets/adminlte/assets/img/user2-160x160.jpg');
+        if (!empty($profile['foto'])) {
+            $photoUrl = base_url('uploads/' . ltrim((string) $profile['foto'], '/'));
+        }
+
         $userData = [
             'id'           => $user['id'],
             'uuid'         => $user['uuid'],
             'username'     => $user['username'],
             'nama_lengkap' => $user['nama_lengkap'],
             'email'        => $user['email'],
+            'foto'         => $profile['foto'] ?? null,
+            'foto_url'     => $photoUrl,
             'roles'        => $roleIds,        // array of int IDs (backward compat)
             'role_names'   => $roleNames,      // array of string names e.g. ['dosen','reviewer']
             'permissions'  => $permissions,

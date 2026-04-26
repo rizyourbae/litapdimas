@@ -76,15 +76,25 @@ class Menu extends BaseConfig
         // DOSEN: Proposal & Profil
         // ============================================================
         [
-            'label'      => 'Akademik',
+            'label'      => 'Peneliti',
             'icon'       => 'bi-mortarboard',
             'url'        => '#',
             'permission' => 'dosen.access',
             'children'   => [
+                ['label' => 'Daftar Proposal', 'url' => 'dosen/proposals',        'icon' => 'bi-file-earmark-text'],
                 ['label' => 'Publikasi',          'url' => 'dosen/publikasi',        'icon' => 'bi-journal-richtext'],
                 ['label' => 'Kegiatan Mandiri',   'url' => 'dosen/kegiatan-mandiri', 'icon' => 'bi-list-check'],
+            ],
+        ],
+        [
+            'label'      => 'Profil Peneliti',
+            'icon'       => 'bi-person-badge',
+            'url'        => '#',
+            'permission' => 'dosen.access',
+            'children'   => [
                 ['label' => 'Riwayat Pendidikan',  'url' => 'dosen/riwayat-pendidikan', 'icon' => 'bi-mortarboard'],
                 ['label' => 'Kelengkapan Dokumen', 'url' => 'dosen/kelengkapan-dokumen', 'icon' => 'bi-file-earmark-check'],
+                ['label' => 'Profil SINTA', 'url' => 'dosen/profil-sinta', 'icon' => 'bi-patch-check'],
             ],
         ],
         [
@@ -93,12 +103,12 @@ class Menu extends BaseConfig
             'url'        => '#',
             'permission' => 'dosen.access',
             'children'   => [
-                ['label' => 'Daftar Proposal', 'url' => 'dosen/proposals',        'icon' => 'bi-circle'],
+
                 ['label' => 'Ajukan Proposal', 'url' => 'dosen/proposals/create', 'icon' => 'bi-circle'],
             ],
         ],
         [
-            'label'      => 'Profil Saya',
+            'label'      => 'Informasi Akun',
             'icon'       => 'bi-person-circle',
             'url'        => 'profile',
             'permission' => 'profile.manage',

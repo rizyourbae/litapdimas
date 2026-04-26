@@ -37,6 +37,20 @@ $routes->get('uploads/riwayat_pendidikan/(:any)', function ($filename) {
         ->setBody(file_get_contents($filepath));
 });
 
+$routes->get('uploads/profile/(:any)', function ($filename) {
+    $filepath = FCPATH . 'uploads/profile/' . $filename;
+    if (!is_file($filepath)) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
+    }
+
+    $mime = mime_content_type($filepath);
+    return service('response')
+        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
+        ->setHeader('Content-Length', filesize($filepath))
+        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
+        ->setBody(file_get_contents($filepath));
+});
+
 // ============================================================
 // Public Routes
 // ============================================================
@@ -118,6 +132,14 @@ $routes->group('dosen/kelengkapan-dokumen', ['filter' => 'auth:dosen.access'], f
     $routes->get('/',              'Dosen\KelengkapanDokumen\KelengkapanDokumenController::index',  ['as' => 'dosen.kelengkapan_dokumen.index']);
     $routes->get('edit/(:any)',    'Dosen\KelengkapanDokumen\KelengkapanDokumenController::edit/$1', ['as' => 'dosen.kelengkapan_dokumen.edit']);
     $routes->post('update/(:any)', 'Dosen\KelengkapanDokumen\KelengkapanDokumenController::update/$1', ['as' => 'dosen.kelengkapan_dokumen.update']);
+});
+
+// ============================================================
+// Dosen Profil SINTA Routes
+// ============================================================
+$routes->group('dosen/profil-sinta', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/', 'Dosen\ProfilSinta\ProfilSintaController::index', ['as' => 'dosen.profil_sinta.index']);
+    $routes->post('sync', 'Dosen\ProfilSinta\ProfilSintaController::sync', ['as' => 'dosen.profil_sinta.sync']);
 });
 
 // ============================================================

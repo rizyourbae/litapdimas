@@ -2,8 +2,11 @@
 <?= $this->section('content') ?>
 
 <?php
-$errors  = session()->getFlashdata('errors') ?? [];
-$profil  = $user['profil'] ?? [];
+$errors          = session()->getFlashdata('errors') ?? [];
+$profil          = $user['profil'] ?? [];
+$currentPhotoUrl = !empty($profil['foto'])
+    ? base_url('uploads/' . ltrim((string) $profil['foto'], '/'))
+    : base_url('assets/adminlte/assets/img/user2-160x160.jpg');
 ?>
 
 <div class="card card-primary card-outline">
@@ -290,18 +293,22 @@ $profil  = $user['profil'] ?? [];
                         <h6 class="text-muted fw-semibold border-bottom pb-2 mb-3">
                             <i class="bi bi-image me-2"></i>Foto Profil
                         </h6>
-                        <div class="row align-items-end">
-                            <?php if (!empty($profil['foto'])): ?>
-                                <div class="col-auto mb-3">
-                                    <img src="<?= base_url('uploads/' . esc($profil['foto'])) ?>"
-                                        class="rounded border" width="100" height="100"
-                                        style="object-fit:cover;" alt="Foto Profil">
-                                </div>
-                            <?php endif; ?>
-                            <div class="col mb-3">
+                        <div class="row">
+                            <div class="col-md-3 mb-3 text-center">
+                                <img id="fotoPreview" src="<?= esc($currentPhotoUrl) ?>"
+                                    class="rounded border" width="140" height="140"
+                                    style="object-fit:cover;" alt="Foto Profil">
+                                <div class="small text-muted mt-2">Preview foto</div>
+                            </div>
+                            <div class="col-md-9 mb-3">
                                 <label class="form-label">Pilih Foto</label>
-                                <input type="file" name="foto" class="form-control" accept="image/*">
-                                <small class="text-muted d-block mt-1">Format: JPG, PNG. Maks. 2MB.</small>
+                                <input type="file" name="foto" id="fotoInput" class="form-control" accept="image/jpeg,image/png,image/webp">
+                                <small class="text-muted d-block mt-1">Format: JPG, PNG, WEBP. Maks. 2MB.</small>
+                                <?php if (!empty($profil['foto'])): ?>
+                                    <small class="text-success d-block mt-2">
+                                        Foto tersimpan: <?= esc(basename((string) $profil['foto'])) ?>
+                                    </small>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -363,10 +370,35 @@ $profil  = $user['profil'] ?? [];
             });
         }
 
+        function setupPhotoPreview() {
+            const input = document.getElementById('fotoInput');
+            const preview = document.getElementById('fotoPreview');
+            if (!input || !preview) return;
+
+            input.addEventListener('change', function() {
+                const file = this.files && this.files[0] ? this.files[0] : null;
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target && e.target.result ? e.target.result : preview.src;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupCascade);
+            document.addEventListener('DOMContentLoaded', function() {
+                setupCascade();
+                setupPhotoPreview();
+            });
         } else {
             setupCascade();
+            setupPhotoPreview();
         }
     })();
 </script>
