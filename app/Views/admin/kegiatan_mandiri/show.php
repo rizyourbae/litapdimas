@@ -2,31 +2,38 @@
 
 <?= $this->section('content') ?>
 
-<div class="row g-3">
+<div class="row g-3 admin-page">
+    <?php
+    $evidenceHref = trim((string) ($evidence['url'] ?? ''));
+    if ($evidenceHref !== '' && !preg_match('~^[a-z][a-z0-9+.-]*:~i', $evidenceHref)) {
+        $evidenceHref = 'https://' . ltrim($evidenceHref, '/');
+    }
+    ?>
     <div class="col-12">
-        <div class="card border-0 shadow-sm overflow-hidden">
-            <div class="card-body p-4" style="background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 55%, #f7fbf4 100%);">
+        <div class="card admin-hero">
+            <div class="card-body p-4 p-lg-5">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
                     <div>
                         <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge text-bg-light border px-3 py-2">Detail Kegiatan</span>
                             <span class="badge <?= esc($hero['jenis_badge_class']) ?> px-3 py-2"><?= esc($hero['jenis_label']) ?></span>
                             <span class="badge <?= esc($hero['klaster_badge_class']) ?> px-3 py-2"><?= esc($hero['klaster_label']) ?></span>
                             <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc($hero['tahun']) ?></span>
                         </div>
-                        <h2 class="h3 mb-2"><?= esc($hero['title']) ?></h2>
-                        <p class="text-muted mb-0">
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc($hero['title']) ?></h2>
+                        <p class="admin-hero__subtitle mb-0">
                             <i class="bi bi-person-badge me-1"></i><?= esc($hero['subtitle']) ?>
                         </p>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2">
+                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
                         <a href="<?= esc($actions['back_url']) ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
                         <a href="<?= esc($actions['edit_url']) ?>" class="btn btn-warning">
                             <i class="bi bi-pencil-square me-1"></i>Edit
                         </a>
-                        <a href="<?= esc($evidence['url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        <a href="<?= esc($evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
                             <i class="bi bi-box-arrow-up-right me-1"></i>Lihat Bukti
                         </a>
                     </div>
@@ -35,15 +42,15 @@
         </div>
     </div>
 
-    <div class="col-lg-5">
-        <div class="card card-primary card-outline shadow-sm h-100">
-            <div class="card-header">
-                <h3 class="card-title mb-0">Ringkasan Kegiatan</h3>
-            </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
+    <div class="col-xl-4">
+        <div class="card admin-form-sidecard h-100">
+            <div class="card-body">
+                <div class="admin-form-sidecard__icon mb-3"><i class="bi bi-clipboard2-check"></i></div>
+                <h3 class="h5 mb-2">Ringkasan Kegiatan</h3>
+                <p class="text-muted mb-3">Baca konteks inti kegiatan di sisi kiri sebelum masuk ke resume, pendanaan, atau proses koreksi data.</p>
+                <div class="list-group list-group-flush admin-summary-list">
                     <?php foreach ($summaryItems as $item): ?>
-                        <div class="list-group-item px-4 py-3">
+                        <div class="list-group-item px-0 py-3">
                             <div class="small text-muted mb-1"><?= esc($item['label']) ?></div>
                             <div class="fw-semibold"><?= esc($item['value']) ?></div>
                         </div>
@@ -53,18 +60,18 @@
         </div>
     </div>
 
-    <div class="col-lg-7">
-        <div class="card card-primary card-outline shadow-sm h-100">
-            <div class="card-header">
+    <div class="col-xl-8">
+        <div class="card card-primary card-outline admin-table-card h-100">
+            <div class="card-header border-0 pb-0">
                 <h3 class="card-title mb-0">Pelaksanaan dan Pendanaan</h3>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <?php foreach ($detailItems as $item): ?>
                         <div class="col-md-6">
-                            <div class="border rounded-3 p-3 h-100 bg-light-subtle">
-                                <div class="small text-muted mb-1"><?= esc($item['label']) ?></div>
-                                <div class="fw-semibold"><?= esc($item['value']) ?></div>
+                            <div class="admin-detail-item">
+                                <div class="admin-detail-item__label"><?= esc($item['label']) ?></div>
+                                <div class="admin-detail-item__value"><?= esc($item['value']) ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -74,32 +81,47 @@
     </div>
 
     <div class="col-lg-8">
-        <div class="card card-primary card-outline shadow-sm h-100">
-            <div class="card-header">
+        <div class="card card-primary card-outline admin-table-card h-100">
+            <div class="card-header border-0 pb-0">
                 <h3 class="card-title mb-0">Resume Kegiatan</h3>
             </div>
             <div class="card-body">
-                <div class="lh-lg text-body-emphasis"><?= $resumeHtml ?></div>
+                <?php if (trim((string) $resumeHtml) === ''): ?>
+                    <div class="admin-empty-state py-4">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <p class="mb-0 fw-semibold text-body-emphasis">Belum ada resume kegiatan</p>
+                        <small class="d-block text-muted">Tambahkan ringkasan kegiatan pada form agar admin dapat melihat inti aktivitas disini.</small>
+                    </div>
+                <?php else: ?>
+                    <div class="admin-detail-item admin-detail-item--resume">
+                        <div class="resume-content text-body-emphasis">
+                            <?= $resumeHtml ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
     <div class="col-lg-4">
-        <div class="card card-primary card-outline shadow-sm h-100">
-            <div class="card-header">
-                <h3 class="card-title mb-0">Bukti Dukung</h3>
-            </div>
+        <div class="card admin-panel-card h-100">
             <div class="card-body d-flex flex-column gap-3">
-                <div class="rounded-3 border bg-light-subtle p-3">
-                    <div class="small text-muted mb-2">Tautan Dokumen</div>
-                    <div class="fw-semibold text-break"><?= esc($evidence['label']) ?></div>
+                <div>
+                    <div class="small text-uppercase text-muted mb-1">Bukti Dukung</div>
+                    <h3 class="h5 mb-2">Dokumen pendukung kegiatan</h3>
+                    <p class="text-muted mb-0">Tautan ini menjadi rujukan admin saat memverifikasi kelengkapan dokumen kegiatan.</p>
                 </div>
 
-                <a href="<?= esc($evidence['url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary w-100">
+                <div class="admin-detail-item admin-detail-item--link">
+                    <div class="admin-detail-item__label">Tautan Dokumen</div>
+                    <div class="admin-detail-item__value text-break"><?= esc($evidence['label']) ?></div>
+                </div>
+
+                <a href="<?= esc($evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary w-100">
                     <i class="bi bi-link-45deg me-1"></i>Buka Link Bukti Dukung
                 </a>
 
-                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc($actions['delete_url']) ?>">
+                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc($actions['delete_url']) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                     <i class="bi bi-trash me-1"></i>Hapus Kegiatan
                 </button>
             </div>
@@ -107,26 +129,4 @@
     </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        document.addEventListener('click', function(event) {
-            const deleteBtn = event.target.closest('.btn-delete');
-            if (!deleteBtn) {
-                return;
-            }
-
-            event.preventDefault();
-            SwalDelete(
-                deleteBtn.getAttribute('data-href'),
-                'Kegiatan mandiri ini',
-                'Data yang dihapus tidak dapat dikembalikan.'
-            );
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

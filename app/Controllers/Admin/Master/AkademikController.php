@@ -28,6 +28,7 @@ class AkademikController extends BaseController
     {
         $fakultasModel = new FakultasModel();
         $prodiModel    = new ProgramStudiModel();
+        $fakultasList  = $fakultasModel->findAll();
 
         // Prodi dengan nama fakultas (left join)
         $prodiList = $prodiModel
@@ -37,9 +38,11 @@ class AkademikController extends BaseController
 
         return $this->renderView('admin/master/akademik', [
             'title'           => 'Data Akademik',
-            'fakultas'        => $fakultasModel->findAll(),
+            'fakultas'        => $fakultasList,
+            'fakultasRows'    => $this->buildFakultasRows($fakultasList, $prodiList),
             'prodi'           => $prodiList,
             'fakultasOptions' => $fakultasModel->select('id, nama')->findAll(),
+            'viewState'       => $this->buildViewState('fakultas'),
         ]);
     }
 
@@ -148,5 +151,30 @@ class AkademikController extends BaseController
             'prodi'    => $this->request->getPost(['nama', 'fakultas_id']),
             default    => $this->request->getPost(['nama']),
         };
+    }
+
+    private function buildViewState(string $defaultTab): array
+    {
+        return [
+            'activeTab' => session()->getFlashdata('active_tab') ?? $defaultTab,
+            'openModal' => session()->getFlashdata('open_modal') ?? null,
+            'errors'    => session()->getFlashdata('errors') ?? [],
+            'baseUrl'   => site_url('admin/master/akademik'),
+        ];
+    }
+
+    private function buildFakultasRows(array $fakultasList, array $prodiList): array
+    {
+        return array_map(function (array $item, int $index) use ($prodiList): array {
+            $prodiCount = count(array_filter($prodiList, static fn($prodi) => (string) ($prodi['fakultas_id'] ?? '') === (string) $item['id']));
+
+            return [
+                'number'      => $index + 1,
+                'id'          => $item['id'],
+                'name'        => $item['nama'],
+                'isArchived'  => !empty($item['deleted_at']),
+                'prodiCount'  => $prodiCount,
+            ];
+        }, $fakultasList, array_keys($fakultasList));
     }
 }

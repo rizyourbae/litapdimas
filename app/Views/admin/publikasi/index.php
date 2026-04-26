@@ -2,69 +2,63 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .publikasi-table th,
-    .publikasi-table td {
-        vertical-align: middle;
-    }
-
-    .publikasi-table .col-jenis,
-    .publikasi-table .col-aksi,
-    .publikasi-table .col-tahun,
-    .publikasi-table .col-nomor {
-        text-align: center;
-    }
-
-    .publikasi-table .jenis-badge {
-        min-width: 92px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.45rem 0.7rem;
-        border-radius: 999px;
-    }
-
-    .publikasi-table .aksi-wrap {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-    }
-
-    .publikasi-table .aksi-btn {
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        border-radius: 0.45rem;
-    }
-</style>
-
-<div class="row">
+<div class="row g-3 admin-page">
     <div class="col-12">
-        <div class="card card-primary card-outline">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
+        <div class="card admin-hero">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
+                    <div>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge text-bg-light border px-3 py-2">Operasional Admin</span>
+                            <span class="badge text-bg-primary px-3 py-2">Publikasi</span>
+                        </div>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title ?? 'Data Publikasi') ?></h2>
+                        <p class="admin-hero__subtitle mb-0">Kelola publikasi dosen dalam satu ruang kerja yang lebih rapi, lebih mudah dipindai, dan setara secara visual dengan halaman admin lainnya.</p>
+                    </div>
+                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
+                        <a href="<?= site_url('admin/publikasi/create') ?>" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>Tambah Publikasi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="card admin-panel-card h-100">
+            <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="small text-uppercase text-muted mb-1">Informasi</div>
+                    <h3 class="h5 mb-2">Review, koreksi, lalu finalkan publikasi</h3>
+                    <p class="text-muted mb-0">Masuk ke detail untuk verifikasi metadata, lakukan edit cepat saat ada revisi, dan gunakan aksi hapus hanya untuk data yang memang tidak valid.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card card-primary card-outline admin-table-card">
+            <div class="card-header border-0 pb-0">
+                <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
                     <h3 class="card-title mb-0">
-                        <i class="bi bi-journal-richtext me-2"></i><?= esc($title ?? 'Data Publikasi') ?>
+                        <i class="bi bi-journal-richtext me-2"></i>Direktori Publikasi
                     </h3>
-                    <a href="<?= site_url('admin/publikasi/create') ?>" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-lg me-1"></i>Tambah Publikasi
-                    </a>
+                    <span class="badge text-bg-light border">Data publikasi akademik</span>
                 </div>
             </div>
             <div class="card-body">
                 <?php if (empty($tableRows)): ?>
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-journal-richtext fs-1 d-block mb-2"></i>
-                        <p class="mb-0">Belum ada data Publikasi</p>
-                        <small>Klik tombol "Tambah Publikasi" untuk memulai</small>
+                    <div class="admin-empty-state">
+                        <i class="bi bi-journal-richtext"></i>
+                        <p class="mb-1 fw-semibold text-body-emphasis">Belum ada data publikasi</p>
+                        <small class="d-block mb-3">Mulai dari entri pertama agar publikasi dosen bisa dikelola dari workspace admin ini.</small>
+                        <a href="<?= site_url('admin/publikasi/create') ?>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-lg me-1"></i>Tambah Publikasi
+                        </a>
                     </div>
                 <?php else: ?>
                     <div class="dt-skeleton-wrap">
-                        <!-- Skeleton overlay -->
                         <div class="dt-skeleton-overlay" id="sk-publikasi">
                             <table class="table table-bordered mb-0">
                                 <thead class="table-light">
@@ -92,9 +86,8 @@
                             </table>
                         </div>
 
-                        <!-- Real DataTable -->
                         <div class="dt-real-wrap" id="rw-publikasi">
-                            <table id="dt-publikasi" class="table table-hover table-bordered align-middle w-100 publikasi-table">
+                            <table id="dt-publikasi" class="table table-hover table-bordered align-middle w-100 publikasi-table" data-admin-datatable data-admin-datatable-options='{"columnDefs":[{"orderable":false,"targets":[0,5]}]}' data-skeleton-id="sk-publikasi" data-real-wrap-id="rw-publikasi">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width:60px" class="col-nomor">#</th>
@@ -118,20 +111,20 @@
                                                 </a>
                                             </td>
                                             <td class="col-jenis">
-                                                <span class="badge jenis-badge <?= esc($row['jenis_badge_class']) ?>">
+                                                <span class="badge admin-inline-badge <?= esc($row['jenis_badge_class']) ?>">
                                                     <i class="bi bi-bookmark me-1"></i><?= esc($row['jenis_label']) ?>
                                                 </span>
                                             </td>
                                             <td class="col-tahun"><?= esc($row['tahun']) ?></td>
                                             <td class="col-aksi">
-                                                <div class="aksi-wrap">
-                                                    <a href="<?= esc($row['show_url']) ?>" class="btn btn-info btn-sm aksi-btn" title="Detail">
+                                                <div class="admin-action-inline">
+                                                    <a href="<?= esc($row['show_url']) ?>" class="btn btn-info btn-sm admin-icon-btn" title="Detail">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning btn-sm aksi-btn" title="Edit">
+                                                    <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning btn-sm admin-icon-btn" title="Edit">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                    <button class="btn btn-danger btn-sm btn-delete aksi-btn" data-href="<?= esc($row['delete_url']) ?>" title="Hapus">
+                                                    <button class="btn btn-danger btn-sm btn-delete admin-icon-btn" data-href="<?= esc($row['delete_url']) ?>" data-delete-label="Publikasi ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan." title="Hapus">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
@@ -147,37 +140,5 @@
         </div>
     </div>
 </div>
-<?= $this->endSection() ?>
 
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        const DT_OPTS = {
-            columnDefs: [{
-                orderable: false,
-                targets: [0, 5]
-            }]
-        };
-
-        // Init DataTable
-        DtManager.initLazy('dt-publikasi', DT_OPTS, 'sk-publikasi', 'rw-publikasi');
-
-        // Delete button handler
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('.btn-delete');
-            if (!btn) return;
-
-            e.preventDefault();
-            const href = btn.getAttribute('data-href');
-
-            SwalDelete(
-                href,
-                'Publikasi ini',
-                'Data yang dihapus tidak dapat dikembalikan.'
-            );
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

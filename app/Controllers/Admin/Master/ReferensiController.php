@@ -38,9 +38,8 @@ class ReferensiController extends BaseController
     {
         return $this->renderView('admin/master/referensi', [
             'title'     => 'Data Referensi',
-            'profesi'   => (new ProfesiModel())->findAll(),
-            'bidangIlmu' => (new BidangIlmuModel())->findAll(),
-            'jabatan'   => (new JabatanFungsionalModel())->findAll(),
+            'tabs'      => $this->buildTabs(),
+            'viewState' => $this->buildViewState(),
         ]);
     }
 
@@ -138,5 +137,39 @@ class ReferensiController extends BaseController
     {
         $class = self::TYPE_MAP[$type] ?? null;
         return $class ? new $class() : null;
+    }
+
+    private function buildTabs(): array
+    {
+        return [
+            'profesi' => [
+                'label'      => 'Profesi',
+                'icon'       => 'bi-person-badge',
+                'items'      => (new ProfesiModel())->findAll(),
+                'fieldLabel' => 'Nama Profesi',
+            ],
+            'bidang-ilmu' => [
+                'label'      => 'Bidang Ilmu',
+                'icon'       => 'bi-book',
+                'items'      => (new BidangIlmuModel())->findAll(),
+                'fieldLabel' => 'Nama Bidang Ilmu',
+            ],
+            'jabatan' => [
+                'label'      => 'Jabatan Fungsional',
+                'icon'       => 'bi-briefcase',
+                'items'      => (new JabatanFungsionalModel())->findAll(),
+                'fieldLabel' => 'Nama Jabatan',
+            ],
+        ];
+    }
+
+    private function buildViewState(): array
+    {
+        return [
+            'activeTab' => session()->getFlashdata('active_tab') ?? 'profesi',
+            'openModal' => session()->getFlashdata('open_modal') ?? null,
+            'errors'    => session()->getFlashdata('errors') ?? [],
+            'baseUrl'   => site_url('admin/master/referensi'),
+        ];
     }
 }

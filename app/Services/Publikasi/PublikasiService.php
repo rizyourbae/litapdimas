@@ -139,7 +139,7 @@ class PublikasiService
     public function getAllPublikasi(): array
     {
         $publikasiList = $this->publikasiModel
-            ->select('publikasi.*, users.username as nama_dosen')
+            ->select("publikasi.*, COALESCE(NULLIF(users.nama_lengkap, ''), users.username) as nama_dosen")
             ->join('users', 'users.id = publikasi.user_id')
             ->orderBy('publikasi.created_at', 'DESC')
             ->findAll();
@@ -302,12 +302,16 @@ class PublikasiService
 
     private function findPublikasiRowByKey(string $key): ?object
     {
+        $builder = $this->publikasiModel
+            ->select("publikasi.*, COALESCE(NULLIF(users.nama_lengkap, ''), users.username) as nama_dosen")
+            ->join('users', 'users.id = publikasi.user_id', 'left');
+
         if (str_starts_with($key, self::ID_KEY_PREFIX)) {
             $id = (int) substr($key, strlen(self::ID_KEY_PREFIX));
-            return $id > 0 ? $this->publikasiModel->where('id', $id)->first() : null;
+            return $id > 0 ? $builder->where('publikasi.id', $id)->first() : null;
         }
 
-        return $this->publikasiModel->where('uuid', $key)->first();
+        return $builder->where('publikasi.uuid', $key)->first();
     }
 
     private function ensurePublikasiUuid(object $publikasi): void
@@ -504,7 +508,7 @@ class PublikasiService
     public function getAllByUserId(int $userId): array
     {
         $publikasiList = $this->publikasiModel
-            ->select('publikasi.*, users.username as nama_dosen')
+            ->select("publikasi.*, COALESCE(NULLIF(users.nama_lengkap, ''), users.username) as nama_dosen")
             ->join('users', 'users.id = publikasi.user_id')
             ->where('publikasi.user_id', $userId)
             ->orderBy('publikasi.created_at', 'DESC')

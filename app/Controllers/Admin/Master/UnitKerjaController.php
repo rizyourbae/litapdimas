@@ -36,9 +36,14 @@ class UnitKerjaController extends BaseController
             ->getResultArray();
 
         return $this->renderView('admin/master/unit_kerja', [
-            'title'   => 'Unit Kerja',
-            'items'   => $items,
-            'options' => $this->model->select('id, nama')->findAll(),
+            'title'     => 'Unit Kerja',
+            'items'     => $items,
+            'options'   => $this->model->select('id, nama')->findAll(),
+            'viewState' => [
+                'openModal' => session()->getFlashdata('open_modal') ?? null,
+                'errors'    => session()->getFlashdata('errors') ?? [],
+                'baseUrl'   => site_url('admin/master/unit_kerja'),
+            ],
         ]);
     }
 

@@ -1,0 +1,377 @@
+/* =============================================================
+   Litapdimas Admin UI
+   ============================================================= */
+
+.admin-page {
+  --admin-surface: linear-gradient(135deg, #f8fbff 0%, #eef4ff 58%, #f7fbf6 100%);
+}
+
+.admin-hero {
+  border: 0;
+  overflow: hidden;
+  background: var(--admin-surface);
+  box-shadow: 0 0.9rem 2rem rgba(15, 23, 42, 0.08);
+}
+
+.admin-hero__title {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.admin-hero__subtitle {
+  color: #475569;
+  max-width: 68ch;
+}
+
+.admin-hero__actions .btn {
+  white-space: nowrap;
+}
+
+.admin-stat-card,
+.admin-panel-card,
+.admin-metric-card,
+.admin-table-card,
+.admin-form-card,
+.admin-form-sidecard {
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: 0 0.75rem 1.75rem rgba(15, 23, 42, 0.06);
+  border-radius: 1rem;
+}
+
+.admin-stat-card,
+.admin-panel-card,
+.admin-metric-card,
+.admin-form-sidecard {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.admin-stat-card,
+.admin-panel-card {
+  border-radius: 1rem;
+}
+
+.admin-table-card,
+.admin-form-card {
+  overflow: hidden;
+}
+
+.admin-table-card .card-header,
+.admin-form-card .card-header {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.admin-table-card .card-body,
+.admin-form-card .card-body {
+  padding: 1.5rem;
+}
+
+.admin-table-card .card-footer,
+.admin-form-card .card-footer {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.admin-panel-icon,
+.admin-form-sidecard__icon {
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(13, 110, 253, 0.08);
+  color: #0d6efd;
+  font-size: 1.35rem;
+}
+
+.admin-metric-card__value {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.45rem;
+}
+
+.admin-filter-bar {
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.82);
+}
+
+.admin-action-group {
+  white-space: nowrap;
+}
+
+.admin-action-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.admin-icon-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0.55rem;
+}
+
+/* Make action buttons in admin tables visually proportional */
+.admin-table-card .table td .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  min-width: 38px;
+  height: 36px;
+  border-radius: 0.55rem;
+  line-height: 1;
+}
+
+.admin-table-card .table td .btn.btn-sm {
+  padding: 0.25rem;
+  min-width: 34px;
+  height: 34px;
+}
+
+.admin-table-card .table td .btn + .btn {
+  margin-left: 0.35rem;
+}
+
+.admin-table-card .table td .btn i {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 575.98px) {
+  .admin-table-card .table td .btn {
+    min-width: auto;
+    width: auto;
+    height: auto;
+    padding: 0.35rem 0.6rem;
+  }
+  .admin-table-card .table td {
+    white-space: normal;
+  }
+}
+
+.admin-inline-badge {
+  min-width: 104px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+}
+
+.admin-form-card .card-header,
+.admin-table-card .card-header {
+  background: transparent;
+}
+
+.admin-tabs .nav-link {
+  font-weight: 600;
+}
+
+.admin-section-block {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.45rem 1rem rgba(15, 23, 42, 0.04);
+}
+
+.admin-empty-state {
+  padding: 3rem 1.5rem;
+  border: 1px dashed rgba(148, 163, 184, 0.36);
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.78);
+  text-align: center;
+  color: #64748b;
+}
+
+.admin-empty-state i {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.85rem;
+  color: #0d6efd;
+}
+
+.admin-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-choice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.9rem;
+  background: rgba(248, 250, 252, 0.72);
+  cursor: pointer;
+}
+
+.admin-choice-card .form-check-input {
+  margin-top: 0.2rem;
+  flex: 0 0 auto;
+}
+
+.admin-choice-card strong {
+  display: block;
+  color: #0f172a;
+}
+
+.admin-detail-item {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.72);
+  height: 100%;
+}
+
+.admin-detail-item--link {
+  background: rgba(239, 246, 255, 0.85);
+}
+
+.admin-detail-item__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+}
+
+.admin-detail-item__value {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Resume area styling for detail pages */
+.resume-content {
+  /* Prefer normal HTML flow but keep line breaks from plain text */
+  white-space: pre-line;
+  word-break: break-word;
+  color: #0f172a;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-height: 520px;
+  overflow: auto;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 0.6rem;
+  box-shadow: inset 0 0.6rem 1.2rem rgba(15, 23, 42, 0.02);
+}
+
+.resume-content p {
+  margin: 0 0 0.9rem 0;
+}
+
+.resume-content h1,
+.resume-content h2,
+.resume-content h3,
+.resume-content h4,
+.resume-content h5,
+.resume-content h6 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.resume-content ul,
+.resume-content ol {
+  padding-left: 1.25rem;
+  margin: 0 0 0.9rem 0;
+}
+
+.resume-content li {
+  margin-bottom: 0.4rem;
+}
+
+.resume-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.5rem 0;
+  border-radius: 0.35rem;
+}
+
+.resume-content a {
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.resume-content pre {
+  background: #f6f8fa;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow: auto;
+}
+
+.resume-content code {
+  background: rgba(15, 23, 42, 0.04);
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.92em;
+}
+
+/* Semantic class to control min-height for resume blocks */
+.admin-detail-item--resume {
+  min-height: 220px;
+}
+
+.admin-role-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.9rem;
+  background: rgba(248, 250, 252, 0.7);
+  cursor: pointer;
+}
+
+.admin-role-item .form-check-input {
+  margin-top: 0.2rem;
+  flex: 0 0 auto;
+}
+
+.admin-role-item strong {
+  display: block;
+  color: #0f172a;
+}
+
+.admin-form-footer {
+  background: rgba(248, 250, 252, 0.9);
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.admin-photo-preview {
+  object-fit: cover;
+}
+
+.admin-soft-banner {
+  border: 1px solid rgba(13, 110, 253, 0.12);
+}
+
+.admin-summary-list .list-group-item {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.14);
+}
+
+@media (max-width: 575.98px) {
+  .admin-hero__actions,
+  .admin-hero__actions .btn,
+  .admin-form-footer .btn {
+    width: 100%;
+  }
+}

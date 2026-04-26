@@ -34,10 +34,12 @@ class UserController extends BaseController
         $roles = $this->userService->getAllRoles();
 
         $data = [
-            'title'   => 'Manajemen User',
-            'users'   => $users,
-            'roles'   => $roles,
-            'filters' => $filters,
+            'title'     => 'Manajemen User',
+            'users'     => $users,
+            'roles'     => $roles,
+            'filters'   => $filters,
+            'tableRows' => $this->buildUserTableRows($users),
+            'viewState' => $this->buildUserIndexViewState($filters, $users),
         ];
         return $this->renderView('admin/users/index', $data);
     }
@@ -46,11 +48,12 @@ class UserController extends BaseController
     public function create()
     {
         $data = [
-            'title' => 'Tambah User',
-            'action' => site_url('admin/users/store'),
-            'user'  => null,
-            'roles' => $this->userService->getAllRoles(),
-            'master' => $this->userService->getMasterData(),
+            'title'     => 'Tambah User',
+            'action'    => site_url('admin/users/store'),
+            'user'      => null,
+            'roles'     => $this->userService->getAllRoles(),
+            'master'    => $this->userService->getMasterData(),
+            'viewState' => $this->buildUserFormViewState(null),
         ];
         return $this->renderView('admin/users/form', $data);
     }
@@ -97,11 +100,12 @@ class UserController extends BaseController
         }
 
         $data = [
-            'title'  => 'Edit User',
-            'action' => site_url('admin/users/update/' . $uuid),
-            'user'   => $user,
-            'roles'  => $this->userService->getAllRoles(),
-            'master' => $this->userService->getMasterData(),
+            'title'     => 'Edit User',
+            'action'    => site_url('admin/users/update/' . $uuid),
+            'user'      => $user,
+            'roles'     => $this->userService->getAllRoles(),
+            'master'    => $this->userService->getMasterData(),
+            'viewState' => $this->buildUserFormViewState($user),
         ];
         return $this->renderView('admin/users/form', $data);
     }
@@ -196,9 +200,78 @@ class UserController extends BaseController
         }
 
         return $this->renderView('admin/users/reset_password', [
-            'title'  => 'Reset Password',
-            'user'   => $user,
-            'action' => site_url('admin/users/resetPassword/' . $uuid),
+            'title'     => 'Reset Password',
+            'user'      => $user,
+            'action'    => site_url('admin/users/resetPassword/' . $uuid),
+            'viewState' => [
+                'errors'      => session()->getFlashdata('errors') ?? [],
+                'displayName' => $user['nama_lengkap'] ?? $user['username'],
+            ],
         ]);
+    }
+
+    private function buildUserIndexViewState(array $filters, array $users): array
+    {
+        $hasFilters = !empty(array_filter($filters, static fn($value) => $value !== null && $value !== ''));
+
+        return [
+            'baseUrl'        => site_url('admin/users'),
+            'totalUsers'     => count($users),
+            'activeUsers'    => count(array_filter($users, static fn($user) => !empty($user['aktif']) && empty($user['deleted_at']))),
+            'inactiveUsers'  => count(array_filter($users, static fn($user) => empty($user['aktif']) && empty($user['deleted_at']))),
+            'archivedUsers'  => count(array_filter($users, static fn($user) => !empty($user['deleted_at']))),
+            'hasFilters'     => $hasFilters,
+            'filterCount'    => count(array_filter($filters, static fn($value) => $value !== null && $value !== '')),
+            'searchValue'    => $filters['search'] ?? '',
+            'selectedRoleId' => $filters['role_id'] ?? '',
+            'selectedStatus' => $filters['aktif'] ?? '',
+        ];
+    }
+
+    private function buildUserTableRows(array $users): array
+    {
+        return array_map(function (array $user, int $index): array {
+            $roleNames = [];
+            if (!empty($user['role_names'])) {
+                $roleNames = array_values(array_filter(explode(', ', (string) $user['role_names'])));
+            }
+
+            return [
+                'number'     => $index + 1,
+                'uuid'       => $user['uuid'],
+                'name'       => $user['nama_lengkap'],
+                'username'   => $user['username'],
+                'email'      => $user['email'],
+                'roles'      => $roleNames,
+                'isActive'   => !empty($user['aktif']),
+                'isArchived' => !empty($user['deleted_at']),
+            ];
+        }, $users, array_keys($users));
+    }
+
+    private function buildUserFormViewState(?array $user): array
+    {
+        $errors = session()->getFlashdata('errors') ?? [];
+        $profile = $user['profil'] ?? [];
+        $photoPath = $profile['foto'] ?? null;
+        $firstErrorKey = array_key_first($errors);
+        $accountFields = ['username', 'email', 'nama_lengkap', 'password', 'aktif', 'roles'];
+        $activeTab = in_array((string) $firstErrorKey, $accountFields, true) ? 'akun' : 'profil';
+
+        if (empty($errors)) {
+            $activeTab = 'akun';
+        }
+
+        return [
+            'errors'          => $errors,
+            'profile'         => $profile,
+            'activeTab'       => $activeTab,
+            'isEdit'          => $user !== null,
+            'currentPhotoUrl' => !empty($photoPath)
+                ? base_url('uploads/' . ltrim((string) $photoPath, '/'))
+                : base_url('assets/adminlte/assets/img/user2-160x160.jpg'),
+            'hasPhoto'        => !empty($photoPath),
+            'photoName'       => !empty($photoPath) ? basename((string) $photoPath) : null,
+        ];
     }
 }
