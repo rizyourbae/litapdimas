@@ -35,7 +35,9 @@ class ProfileController extends BaseController
             'title'         => 'Edit Profil',
             'currentModule' => 'Profil',
             'user'          => $user,
+            'profile'       => $user['profil'] ?? [],
             'master'        => $master,
+            'viewState'     => $this->buildEditProfileViewState($user),
         ];
 
         return $this->renderView('profile/edit', $data);
@@ -144,5 +146,38 @@ class ProfileController extends BaseController
 
         $profil['foto'] = 'profile/' . $newName;
         return $profil;
+    }
+
+    private function buildEditProfileViewState(array $user): array
+    {
+        $errors = session()->getFlashdata('errors') ?? [];
+        $profil = $user['profil'] ?? [];
+        $photoPath = $profil['foto'] ?? null;
+
+        return [
+            'errors'           => $errors,
+            'activeTab'        => $this->resolveActiveProfileTab($errors),
+            'currentPhotoUrl'  => !empty($photoPath)
+                ? base_url('uploads/' . ltrim((string) $photoPath, '/'))
+                : base_url('assets/adminlte/assets/img/user2-160x160.jpg'),
+            'hasSavedPhoto'    => !empty($photoPath),
+            'savedPhotoName'   => !empty($photoPath) ? basename((string) $photoPath) : null,
+        ];
+    }
+
+    private function resolveActiveProfileTab(array $errors): string
+    {
+        if (empty($errors)) {
+            return 'akun';
+        }
+
+        $accountFieldKeys = ['username', 'email', 'nama_lengkap', 'password'];
+        $firstErrorKey = array_key_first($errors);
+
+        if ($firstErrorKey === null) {
+            return 'akun';
+        }
+
+        return in_array((string) $firstErrorKey, $accountFieldKeys, true) ? 'akun' : 'profil';
     }
 }

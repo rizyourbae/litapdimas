@@ -36,6 +36,8 @@
 <script src="<?= base_url('custom/js/swal.js') ?>"></script>
 <script src="<?= base_url('custom/js/select2-init.js') ?>"></script>
 <script src="<?= base_url('custom/js/datatables-init.js') ?>"></script>
+<script src="<?= base_url('custom/js/dosen.js') ?>"></script>
+<script src="<?= base_url('custom/js/profile-form.js') ?>"></script>
 
 <!-- OverlayScrollbars Init -->
 <script>

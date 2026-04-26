@@ -158,3 +158,108 @@ tr.table-secondary td {
 .swal2-popup {
   font-size: 0.95rem !important;
 }
+
+/* ---------------------------------------------------------------
+   6. Profile Form Ergonomics
+   --------------------------------------------------------------- */
+.profile-edit-page {
+  padding-bottom: 6.5rem;
+}
+
+.profile-main-card {
+  overflow: visible;
+}
+
+.profile-progress-board {
+  position: relative;
+}
+
+.profile-progress-card {
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.75rem 1.75rem rgba(15, 23, 42, 0.06);
+}
+
+.profile-progress-card--overall {
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 55%, #f7fbf4 100%);
+}
+
+.profile-progress-bar {
+  height: 0.45rem;
+  background: #e9ecef;
+}
+
+.profile-tabs .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.profile-tab-badge {
+  min-width: 56px;
+}
+
+.profile-section-block {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.04);
+  scroll-margin-top: 6rem;
+}
+
+.profile-photo-preview {
+  object-fit: cover;
+}
+
+.profile-action-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(calc(100% - 1rem), 1180px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+  z-index: 1030;
+}
+
+.profile-action-bar__actions .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .profile-edit-page {
+    padding-bottom: 8rem;
+  }
+
+  .profile-tabs .nav-link {
+    min-height: 72px;
+  }
+
+  .profile-action-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .profile-action-bar__actions {
+    width: 100%;
+  }
+
+  .profile-action-bar__actions .btn {
+    flex: 1 1 0;
+  }
+}

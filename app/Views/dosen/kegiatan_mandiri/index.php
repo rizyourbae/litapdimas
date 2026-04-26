@@ -2,17 +2,38 @@
 
 <?= $this->section('content') ?>
 
-<div class="row">
+<div class="row g-3">
     <div class="col-12">
-        <div class="card card-primary card-outline shadow-sm">
+        <div class="card dosen-hero">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+                    <div>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge text-bg-light border px-3 py-2">Aktivitas Dosen</span>
+                            <span class="badge text-bg-primary px-3 py-2">Kegiatan Mandiri</span>
+                        </div>
+                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($title ?? 'Kegiatan Mandiri Saya') ?></h2>
+                        <p class="dosen-hero__subtitle mb-0">Kelola semua kegiatan mandiri Anda dengan tampilan tabel yang konsisten dan mudah dipindai.</p>
+                    </div>
+
+                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
+                        <a href="<?= site_url('dosen/kegiatan-mandiri/create') ?>" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>Tambah Kegiatan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card card-primary card-outline shadow-sm dosen-table-card">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-list-check me-2"></i><?= esc($title ?? 'Kegiatan Mandiri Saya') ?>
-                    </h3>
-                    <a href="<?= site_url('dosen/kegiatan-mandiri/create') ?>" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-lg me-1"></i>Tambah Kegiatan
-                    </a>
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center">
+                    <div>
+                        <h3 class="card-title mb-1">Daftar Kegiatan Mandiri</h3>
+                    </div>
+                    <span class="badge text-bg-light border">Total data: <?= esc(count($tableRows ?? [])) ?></span>
                 </div>
             </div>
             <div class="card-body">
@@ -32,14 +53,14 @@
                 <?php endif; ?>
 
                 <?php if (empty($tableRows)): ?>
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-journal-check fs-1 d-block mb-2"></i>
-                        <p class="mb-0">Belum ada data kegiatan mandiri.</p>
-                        <small>Klik tombol "Tambah Kegiatan" untuk memulai.</small>
+                    <div class="dosen-empty-state">
+                        <i class="bi bi-journal-check"></i>
+                        <h4 class="h5 text-body mb-2">Belum ada data kegiatan mandiri</h4>
+                        <p class="mb-0">Klik tombol Tambah Kegiatan untuk menambahkan data pertama Anda.</p>
                     </div>
                 <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle" id="dt-kegiatan-dosen">
+                    <div class="table-responsive dosen-table-wrap">
+                        <table class="table table-striped table-hover table-bordered align-middle mb-0" id="dt-kegiatan-dosen" data-dosen-datatable>
                             <thead class="table-light">
                                 <tr>
                                     <th style="width: 60px" class="text-center">#</th>
@@ -71,14 +92,17 @@
                                         </td>
                                         <td class="text-center"><?= esc($row['tahun']) ?></td>
                                         <td class="text-center">
-                                            <div style="display:inline-flex;gap:.4rem;align-items:center;">
-                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info btn-sm" title="Detail" style="width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+                                            <div class="dosen-action-group">
+                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info dosen-icon-btn" title="Detail">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning btn-sm" title="Edit" style="width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning dosen-icon-btn" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <button class="btn btn-danger btn-sm btn-delete" title="Hapus" data-href="<?= esc($row['delete_url']) ?>" style="width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+                                                <button class="btn btn-danger dosen-icon-btn btn-delete" title="Hapus"
+                                                    data-href="<?= esc($row['delete_url']) ?>"
+                                                    data-delete-label="kegiatan mandiri ini"
+                                                    data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -94,30 +118,4 @@
     </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        const table = document.getElementById('dt-kegiatan-dosen');
-        if (table && window.jQuery && jQuery.fn.DataTable) {
-            jQuery(table).DataTable({
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 5]
-                }]
-            });
-        }
-
-        document.addEventListener('click', function(e) {
-            const deleteBtn = e.target.closest('.btn-delete');
-            if (!deleteBtn) return;
-            e.preventDefault();
-            const href = deleteBtn.getAttribute('data-href');
-            SwalDelete(href, 'Kegiatan mandiri ini', 'Data yang dihapus tidak dapat dikembalikan.');
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

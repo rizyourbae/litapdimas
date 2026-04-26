@@ -2,57 +2,38 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .publikasi-table th,
-    .publikasi-table td {
-        vertical-align: middle;
-    }
-
-    .publikasi-table .col-jenis,
-    .publikasi-table .col-aksi,
-    .publikasi-table .col-tahun,
-    .publikasi-table .col-nomor {
-        text-align: center;
-    }
-
-    .publikasi-table .jenis-badge {
-        min-width: 92px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.45rem 0.7rem;
-        border-radius: 999px;
-    }
-
-    .publikasi-table .aksi-wrap {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-    }
-
-    .publikasi-table .aksi-btn {
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        border-radius: 0.45rem;
-    }
-</style>
-
-<div class="row">
+<div class="row g-3">
     <div class="col-12">
-        <div class="card card-primary card-outline">
+        <div class="card dosen-hero">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+                    <div>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge text-bg-light border px-3 py-2">Aktivitas Dosen</span>
+                            <span class="badge text-bg-primary px-3 py-2">Publikasi</span>
+                        </div>
+                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($title ?? 'Publikasi Saya') ?></h2>
+                        <p class="dosen-hero__subtitle mb-0">Kelola semua publikasi dalam satu tampilan yang rapi, ringkas, dan mudah dipindai.</p>
+                    </div>
+
+                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
+                        <a href="<?= site_url('dosen/publikasi/create') ?>" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>Tambah Publikasi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card card-primary card-outline shadow-sm dosen-table-card">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-journal-richtext me-2"></i><?= esc($title ?? 'Publikasi Saya') ?>
-                    </h3>
-                    <a href="<?= site_url('dosen/publikasi/create') ?>" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-lg me-1"></i>Tambah Publikasi
-                    </a>
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center">
+                    <div>
+                        <h3 class="card-title mb-1">Daftar Publikasi</h3>
+                    </div>
+                    <span class="badge text-bg-light border">Total data: <?= esc(count($tableRows ?? [])) ?></span>
                 </div>
             </div>
             <div class="card-body">
@@ -71,48 +52,57 @@
                     </div>
                 <?php endif; ?>
 
+                <div class="mb-3">
+                    <span class="badge text-bg-light border">
+                        <i class="bi bi-info-circle me-1"></i>Silahkan lengkapi data publikasi Anda
+                    </span>
+                </div>
+
                 <?php if (empty($tableRows)): ?>
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-journal-richtext fs-1 d-block mb-2"></i>
-                        <p class="mb-0">Belum ada data Publikasi</p>
-                        <small>Klik tombol "Tambah Publikasi" untuk memulai</small>
+                    <div class="dosen-empty-state">
+                        <i class="bi bi-journal-richtext"></i>
+                        <h4 class="h5 text-body mb-2">Belum ada data publikasi</h4>
+                        <p class="mb-0">Klik tombol Tambah Publikasi untuk memulai pengisian.</p>
                     </div>
                 <?php else: ?>
-                    <div class="table-responsive">
-                        <table id="dt-publikasi-dosen" class="table table-hover table-bordered align-middle w-100 publikasi-table">
+                    <div class="table-responsive dosen-table-wrap">
+                        <table id="dt-publikasi-dosen" class="table table-striped table-hover table-bordered align-middle mb-0 w-100" data-dosen-datatable>
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:60px" class="col-nomor">#</th>
+                                    <th style="width:60px" class="text-center">#</th>
                                     <th>Judul Publikasi</th>
-                                    <th style="width:130px" class="col-jenis">Jenis</th>
-                                    <th style="width:90px" class="col-tahun">Tahun</th>
-                                    <th style="width:110px" class="col-aksi">Aksi</th>
+                                    <th style="width:130px" class="text-center">Jenis</th>
+                                    <th style="width:90px" class="text-center">Tahun</th>
+                                    <th style="width:110px" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($tableRows as $index => $row): ?>
                                     <tr>
-                                        <td class="col-nomor"><?= $index + 1 ?></td>
+                                        <td class="text-center"><?= $index + 1 ?></td>
                                         <td>
                                             <a href="<?= esc($row['show_url']) ?>" class="text-decoration-none fw-semibold text-body-emphasis">
                                                 <?= esc($row['judul']) ?>
                                             </a>
                                         </td>
-                                        <td class="col-jenis">
-                                            <span class="badge jenis-badge <?= esc($row['jenis_badge_class']) ?>">
+                                        <td class="text-center">
+                                            <span class="badge text-bg-light border dosen-inline-badge <?= esc($row['jenis_badge_class']) ?>">
                                                 <?= esc($row['jenis_label']) ?>
                                             </span>
                                         </td>
-                                        <td class="col-tahun"><?= esc($row['tahun']) ?></td>
-                                        <td class="col-aksi">
-                                            <div class="aksi-wrap">
-                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info aksi-btn" title="Detail">
+                                        <td class="text-center"><?= esc($row['tahun']) ?></td>
+                                        <td class="text-center">
+                                            <div class="dosen-action-group">
+                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info dosen-icon-btn" title="Detail">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning aksi-btn" title="Edit">
+                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning dosen-icon-btn" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <button class="btn btn-danger aksi-btn btn-delete" title="Hapus" data-href="<?= esc($row['delete_url']) ?>">
+                                                <button class="btn btn-danger dosen-icon-btn btn-delete" title="Hapus"
+                                                    data-href="<?= esc($row['delete_url']) ?>"
+                                                    data-delete-label="publikasi ini"
+                                                    data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -128,30 +118,4 @@
     </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        const table = document.getElementById('dt-publikasi-dosen');
-        if (table && window.jQuery && jQuery.fn.DataTable) {
-            jQuery(table).DataTable({
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0, 4]
-                }]
-            });
-        }
-
-        document.addEventListener('click', function(e) {
-            const deleteBtn = e.target.closest('.btn-delete');
-            if (!deleteBtn) return;
-            e.preventDefault();
-            const href = deleteBtn.getAttribute('data-href');
-            SwalDelete(href, 'Publikasi ini', 'Data yang dihapus tidak dapat dikembalikan.');
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

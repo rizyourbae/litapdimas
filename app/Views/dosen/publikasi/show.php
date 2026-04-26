@@ -4,8 +4,8 @@
 
 <div class="row g-3">
     <div class="col-12">
-        <div class="card border-0 shadow-sm overflow-hidden">
-            <div class="card-body p-4" style="background: linear-gradient(135deg, #f7fbff 0%, #eef4ff 60%, #f8fcf6 100%);">
+        <div class="card dosen-hero">
+            <div class="card-body p-4 p-lg-5">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
                     <div>
                         <div class="d-flex flex-wrap gap-2 mb-3">
@@ -13,13 +13,13 @@
                             <span class="badge <?= esc($hero['klaster_badge_class']) ?> px-3 py-2"><?= esc($hero['klaster_label']) ?></span>
                             <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc($hero['tahun']) ?></span>
                         </div>
-                        <h2 class="h3 mb-2"><?= esc($hero['title']) ?></h2>
-                        <p class="text-muted mb-0">
+                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($hero['title']) ?></h2>
+                        <p class="dosen-hero__subtitle mb-0">
                             <i class="bi bi-person-badge me-1"></i><?= esc($hero['subtitle']) ?>
                         </p>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2">
+                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
                         <a href="<?= esc($actions['back_url']) ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
@@ -33,12 +33,12 @@
     </div>
 
     <div class="col-lg-5">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Ringkasan Publikasi</h3>
             </div>
             <div class="card-body p-0">
-                <div class="list-group list-group-flush">
+                <div class="list-group list-group-flush dosen-summary-grid">
                     <?php foreach ($summaryItems as $item): ?>
                         <div class="list-group-item px-4 py-3">
                             <div class="small text-muted mb-1"><?= esc($item['label']) ?></div>
@@ -51,7 +51,7 @@
     </div>
 
     <div class="col-lg-7">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0"><?= esc($metadataTitle) ?></h3>
             </div>
@@ -86,7 +86,7 @@
     </div>
 
     <div class="col-12">
-        <div class="card card-primary card-outline shadow-sm">
+        <div class="card card-primary card-outline shadow-sm dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Aksi Cepat</h3>
             </div>
@@ -94,7 +94,7 @@
                 <a href="<?= esc($actions['edit_url']) ?>" class="btn btn-warning">
                     <i class="bi bi-pencil-square me-1"></i>Edit Publikasi
                 </a>
-                <button class="btn btn-outline-danger btn-delete" data-href="<?= esc($actions['delete_url']) ?>">
+                <button class="btn btn-outline-danger btn-delete" data-href="<?= esc($actions['delete_url']) ?>" data-delete-label="publikasi ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                     <i class="bi bi-trash me-1"></i>Hapus Publikasi
                 </button>
             </div>
@@ -102,20 +102,4 @@
     </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        document.addEventListener('click', function(e) {
-            const deleteBtn = e.target.closest('.btn-delete');
-            if (!deleteBtn) return;
-            e.preventDefault();
-            const href = deleteBtn.getAttribute('data-href');
-            SwalDelete(href, 'Publikasi ini', 'Data yang dihapus tidak dapat dikembalikan.');
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

@@ -40,6 +40,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= base_url('custom/css/style.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('custom/css/dosen.css') ?>">
 
     <!-- Flatpickr Datepicker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">

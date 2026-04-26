@@ -4,8 +4,8 @@
 
 <div class="row g-3">
     <div class="col-12">
-        <div class="card border-0 shadow-sm overflow-hidden">
-            <div class="card-body p-4" style="background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 55%, #f7fbf4 100%);">
+        <div class="card dosen-hero">
+            <div class="card-body p-4 p-lg-5">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
                     <div>
                         <div class="d-flex flex-wrap gap-2 mb-3">
@@ -13,13 +13,13 @@
                             <span class="badge <?= esc($hero['klaster_badge_class']) ?> px-3 py-2"><?= esc($hero['klaster_label']) ?></span>
                             <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc($hero['tahun']) ?></span>
                         </div>
-                        <h2 class="h3 mb-2"><?= esc($hero['title']) ?></h2>
-                        <p class="text-muted mb-0">
+                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($hero['title']) ?></h2>
+                        <p class="dosen-hero__subtitle mb-0">
                             <i class="bi bi-person-badge me-1"></i><?= esc($hero['subtitle']) ?>
                         </p>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2">
+                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
                         <a href="<?= esc($actions['back_url']) ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="col-lg-5">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Ringkasan Kegiatan</h3>
             </div>
@@ -54,7 +54,7 @@
     </div>
 
     <div class="col-lg-7">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Pelaksanaan dan Pendanaan</h3>
             </div>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="col-lg-8">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Resume Kegiatan</h3>
             </div>
@@ -85,7 +85,7 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="card card-primary card-outline shadow-sm h-100">
+        <div class="card card-primary card-outline shadow-sm h-100 dosen-show-card">
             <div class="card-header">
                 <h3 class="card-title mb-0">Bukti Dukung</h3>
             </div>
@@ -99,7 +99,7 @@
                     <i class="bi bi-link-45deg me-1"></i>Buka Link Bukti Dukung
                 </a>
 
-                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc($actions['delete_url']) ?>">
+                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc($actions['delete_url']) ?>" data-delete-label="kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                     <i class="bi bi-trash me-1"></i>Hapus Kegiatan
                 </button>
             </div>
@@ -107,23 +107,4 @@
     </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
-<script>
-    (function() {
-        'use strict';
-
-        document.addEventListener('click', function(event) {
-            const deleteBtn = event.target.closest('.btn-delete');
-            if (!deleteBtn) return;
-            event.preventDefault();
-            SwalDelete(
-                deleteBtn.getAttribute('data-href'),
-                'Kegiatan mandiri ini',
-                'Data yang dihapus tidak dapat dikembalikan.'
-            );
-        });
-    })();
-</script>
 <?= $this->endSection() ?>

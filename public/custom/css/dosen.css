@@ -1,0 +1,150 @@
+/* =============================================================
+   Litapdimas Dosen UI
+   ============================================================= */
+
+.dosen-hero {
+  border: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 55%, #f7fbf4 100%);
+  box-shadow: 0 0.75rem 2rem rgba(15, 23, 42, 0.08);
+}
+
+.dosen-hero .badge {
+  letter-spacing: 0.01em;
+}
+
+.dosen-hero__title {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.dosen-hero__subtitle {
+  color: #475569;
+}
+
+.dosen-hero__actions .btn {
+  white-space: nowrap;
+}
+
+.dosen-card,
+.dosen-form-card,
+.dosen-table-card,
+.dosen-show-card {
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: 0 0.75rem 1.75rem rgba(15, 23, 42, 0.06);
+}
+
+.dosen-card .card-header,
+.dosen-form-card .card-header,
+.dosen-table-card .card-header,
+.dosen-show-card .card-header {
+  background: rgba(248, 250, 252, 0.92);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.dosen-card .card-title,
+.dosen-form-card .card-title,
+.dosen-table-card .card-title,
+.dosen-show-card .card-title {
+  font-weight: 700;
+}
+
+.dosen-section-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.dosen-section-note {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.dosen-empty-state {
+  padding: 3.75rem 1rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.dosen-empty-state i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #94a3b8;
+}
+
+.dosen-table-wrap thead th,
+.dosen-table-wrap td,
+.dosen-table-wrap th {
+  vertical-align: middle;
+}
+
+.dosen-table-wrap thead th {
+  font-weight: 600;
+}
+
+.dosen-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+}
+
+.dosen-icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.45rem;
+}
+
+.dosen-soft-surface {
+  background: rgba(248, 250, 252, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.9rem;
+}
+
+.dosen-inline-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+}
+
+.dosen-help-text {
+  color: #64748b;
+}
+
+.dosen-processing-note {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.btn.is-loading {
+  cursor: wait;
+  opacity: 0.95;
+}
+
+.dosen-tab-card .nav-tabs .nav-link {
+  font-weight: 600;
+}
+
+.dosen-summary-grid .list-group-item {
+  padding-left: 1.15rem;
+  padding-right: 1.15rem;
+}
+
+@media (max-width: 575.98px) {
+  .dosen-hero__actions,
+  .dosen-action-group {
+    width: 100%;
+  }
+
+  .dosen-hero__actions .btn,
+  .dosen-action-group .btn {
+    width: 100%;
+  }
+}
