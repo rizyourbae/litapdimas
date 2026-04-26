@@ -62,13 +62,26 @@ class Menu extends BaseConfig
         // ADMIN: Publikasi
         // ============================================================
         [
+            'label'      => 'Proposal',
+            'icon'       => 'bi-file-earmark-text',
+            'url'        => '#',
+            'permission' => 'admin.access',
+            'children'   => [
+                ['label' => 'Master Data Proposal', 'url' => 'admin/master-data-proposal', 'icon' => 'bi-circle'],
+            ],
+        ],
+
+        // ============================================================
+        // ADMIN: Publikasi
+        // ============================================================
+        [
             'label'      => 'Publikasi',
             'icon'       => 'bi-journal-richtext',
             'url'        => '#',
             'permission' => 'admin.access',
             'children'   => [
-                ['label' => 'Publikasi', 'url' => 'admin/publikasi',        'icon' => 'bi-circle'],
-                ['label' => 'Kegiatan Mandiri', 'url' => 'admin/kegiatan-mandiri',        'icon' => 'bi-circle'],
+                ['label' => 'Publikasi', 'url' => 'admin/publikasi',  'icon' => 'bi-circle'],
+                ['label' => 'Kegiatan Mandiri', 'url' => 'admin/kegiatan-mandiri',  'icon' => 'bi-circle'],
             ],
         ],
 

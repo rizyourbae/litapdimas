@@ -213,6 +213,31 @@ $routes->group('admin/kegiatan-mandiri', ['filter' => 'auth:admin.access'], func
 });
 
 // ============================================================
+// Admin Proposal Master Data Routes
+// ============================================================
+$routes->group('admin/master-data-proposal', ['filter' => 'auth:admin.access'], function ($routes) {
+    $routes->get('/', 'Admin\Proposal\MasterDataProposalController::index', ['as' => 'admin.master-data-proposal.index']);
+
+    // Bidang Ilmu
+    $routes->get('json-bidang-ilmu/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonBidangIlmu/$1');
+    $routes->post('store-bidang-ilmu', 'Admin\Proposal\MasterDataProposalController::storeBidangIlmu');
+    $routes->put('update-bidang-ilmu/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateBidangIlmu/$1');
+    $routes->delete('delete-bidang-ilmu/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteBidangIlmu/$1');
+
+    // Klaster Bantuan
+    $routes->get('json-klaster-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonKlasterBantuan/$1');
+    $routes->post('store-klaster-bantuan', 'Admin\Proposal\MasterDataProposalController::storeKlasterBantuan');
+    $routes->put('update-klaster-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateKlasterBantuan/$1');
+    $routes->delete('delete-klaster-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteKlasterBantuan/$1');
+
+    // Tema Penelitian
+    $routes->get('json-tema-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonTemaPenelitian/$1');
+    $routes->post('store-tema-penelitian', 'Admin\Proposal\MasterDataProposalController::storeTemaPenelitian');
+    $routes->put('update-tema-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateTemaPenelitian/$1');
+    $routes->delete('delete-tema-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteTemaPenelitian/$1');
+});
+
+// ============================================================
 // Admin User Routes
 // ============================================================
 $routes->group('admin', ['filter' => 'auth:users.manage'], function ($routes) {
