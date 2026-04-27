@@ -94,9 +94,9 @@ class Menu extends BaseConfig
             'url'        => '#',
             'permission' => 'dosen.access',
             'children'   => [
-                ['label' => 'Daftar Proposal', 'url' => 'dosen/proposals',        'icon' => 'bi-file-earmark-text'],
                 ['label' => 'Publikasi',          'url' => 'dosen/publikasi',        'icon' => 'bi-journal-richtext'],
                 ['label' => 'Kegiatan Mandiri',   'url' => 'dosen/kegiatan-mandiri', 'icon' => 'bi-list-check'],
+                ['label' => 'Proposal',           'url' => 'dosen/proposals',        'icon' => 'bi-file-earmark-text'],
             ],
         ],
         [
@@ -108,16 +108,6 @@ class Menu extends BaseConfig
                 ['label' => 'Riwayat Pendidikan',  'url' => 'dosen/riwayat-pendidikan', 'icon' => 'bi-mortarboard'],
                 ['label' => 'Kelengkapan Dokumen', 'url' => 'dosen/kelengkapan-dokumen', 'icon' => 'bi-file-earmark-check'],
                 ['label' => 'Profil SINTA', 'url' => 'dosen/profil-sinta', 'icon' => 'bi-patch-check'],
-            ],
-        ],
-        [
-            'label'      => 'Proposal Saya',
-            'icon'       => 'bi-file-earmark-text',
-            'url'        => '#',
-            'permission' => 'dosen.access',
-            'children'   => [
-
-                ['label' => 'Ajukan Proposal', 'url' => 'dosen/proposals/create', 'icon' => 'bi-circle'],
             ],
         ],
         [

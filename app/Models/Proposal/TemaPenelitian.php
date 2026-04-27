@@ -86,9 +86,17 @@ class TemaPenelitian extends Model
     /**
      * Get all active tema penelitian
      */
-    public function getActiveTema()
+    public function getActive()
     {
         return $this->orderBy('nama', 'ASC')->findAll();
+    }
+
+    /**
+     * Backward-compatible alias.
+     */
+    public function getActiveTema()
+    {
+        return $this->getActive();
     }
 
     /**

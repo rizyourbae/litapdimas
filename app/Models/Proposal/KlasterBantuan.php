@@ -86,9 +86,17 @@ class KlasterBantuan extends Model
     /**
      * Get all active klaster bantuan
      */
-    public function getActiveKlaster()
+    public function getActive()
     {
         return $this->orderBy('nama', 'ASC')->findAll();
+    }
+
+    /**
+     * Backward-compatible alias.
+     */
+    public function getActiveKlaster()
+    {
+        return $this->getActive();
     }
 
     /**

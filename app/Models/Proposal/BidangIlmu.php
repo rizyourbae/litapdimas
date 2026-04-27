@@ -86,9 +86,17 @@ class BidangIlmu extends Model
     /**
      * Get all active bidang ilmu
      */
-    public function getActiveBidang()
+    public function getActive()
     {
         return $this->orderBy('nama', 'ASC')->findAll();
+    }
+
+    /**
+     * Backward-compatible alias.
+     */
+    public function getActiveBidang()
+    {
+        return $this->getActive();
     }
 
     /**

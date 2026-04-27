@@ -21,8 +21,8 @@ Target kualitas:
 ## Keputusan Teknis yang Sudah Disepakati
 - Dropdown baru dibuat sebagai master table (bukan hardcoded):
   - Pengelola Bantuan
-  - Jenis Penelitian
-  - Kontribusi Prodi
+  - Jenis Penelitian pakai dropdown dan ada beberapa data
+  - Kontribusi Prodi (Berkontribusi / Tidak Berkontribusi) dalam bentuk dropdown juga
 - Penyimpanan draft per step saat klik Selanjutnya
 - Rich text editor menggunakan Quill
 - Ada halaman Review ringkasan sebelum submit final

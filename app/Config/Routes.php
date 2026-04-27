@@ -143,6 +143,21 @@ $routes->group('dosen/profil-sinta', ['filter' => 'auth:dosen.access'], function
 });
 
 // ============================================================
+// Dosen Proposal Routes (Wizard 5 Steps)
+// ============================================================
+$routes->group('dosen/proposals', ['filter' => 'auth:dosen.access'], function ($routes) {
+    $routes->get('/',                           'Dosen\Proposal\ProposalController::index',     ['as' => 'dosen.proposal.index']);
+    $routes->get('create',                      'Dosen\Proposal\ProposalController::create',    ['as' => 'dosen.proposal.create']);
+    $routes->get('delete/(:any)',               'Dosen\Proposal\ProposalController::delete/$1', ['as' => 'dosen.proposal.delete']);
+    $routes->post('store',                      'Dosen\Proposal\ProposalController::store',     ['as' => 'dosen.proposal.store']);
+    $routes->get('step/(:num)/(:any)',          'Dosen\Proposal\ProposalController::step/$1/$2', ['as' => 'dosen.proposal.step']);
+    $routes->post('step/(:num)/(:any)',         'Dosen\Proposal\ProposalController::saveStep/$1/$2', ['as' => 'dosen.proposal.saveStep']);
+    $routes->get('review/(:any)',               'Dosen\Proposal\ProposalController::review/$1', ['as' => 'dosen.proposal.review']);
+    $routes->post('submit/(:any)',              'Dosen\Proposal\ProposalController::submit/$1', ['as' => 'dosen.proposal.submit']);
+    $routes->get('show/(:any)',                 'Dosen\Proposal\ProposalController::show/$1',   ['as' => 'dosen.proposal.show']);
+});
+
+// ============================================================
 // Reviewer Routes
 // ============================================================
 $routes->group('reviewer', ['filter' => 'auth:reviewer.access'], function ($routes) {
