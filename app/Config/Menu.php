@@ -68,6 +68,7 @@ class Menu extends BaseConfig
             'permission' => 'admin.access',
             'children'   => [
                 ['label' => 'Master Data Proposal', 'url' => 'admin/master-data-proposal', 'icon' => 'bi-circle'],
+                ['label' => 'Ajuan Proposal', 'url' => 'admin/proposals', 'icon' => 'bi-circle'],
             ],
         ],
 

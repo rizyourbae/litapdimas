@@ -228,6 +228,16 @@ $routes->group('admin/kegiatan-mandiri', ['filter' => 'auth:admin.access'], func
 });
 
 // ============================================================
+// Admin Proposal Routes
+// ============================================================
+$routes->group('admin/proposals', ['filter' => 'auth:admin.access'], function ($routes) {
+    $routes->get('/', 'Admin\Proposal\ProposalController::index', ['as' => 'admin.proposals.index']);
+    $routes->get('show/(:any)', 'Admin\Proposal\ProposalController::show/$1', ['as' => 'admin.proposals.show']);
+    $routes->post('assign-reviewers/(:any)', 'Admin\Proposal\ProposalController::assignReviewers/$1', ['as' => 'admin.proposals.assign_reviewers']);
+    $routes->post('remove-reviewer/(:any)/(:any)', 'Admin\Proposal\ProposalController::removeReviewer/$1/$2', ['as' => 'admin.proposals.remove_reviewer']);
+});
+
+// ============================================================
 // Admin Proposal Master Data Routes
 // ============================================================
 $routes->group('admin/master-data-proposal', ['filter' => 'auth:admin.access'], function ($routes) {

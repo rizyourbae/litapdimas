@@ -2,13 +2,14 @@
 
 namespace App\Services\Proposal;
 
-use App\Models\Proposal\ProposalPengajuan;
-use App\Models\Proposal\ProposalPeneliti;
-use App\Models\Proposal\ProposalMahasiswa;
 use App\Models\Proposal\ProposalAnggotaEksternal;
-use App\Models\Proposal\ProposalSubstansiBagian;
 use App\Models\Proposal\ProposalDokumen;
 use App\Models\Proposal\ProposalJurnal;
+use App\Models\Proposal\ProposalMahasiswa;
+use App\Models\Proposal\ProposalPeneliti;
+use App\Models\Proposal\ProposalPengajuan;
+use App\Models\Proposal\ProposalSubstansiBagian;
+use Config\Database;
 use Exception;
 use Ramsey\Uuid\Uuid;
 
@@ -54,7 +55,7 @@ class ProposalWizardService
         $this->validationService = new ProposalStepValidationService();
         $this->uploadService = new ProposalUploadService();
         $this->masterOptionService = new ProposalMasterOptionService();
-        $this->db = \Config\Database::connect();
+        $this->db = Database::connect();
     }
 
     /**
