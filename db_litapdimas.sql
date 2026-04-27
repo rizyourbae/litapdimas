@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1deb3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 27, 2026 at 08:01 AM
+-- Host: localhost:3306
+-- Generation Time: Apr 27, 2026 at 02:49 PM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -397,7 +397,8 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (25, '2026-04-26-100000', 'App\\Database\\Migrations\\AddUserstampsToProposalTables', 'default', 'App', 1777202824, 14),
 (27, '2026-04-27-080000', 'App\\Database\\Migrations\\CreateProposalMasterTables', 'default', 'App', 1777249271, 15),
 (28, '2026-04-27-090000', 'App\\Database\\Migrations\\CreateProposalTransactionTables', 'default', 'App', 1777249271, 15),
-(29, '2026-04-27-095000', 'App\\Database\\Migrations\\AddMissingProposalMasterTables', 'default', 'App', 1777249548, 16);
+(29, '2026-04-27-095000', 'App\\Database\\Migrations\\AddMissingProposalMasterTables', 'default', 'App', 1777249548, 16),
+(30, '2026-04-27-130000', 'App\\Database\\Migrations\\CreateProposalReviewerAssignmentsTable', 'default', 'App', 1777301195, 17);
 
 -- --------------------------------------------------------
 
@@ -437,13 +438,13 @@ INSERT INTO `permissions` (`id`, `uuid`, `name`, `description`, `created_at`, `u
 
 CREATE TABLE `proposal_anggota_eksternal` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `institusi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `posisi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tipe` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'PTU, Profesional, Other',
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `institusi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `posisi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipe` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'PTU, Profesional, Other',
   `order_position` int NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -458,9 +459,9 @@ CREATE TABLE `proposal_anggota_eksternal` (
 
 CREATE TABLE `proposal_bidang_ilmu` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -485,14 +486,14 @@ INSERT INTO `proposal_bidang_ilmu` (`id`, `uuid`, `nama`, `keterangan`, `is_acti
 
 CREATE TABLE `proposal_dokumen` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `tipe_dokumen` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'proposal, rab, similarity, pendukung',
-  `nama_file` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `path_file` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'writable/uploads/proposal/{uuid}/{file}',
+  `tipe_dokumen` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'proposal, rab, similarity, pendukung',
+  `nama_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `path_file` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'writable/uploads/proposal/{uuid}/{file}',
   `file_size` bigint UNSIGNED DEFAULT NULL COMMENT 'File size in bytes',
-  `mime_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `mime_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `order_position` int NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -517,9 +518,9 @@ INSERT INTO `proposal_dokumen` (`id`, `uuid`, `proposal_id`, `tipe_dokumen`, `na
 
 CREATE TABLE `proposal_jenis_penelitian` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -544,14 +545,14 @@ INSERT INTO `proposal_jenis_penelitian` (`id`, `uuid`, `nama`, `keterangan`, `is
 
 CREATE TABLE `proposal_jurnal` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `issn` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_jurnal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `profil_jurnal` longtext COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
-  `url_website` text COLLATE utf8mb4_general_ci,
-  `url_scopus_wos` text COLLATE utf8mb4_general_ci,
-  `url_surat_rekomendasi` text COLLATE utf8mb4_general_ci,
+  `issn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_jurnal` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `profil_jurnal` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
+  `url_website` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `url_scopus_wos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `url_surat_rekomendasi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `total_pengajuan_dana` bigint UNSIGNED DEFAULT NULL COMMENT 'Max 100000000 (Rp 100 juta)',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -563,7 +564,7 @@ CREATE TABLE `proposal_jurnal` (
 --
 
 INSERT INTO `proposal_jurnal` (`id`, `uuid`, `proposal_id`, `issn`, `nama_jurnal`, `profil_jurnal`, `url_website`, `url_scopus_wos`, `url_surat_rekomendasi`, `total_pengajuan_dana`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '824feaa4-22ae-4316-82f4-82a886e049d0', 6, '2087-1221', 'PDF', '<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.</p><p><br></p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;</p><p><br></p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!</p>', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 1000000, '2026-04-27 02:13:19', '2026-04-27 06:55:55', NULL);
+(1, '824feaa4-22ae-4316-82f4-82a886e049d0', 6, '2087-1221', 'PDF', '<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.</p><p><br></p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;</p><p><br></p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!</p>', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 1000000, '2026-04-27 02:13:19', '2026-04-27 14:14:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -573,9 +574,9 @@ INSERT INTO `proposal_jurnal` (`id`, `uuid`, `proposal_id`, `issn`, `nama_jurnal
 
 CREATE TABLE `proposal_klaster_bantuan` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -600,9 +601,9 @@ INSERT INTO `proposal_klaster_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `is_
 
 CREATE TABLE `proposal_kontribusi_prodi` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -627,12 +628,12 @@ INSERT INTO `proposal_kontribusi_prodi` (`id`, `uuid`, `nama`, `keterangan`, `is
 
 CREATE TABLE `proposal_mahasiswa` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nim` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nim` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `program_studi_id` int UNSIGNED DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_position` int NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -647,13 +648,13 @@ CREATE TABLE `proposal_mahasiswa` (
 
 CREATE TABLE `proposal_peneliti` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nip` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `asal_instansi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `posisi` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `asal_instansi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `posisi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `is_internal` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Internal, 0=External',
   `is_ketua` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1=Lead researcher, 0=Member',
   `order_position` int NOT NULL DEFAULT '0',
@@ -682,23 +683,23 @@ INSERT INTO `proposal_peneliti` (`id`, `uuid`, `proposal_id`, `nama`, `nip`, `em
 
 CREATE TABLE `proposal_pengajuan` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int UNSIGNED NOT NULL,
-  `judul` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `kata_kunci` text COLLATE utf8mb4_general_ci COMMENT 'Comma-separated keywords',
+  `judul` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `kata_kunci` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Comma-separated keywords',
   `pengelola_bantuan_id` int UNSIGNED DEFAULT NULL,
   `klaster_bantuan_id` int UNSIGNED DEFAULT NULL,
   `bidang_ilmu_id` int UNSIGNED DEFAULT NULL,
   `tema_penelitian_id` int UNSIGNED DEFAULT NULL,
   `jenis_penelitian_id` int UNSIGNED DEFAULT NULL,
   `kontribusi_prodi_id` int UNSIGNED DEFAULT NULL,
-  `status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'draft' COMMENT 'draft, submitted, reviewed, approved, rejected',
+  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'draft' COMMENT 'draft, submitted, reviewed, approved, rejected',
   `current_step` int NOT NULL DEFAULT '1' COMMENT '1-5 for wizard steps',
-  `step_1_data` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 1 draft data',
-  `step_2_data` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 2 draft data',
-  `step_3_data` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 3 draft data',
-  `step_4_data` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 4 draft data',
-  `step_5_data` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 5 draft data',
+  `step_1_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 1 draft data',
+  `step_2_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 2 draft data',
+  `step_3_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 3 draft data',
+  `step_4_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 4 draft data',
+  `step_5_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 5 draft data',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -711,7 +712,7 @@ CREATE TABLE `proposal_pengajuan` (
 --
 
 INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`, `pengelola_bantuan_id`, `klaster_bantuan_id`, `bidang_ilmu_id`, `tema_penelitian_id`, `jenis_penelitian_id`, `kontribusi_prodi_id`, `status`, `current_step`, `step_1_data`, `step_2_data`, `step_3_data`, `step_4_data`, `step_5_data`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'submitted', 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"d5d4b73a587983494e43cedb56f0cda7\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-04-27 07:06:50', NULL, NULL, NULL);
+(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'submitted', 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-04-27 14:14:09', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -721,9 +722,9 @@ INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`
 
 CREATE TABLE `proposal_pengelola_bantuan` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -743,16 +744,38 @@ INSERT INTO `proposal_pengelola_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `i
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `proposal_reviewer_assignments`
+--
+
+CREATE TABLE `proposal_reviewer_assignments` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `proposal_id` int UNSIGNED NOT NULL,
+  `reviewer_user_id` int UNSIGNED NOT NULL,
+  `assigned_by` int UNSIGNED DEFAULT NULL,
+  `assignment_notes` text COLLATE utf8mb4_general_ci,
+  `status` varchar(30) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'assigned' COMMENT 'assigned, reviewed, declined',
+  `recommendation` varchar(30) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending' COMMENT 'pending, recommended, revision, rejected',
+  `review_notes` longtext COLLATE utf8mb4_general_ci,
+  `reviewed_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `proposal_substansi_bagian`
 --
 
 CREATE TABLE `proposal_substansi_bagian` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `abstrak` longtext COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
-  `judul_bagian` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `isi_bagian` longtext COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
+  `abstrak` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
+  `judul_bagian` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `isi_bagian` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Rich text (Quill HTML)',
   `order_position` int NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -777,9 +800,9 @@ INSERT INTO `proposal_substansi_bagian` (`id`, `uuid`, `proposal_id`, `abstrak`,
 
 CREATE TABLE `proposal_tema_penelitian` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `keterangan` text COLLATE utf8mb4_general_ci,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -1245,6 +1268,17 @@ ALTER TABLE `proposal_pengelola_bantuan`
   ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
+-- Indexes for table `proposal_reviewer_assignments`
+--
+ALTER TABLE `proposal_reviewer_assignments`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD UNIQUE KEY `proposal_id_reviewer_user_id` (`proposal_id`,`reviewer_user_id`),
+  ADD KEY `proposal_id` (`proposal_id`),
+  ADD KEY `reviewer_user_id` (`reviewer_user_id`),
+  ADD KEY `status` (`status`);
+
+--
 -- Indexes for table `proposal_substansi_bagian`
 --
 ALTER TABLE `proposal_substansi_bagian`
@@ -1402,7 +1436,7 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -1475,6 +1509,12 @@ ALTER TABLE `proposal_pengajuan`
 --
 ALTER TABLE `proposal_pengelola_bantuan`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `proposal_reviewer_assignments`
+--
+ALTER TABLE `proposal_reviewer_assignments`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `proposal_substansi_bagian`
