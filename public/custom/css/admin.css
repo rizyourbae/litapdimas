@@ -283,6 +283,26 @@
   gap: 0.75rem;
 }
 
+.admin-collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.admin-collapse-toggle__label {
+  font-weight: 600;
+}
+
+.admin-collapse-toggle__icon {
+  transition: transform 0.2s ease;
+}
+
+.admin-collapse-toggle[aria-expanded="true"] .admin-collapse-toggle__icon {
+  transform: rotate(180deg);
+}
+
 .admin-proposal-rich {
   color: #334155;
   line-height: 1.7;
@@ -325,6 +345,18 @@
   position: relative;
 }
 
+.admin-reviewer-group {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-assignment-note {
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  border-radius: 0.9rem;
+  background: rgba(248, 250, 252, 0.75);
+  padding: 0.85rem 1rem;
+}
+
 .admin-reviewer-card {
   display: flex;
   align-items: flex-start;
@@ -353,6 +385,19 @@
   min-width: 0;
 }
 
+.admin-reviewer-search-panel {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.9rem 1rem;
+}
+
+.admin-reviewer-scroll {
+  max-height: 28rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
 .admin-decision-grid {
   display: grid;
   gap: 0.75rem;
@@ -376,6 +421,151 @@
 .admin-note-box__body {
   color: #475569;
   line-height: 1.65;
+}
+
+.reviewer-proposal-page {
+  --reviewer-proposal-border: rgba(148, 163, 184, 0.18);
+}
+
+.reviewer-proposal-summary-card,
+.reviewer-proposal-form-card {
+  overflow: hidden;
+}
+
+.reviewer-proposal-summary-grid {
+  display: grid;
+  gap: 1.1rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reviewer-proposal-summary-item {
+  min-height: 4rem;
+}
+
+.reviewer-proposal-summary-item__label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 0.35rem;
+}
+
+.reviewer-proposal-summary-item__value {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.reviewer-proposal-tabs .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.reviewer-proposal-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.reviewer-proposal-section-card {
+  border: 1px solid var(--reviewer-proposal-border);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 1.25rem;
+}
+
+.reviewer-proposal-section-card__header {
+  margin-bottom: 1rem;
+}
+
+.reviewer-proposal-section-card__header--split {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.reviewer-proposal-content {
+  color: #334155;
+  line-height: 1.7;
+  margin-bottom: 1.1rem;
+}
+
+.reviewer-proposal-field__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.reviewer-proposal-editor {
+  min-height: 13rem;
+  border-radius: 0.9rem;
+  overflow: hidden;
+}
+
+.reviewer-proposal-editor .ql-toolbar.ql-snow,
+.reviewer-proposal-editor .ql-container.ql-snow {
+  border-color: rgba(148, 163, 184, 0.24);
+}
+
+.reviewer-proposal-editor .ql-toolbar.ql-snow {
+  border-top-left-radius: 0.9rem;
+  border-top-right-radius: 0.9rem;
+  background: rgba(248, 250, 252, 0.92);
+}
+
+.reviewer-proposal-editor .ql-container.ql-snow {
+  min-height: 9.5rem;
+  border-bottom-left-radius: 0.9rem;
+  border-bottom-right-radius: 0.9rem;
+  background: #fff;
+}
+
+.reviewer-proposal-editor .ql-editor {
+  min-height: 8.75rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.reviewer-proposal-editor--large .ql-container.ql-snow {
+  min-height: 12rem;
+}
+
+.reviewer-proposal-editor--large .ql-editor {
+  min-height: 11rem;
+}
+
+.reviewer-proposal-score-grid,
+.reviewer-proposal-total-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.reviewer-proposal-score-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reviewer-proposal-total-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.reviewer-proposal-total-value {
+  font-size: 1.65rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.reviewer-proposal-total-value--accent {
+  color: #dc3545;
+}
+
+.reviewer-proposal-textarea {
+  border-radius: 0.9rem;
+  min-height: 7rem;
+}
+
+.reviewer-proposal-form-footer {
+  background: rgba(248, 250, 252, 0.9);
 }
 
 .admin-team-table th {
@@ -512,5 +702,21 @@
   .admin-link-chip {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .reviewer-proposal-summary-grid,
+  .reviewer-proposal-score-grid,
+  .reviewer-proposal-total-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewer-proposal-section-card__header--split {
+    flex-direction: column;
+  }
+
+  .admin-reviewer-scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
 }

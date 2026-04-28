@@ -124,7 +124,7 @@ class Menu extends BaseConfig
         [
             'label'      => 'Antrian Review',
             'icon'       => 'bi-clipboard2-check',
-            'url'        => '#',
+            'url'        => 'reviewer/queue',
             'permission' => 'reviewer.access',
             'children'   => [
                 ['label' => 'Menunggu Review', 'url' => 'reviewer/queue',   'icon' => 'bi-circle'],

@@ -12,6 +12,8 @@ class AdminProposalService
 {
     private const ADMIN_VISIBLE_STATUSES = ['submitted', 'assigned', 'reviewed', 'approved', 'rejected'];
 
+    private const RECOMMENDED_REVIEWER_PREVIEW_LIMIT = 5;
+
     private ProposalPengajuan $proposalModel;
 
     private ProposalReviewerAssignment $assignmentModel;
@@ -98,6 +100,7 @@ class AdminProposalService
 
         $detailPayload = $this->detailService->buildDetailPayload($proposal);
         $assignedReviewers = $this->getAssignedReviewerRows((int) $proposal->id, $proposal->uuid);
+        $reviewerResultsPanel = $this->buildReviewerResultsPanel($proposal, $assignedReviewers);
         $candidateGroups = $this->buildReviewerCandidateGroups($proposal);
         $decisionSummary = $this->buildDecisionSummary($assignedReviewers);
 
@@ -178,13 +181,18 @@ class AdminProposalService
             'assignmentPanel' => [
                 'form_action' => site_url('admin/proposals/assign-reviewers/' . $proposal->uuid),
                 'assigned_reviewers' => $assignedReviewers,
-                'recommended_reviewers' => $candidateGroups['recommended'],
-                'other_reviewers' => $candidateGroups['others'],
-                'has_candidates' => !empty($candidateGroups['recommended']) || !empty($candidateGroups['others']),
+                'recommended_reviewers' => $candidateGroups['recommended_preview'],
+                'manual_reviewers' => $candidateGroups['manual_reviewers'],
+                'recommended_total' => $candidateGroups['recommended_total'],
+                'recommended_hidden_count' => $candidateGroups['recommended_hidden_count'],
+                'manual_reviewer_count' => $candidateGroups['manual_reviewer_count'],
+                'has_candidates' => !empty($candidateGroups['recommended_preview']) || !empty($candidateGroups['manual_reviewers']),
                 'empty_message' => 'Tidak ada reviewer aktif yang bisa ditugaskan saat ini.',
                 'assignment_hint' => 'Pilih satu atau beberapa reviewer. Sistem mengurutkan kandidat yang bidang ilmunya paling mendekati proposal di bagian rekomendasi.',
+                'manual_hint' => 'Gunakan pencarian manual jika reviewer yang dicari belum muncul pada daftar prioritas.',
                 'remove_button_label' => 'Batalkan Tugas',
             ],
+            'reviewerResultsPanel' => $reviewerResultsPanel,
             'decisionSummary' => $decisionSummary,
         ];
     }
@@ -306,7 +314,7 @@ class AdminProposalService
 
     private function getAssignedReviewerRows(int $proposalId, string $proposalUuid): array
     {
-        $assignments = $this->db->table('proposal_reviewer_assignments')
+        $builder = $this->db->table('proposal_reviewer_assignments')
             ->select([
                 'proposal_reviewer_assignments.*',
                 'COALESCE(NULLIF(users.nama_lengkap, ""), users.username) AS reviewer_name',
@@ -318,9 +326,13 @@ class AdminProposalService
             ->join('bidang_ilmu', 'bidang_ilmu.id = user_profiles.bidang_ilmu_id', 'left')
             ->where('proposal_reviewer_assignments.deleted_at', null)
             ->where('proposal_reviewer_assignments.proposal_id', $proposalId)
-            ->orderBy('proposal_reviewer_assignments.created_at', 'ASC')
-            ->get()
-            ->getResult();
+            ->orderBy('proposal_reviewer_assignments.created_at', 'ASC');
+
+        if ($this->hasReviewScoreColumn()) {
+            $builder->select('proposal_reviewer_assignments.review_score AS review_score');
+        }
+
+        $assignments = $builder->get()->getResult();
 
         return array_map(function (object $assignment) use ($proposalUuid): array {
             return [
@@ -332,11 +344,37 @@ class AdminProposalService
                 'status_badge_class' => $this->mapAssignmentStatusBadgeClass((string) ($assignment->status ?? 'assigned')),
                 'recommendation_label' => $this->mapRecommendationLabel((string) ($assignment->recommendation ?? 'pending')),
                 'recommendation_badge_class' => $this->mapRecommendationBadgeClass((string) ($assignment->recommendation ?? 'pending')),
+                'review_score_display' => $this->formatReviewerScore($assignment),
+                'reviewed_at_label' => $this->formatDateTime($assignment->reviewed_at ?? null),
                 'assignment_notes' => $this->valueOrFallback((string) ($assignment->assignment_notes ?? ''), '-'),
                 'review_notes' => $this->valueOrFallback((string) ($assignment->review_notes ?? ''), 'Belum ada catatan reviewer.'),
                 'remove_url' => site_url('admin/proposals/remove-reviewer/' . $proposalUuid . '/' . $assignment->uuid),
             ];
         }, $assignments);
+    }
+
+    private function buildReviewerResultsPanel(object $proposal, array $assignedReviewers): array
+    {
+        $reviewedCount = count(array_filter(
+            $assignedReviewers,
+            static fn(array $reviewer): bool => ($reviewer['status_label'] ?? '') === 'Sudah Direview'
+        ));
+        $allReviewed = !empty($assignedReviewers) && $reviewedCount === count($assignedReviewers);
+
+        return [
+            'items' => $assignedReviewers,
+            'has_items' => !empty($assignedReviewers),
+            'reviewed_count' => $reviewedCount,
+            'all_reviewed' => $allReviewed,
+            'presentasi_url' => site_url('admin/proposals/show/' . $proposal->uuid . '#proposalReviewerPresentasiTab'),
+            'presentasi_label' => 'Buka Penilaian Presentasi',
+            'presentasi_hint' => 'Tombol ini dibuka setelah seluruh reviewer menyelesaikan penilaian usulan.',
+            'empty_message' => 'Belum ada reviewer yang ditugaskan untuk proposal ini.',
+            'completion_message' => $allReviewed
+                ? 'Semua reviewer sudah menyelesaikan penilaian usulan. Tahap presentasi bisa dibuka.'
+                : 'Tahap presentasi belum dibuka karena masih ada reviewer yang belum menyelesaikan usulan.',
+            'proposal_status' => (string) ($proposal->status ?? 'submitted'),
+        ];
     }
 
     private function buildReviewerCandidateGroups(object $proposal): array
@@ -370,9 +408,25 @@ class AdminProposalService
             return $right['score'] <=> $left['score'];
         });
 
+        $recommendedCandidates = array_values(array_filter(
+            $candidates,
+            static fn(array $candidate): bool => $candidate['score'] > 0
+        ));
+        $otherCandidates = array_values(array_filter(
+            $candidates,
+            static fn(array $candidate): bool => $candidate['score'] <= 0
+        ));
+
+        $recommendedPreview = array_slice($recommendedCandidates, 0, self::RECOMMENDED_REVIEWER_PREVIEW_LIMIT);
+        $recommendedOverflow = array_slice($recommendedCandidates, self::RECOMMENDED_REVIEWER_PREVIEW_LIMIT);
+        $manualReviewers = array_values(array_merge($recommendedOverflow, $otherCandidates));
+
         return [
-            'recommended' => array_values(array_filter($candidates, static fn(array $candidate): bool => $candidate['score'] > 0)),
-            'others' => array_values(array_filter($candidates, static fn(array $candidate): bool => $candidate['score'] <= 0)),
+            'recommended_preview' => $recommendedPreview,
+            'recommended_total' => count($recommendedCandidates),
+            'recommended_hidden_count' => max(count($recommendedCandidates) - count($recommendedPreview), 0),
+            'manual_reviewers' => $manualReviewers,
+            'manual_reviewer_count' => count($manualReviewers),
         ];
     }
 
@@ -530,6 +584,48 @@ class AdminProposalService
         }
 
         return date_format(date_create($dateTime), 'd M Y H:i');
+    }
+
+    private function formatReviewerScore(object $assignment): string
+    {
+        if (property_exists($assignment, 'review_score') && $assignment->review_score !== null) {
+            return $this->formatScore((float) $assignment->review_score);
+        }
+
+        $score = $this->extractReviewScoreFromNotes((string) ($assignment->review_notes ?? ''));
+
+        return $score === null ? '-' : $this->formatScore($score);
+    }
+
+    private function extractReviewScoreFromNotes(string $notes): ?float
+    {
+        if (preg_match('/^Nilai:\s*([0-9]+(?:[\.,][0-9]+)?)/m', $notes, $matches) !== 1) {
+            return null;
+        }
+
+        return (float) str_replace(',', '.', $matches[1]);
+    }
+
+    private function hasReviewScoreColumn(): bool
+    {
+        static $hasColumn = null;
+
+        if ($hasColumn !== null) {
+            return $hasColumn;
+        }
+
+        $hasColumn = $this->db->fieldExists('review_score', 'proposal_reviewer_assignments');
+
+        return $hasColumn;
+    }
+
+    private function formatScore(?float $score): string
+    {
+        if ($score === null) {
+            return '-';
+        }
+
+        return number_format($score, 2, ',', '.');
     }
 
     private function mapProposalStatusLabel(string $status): string

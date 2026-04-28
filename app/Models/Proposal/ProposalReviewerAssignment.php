@@ -26,6 +26,7 @@ class ProposalReviewerAssignment extends Model
         'assignment_notes',
         'status',
         'recommendation',
+        'review_score',
         'review_notes',
         'reviewed_at',
     ];

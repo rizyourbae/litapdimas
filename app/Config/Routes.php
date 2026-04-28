@@ -10,6 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 // Static Assets Routes (Uploads)
 // ============================================================
 $routes->get('uploads/kelengkapan_dokumen/(:any)', function ($filename) {
+    $filename = (string) $filename;
     $filepath = FCPATH . 'uploads/kelengkapan_dokumen/' . $filename;
     if (!is_file($filepath)) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
@@ -24,6 +25,7 @@ $routes->get('uploads/kelengkapan_dokumen/(:any)', function ($filename) {
 });
 
 $routes->get('uploads/riwayat_pendidikan/(:any)', function ($filename) {
+    $filename = (string) $filename;
     $filepath = FCPATH . 'uploads/riwayat_pendidikan/' . $filename;
     if (!is_file($filepath)) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
@@ -38,6 +40,7 @@ $routes->get('uploads/riwayat_pendidikan/(:any)', function ($filename) {
 });
 
 $routes->get('uploads/profile/(:any)', function ($filename) {
+    $filename = (string) $filename;
     $filepath = FCPATH . 'uploads/profile/' . $filename;
     if (!is_file($filepath)) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
@@ -162,6 +165,11 @@ $routes->group('dosen/proposals', ['filter' => 'auth:dosen.access'], function ($
 // ============================================================
 $routes->group('reviewer', ['filter' => 'auth:reviewer.access'], function ($routes) {
     $routes->get('dashboard', 'Reviewer\DashboardController::index');
+    $routes->get('queue', 'Reviewer\AssessmentController::index', ['as' => 'reviewer.assessments.index']);
+    $routes->get('history', 'Reviewer\AssessmentController::history', ['as' => 'reviewer.assessments.history']);
+    $routes->post('queue/proposal/(:segment)/save', 'Reviewer\AssessmentController::saveProposal/$1', ['as' => 'reviewer.assessments.proposal.save']);
+    $routes->post('queue/presentasi/(:segment)/save', 'Reviewer\AssessmentController::savePresentation/$1', ['as' => 'reviewer.assessments.presentation.save']);
+    $routes->get('queue/(:segment)/(:segment)', 'Reviewer\AssessmentController::show/$1/$2', ['as' => 'reviewer.assessments.show']);
 });
 
 // ============================================================
