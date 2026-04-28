@@ -97,30 +97,25 @@ class ReviewerAssessmentService
     ];
 
     private const PRESENTATION_SCORE_ASPECTS = [
-        'pembukaan' => [
+        'keutuhan_gagasan' => [
             'number' => 1,
-            'label' => 'Pembukaan dan Alur Penyampaian',
-            'weight' => 20,
+            'label' => 'Keutuhan Gagasan',
+            'weight' => 40,
         ],
-        'penguasaan_materi' => [
+        'kontribusi_akademik' => [
             'number' => 2,
-            'label' => 'Penguasaan Materi',
-            'weight' => 20,
+            'label' => 'Kontribusi Akademik (Akademik & Aplikatif) dan Unsur Kebaruan',
+            'weight' => 30,
         ],
-        'kualitas_media' => [
+        'kelayakan_publikasi' => [
             'number' => 3,
-            'label' => 'Kualitas Slide dan Media Presentasi',
+            'label' => 'Kelayakan Publikasi (Sesuai Tagihan Klaster Bantuan)',
             'weight' => 20,
         ],
-        'menjawab_tanya' => [
+        'rasionalisasi_anggaran' => [
             'number' => 4,
-            'label' => 'Kemampuan Menjawab Pertanyaan',
-            'weight' => 20,
-        ],
-        'manajemen_waktu' => [
-            'number' => 5,
-            'label' => 'Manajemen Waktu Presentasi',
-            'weight' => 20,
+            'label' => 'Rasionalisasi Anggaran',
+            'weight' => 10,
         ],
     ];
 
@@ -133,6 +128,7 @@ class ReviewerAssessmentService
     private $db;
 
     private ?bool $hasReviewScoreColumn = null;
+    private ?bool $hasPresentationStorageColumns = null;
 
     public function __construct()
     {
@@ -354,24 +350,51 @@ class ReviewerAssessmentService
             return false;
         }
 
+        $proposalId = (int) ($presentationRow['proposal_id'] ?? 0);
+        if ($proposalId <= 0) {
+            return false;
+        }
+
+        $assignment = $this->assignmentModel->findActiveByProposalAndReviewer($proposalId, $reviewerId);
+        if ($assignment === null) {
+            return false;
+        }
+
         $normalizedScores = $this->normalizePresentationScores($input['scores'] ?? []);
         $comments = $this->normalizeSectionComments($input['comments'] ?? []);
         $generalComment = $this->cleanHtml((string) ($input['general_comment'] ?? ''));
         $validatorNote = trim((string) ($input['validator_note'] ?? ''));
+        $recommendedBudgetAmount = $this->normalizeCurrencyAmount($input['recommended_budget'] ?? null);
 
         $totals = $this->calculatePresentationScoreTotals($normalizedScores);
         $formattedScore = $this->formatScore($totals['normalized_total']);
-        $reviewNotes = $this->composePresentationNotesSummary($presentationRow, $comments, $generalComment, $validatorNote, $formattedScore);
 
         $state = [
             'scores' => $normalizedScores,
             'comments' => $comments,
             'general_comment' => $generalComment,
             'validator_note' => $validatorNote,
+            'recommended_budget_amount' => $recommendedBudgetAmount,
             'total_score_raw' => $totals['raw_total'],
             'score_value' => $totals['normalized_total'],
             'review_status' => 'completed',
         ];
+        if ($this->hasPresentationStorageColumns()) {
+            $this->assignmentModel->update((int) $assignment->id, [
+                'presentation_score' => $totals['normalized_total'],
+                'presentation_notes' => $this->composePresentationNotesSummary(
+                    $presentationRow,
+                    $comments,
+                    $generalComment,
+                    $validatorNote,
+                    $formattedScore,
+                    $recommendedBudgetAmount
+                ),
+                'presentation_assessment' => json_encode($state, JSON_UNESCAPED_UNICODE),
+                'presentation_recommended_budget' => $recommendedBudgetAmount,
+                'presentation_reviewed_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
 
         $storage = $this->getSessionStorage();
         $storage['presentasi'][$itemKey] = $state;
@@ -579,6 +602,8 @@ class ReviewerAssessmentService
         $assessment = $this->mergePresentationAssessmentState($row);
         $totals = $this->calculatePresentationScoreTotals($assessment['scores']);
 
+        $requestedBudgetAmount = $this->normalizeCurrencyAmount($detailPayload['review_step5_summary']['total_pengajuan_dana'] ?? null);
+
         return [
             'title' => 'Penilaian Presentasi',
             'currentModule' => 'Reviewer',
@@ -616,7 +641,7 @@ class ReviewerAssessmentService
                 ],
                 'substansi_sections' => $this->buildPresentationSectionsFromDetailPayload($detailPayload['review_step3_summary'] ?? []),
             ],
-            'presentation' => $this->buildPresentationScoringPayload($row, $assessment, $totals),
+            'presentation' => $this->buildPresentationScoringPayload($row, $assessment, $totals, $requestedBudgetAmount),
         ];
     }
 
@@ -636,11 +661,6 @@ class ReviewerAssessmentService
     {
         $sections = [];
 
-        $sections[] = [
-            'title' => 'Abstrak',
-            'content_html' => (string) ($reviewStep3['abstrak'] ?? ''),
-        ];
-
         foreach (array_values($reviewStep3['substansi_bagian'] ?? []) as $index => $section) {
             $sections[] = [
                 'title' => trim((string) ($section['judul_bagian'] ?? '')) !== '' ? (string) $section['judul_bagian'] : 'Bagian ' . ($index + 1),
@@ -651,10 +671,12 @@ class ReviewerAssessmentService
         return $sections;
     }
 
-    private function buildPresentationScoringPayload(array $row, array $assessment, array $totals): array
+    private function buildPresentationScoringPayload(array $row, array $assessment, array $totals, ?int $requestedBudgetAmount): array
     {
         $sections = [];
         $options = $this->buildProposalScaleOptions();
+        $generalCommentEditorId = 'reviewer-presentation-general-comment-' . $row['item_key'];
+        $generalCommentInputId = $generalCommentEditorId . '-input';
 
         foreach (self::PRESENTATION_SCORE_ASPECTS as $key => $aspect) {
             $sections[] = [
@@ -664,16 +686,31 @@ class ReviewerAssessmentService
                 'comment_field_name' => 'comments[' . $key . ']',
                 'comment_value' => (string) ($assessment['comments'][$key] ?? ''),
                 'options' => $options,
+                'placeholder' => 'Pilih salah satu opsi',
             ];
         }
 
         return [
-            'card_title' => 'Penilaian Presentasi',
+            'card_title' => 'Formulir Penilaian Presentasi',
             'sections' => $sections,
+            'initial_budget' => [
+                'label' => 'Usulan Anggaran Awal',
+                'value' => $requestedBudgetAmount !== null ? $this->formatCurrency($requestedBudgetAmount) : '-',
+            ],
+            'recommended_budget' => [
+                'label' => 'Rekomendasi Anggaran yang Disetujui',
+                'field_name' => 'recommended_budget',
+                'value' => $assessment['recommended_budget_amount'] !== null
+                    ? number_format((int) $assessment['recommended_budget_amount'], 0, ',', '.')
+                    : '',
+                'hint' => 'Masukkan nominal yang Anda setujui.',
+            ],
             'general_comment' => [
                 'label' => 'Komentar Umum Presentasi',
                 'field_name' => 'general_comment',
                 'value' => (string) ($assessment['general_comment'] ?? ''),
+                'editor_id' => $generalCommentEditorId,
+                'input_id' => $generalCommentInputId,
             ],
             'validator_note' => [
                 'label' => 'Catatan Validator Presentasi',
@@ -690,7 +727,8 @@ class ReviewerAssessmentService
             ],
             'form' => [
                 'action_url' => site_url('reviewer/queue/presentasi/' . $row['item_key'] . '/save'),
-                'submit_label' => 'Simpan Penilaian Presentasi',
+                'helper_text' => 'Pastikan semua aspek penilaian dan rekomendasi anggaran sudah diisi sebelum melanjutkan.',
+                'submit_label' => 'Simpan Penilaian Presentasi & Lanjutkan',
             ],
         ];
     }
@@ -712,6 +750,10 @@ class ReviewerAssessmentService
 
         $generalComment = $storedAssessment['general_comment'] ?? ($defaultAssessment['general_comment'] ?? '');
         $validatorNote = $storedAssessment['validator_note'] ?? ($defaultAssessment['validator_note'] ?? '');
+        $recommendedBudgetAmount = $this->normalizeCurrencyAmount(
+            $storedAssessment['recommended_budget_amount']
+                ?? ($defaultAssessment['recommended_budget_amount'] ?? ($defaultAssessment['recommended_budget'] ?? null))
+        );
         $reviewStatus = (string) ($storedAssessment['review_status'] ?? ($row['review_status'] ?? 'pending'));
         $scoreValue = null;
 
@@ -731,6 +773,7 @@ class ReviewerAssessmentService
             'comments' => $comments,
             'general_comment' => $this->cleanHtml((string) $generalComment),
             'validator_note' => trim((string) $validatorNote),
+            'recommended_budget_amount' => $recommendedBudgetAmount,
             'review_status' => $reviewStatus,
             'score_value' => $scoreValue,
             'proposal_score_value' => $proposalScoreValue,
@@ -765,14 +808,14 @@ class ReviewerAssessmentService
 
     private function formatPresentationQueueScore(object $proposal): ?float
     {
-        if (is_numeric($proposal->proposal_review_score ?? null)) {
-            return (float) $proposal->proposal_review_score;
+        if (is_numeric($proposal->presentation_score ?? null)) {
+            return (float) $proposal->presentation_score;
         }
 
         return null;
     }
 
-    private function composePresentationNotesSummary(array $presentationRow, array $comments, string $generalComment, string $validatorNote, string $formattedScore): string
+    private function composePresentationNotesSummary(array $presentationRow, array $comments, string $generalComment, string $validatorNote, string $formattedScore, ?int $recommendedBudgetAmount): string
     {
         $lines = [];
 
@@ -793,6 +836,10 @@ class ReviewerAssessmentService
 
         if ($validatorNote !== '') {
             $lines[] = 'Catatan Validator Presentasi: ' . $validatorNote;
+        }
+
+        if ($recommendedBudgetAmount !== null) {
+            $lines[] = 'Rekomendasi Anggaran Disetujui: ' . $this->formatCurrency($recommendedBudgetAmount);
         }
 
         return implode("\n\n", $lines);
@@ -917,6 +964,15 @@ class ReviewerAssessmentService
         if ($this->hasReviewScoreColumn()) {
             $builder->select('proposal_reviewer_assignments.review_score AS proposal_review_score');
         }
+        if ($this->hasPresentationStorageColumns()) {
+            $builder->select([
+                'proposal_reviewer_assignments.presentation_score AS presentation_score',
+                'proposal_reviewer_assignments.presentation_notes AS presentation_notes',
+                'proposal_reviewer_assignments.presentation_assessment AS presentation_assessment',
+                'proposal_reviewer_assignments.presentation_recommended_budget AS presentation_recommended_budget',
+                'proposal_reviewer_assignments.presentation_reviewed_at AS presentation_reviewed_at',
+            ]);
+        }
 
         $rows = $builder->get()->getResult();
 
@@ -953,13 +1009,15 @@ class ReviewerAssessmentService
         $detailPayload = $this->proposalDetailService->buildReviewPayload($proposal);
         $reviewStep3 = $detailPayload['review_step3_summary'] ?? [];
         $summary = $detailPayload['summary'] ?? [];
+        $presentationAssessment = $this->decodePresentationAssessment($proposal->presentation_assessment ?? null);
         $storedAssessment = $this->mergePresentationAssessmentState([
             'item_key' => (string) ($proposal->uuid ?? ''),
             'proposal_id' => (int) ($proposal->id ?? 0),
             'proposal_review_score' => is_numeric($proposal->proposal_review_score ?? null) ? (float) $proposal->proposal_review_score : null,
             'proposal_review_notes' => (string) ($proposal->proposal_review_notes ?? ''),
-            'review_status' => 'pending',
-            'presentation_assessment' => [],
+            'review_status' => $presentationAssessment !== [] || is_numeric($proposal->presentation_score ?? null) ? 'completed' : 'pending',
+            'presentation_score' => is_numeric($proposal->presentation_score ?? null) ? (float) $proposal->presentation_score : null,
+            'presentation_assessment' => $presentationAssessment,
         ]);
 
         return [
@@ -976,7 +1034,7 @@ class ReviewerAssessmentService
             'proposal_review_notes' => (string) ($proposal->proposal_review_notes ?? ''),
             'proposal_sections' => $this->buildProposalSectionsFromDetailPayload($reviewStep3),
             'proposal_assessment' => [],
-            'presentation_assessment' => [],
+            'presentation_assessment' => $presentationAssessment,
             'budget_label' => trim((string) ($summary['total_pengajuan_dana'] ?? '')) ?: '-',
             'attachment_label' => 'Dokumen proposal tersedia untuk tahap presentasi.',
         ];
@@ -1231,11 +1289,19 @@ class ReviewerAssessmentService
 
         $generalComment = $storedAssessment['general_comment'] ?? ($defaultAssessment['general_comment'] ?? '');
         $validatorNote = $storedAssessment['validator_note'] ?? ($defaultAssessment['validator_note'] ?? '');
-        $reviewStatus = (string) ($storedAssessment['review_status'] ?? ($row['review_status'] ?? 'pending'));
+        $recommendedBudgetAmount = $this->normalizeCurrencyAmount(
+            $storedAssessment['recommended_budget_amount']
+                ?? ($defaultAssessment['recommended_budget_amount'] ?? ($defaultAssessment['recommended_budget'] ?? null))
+        );
+        $reviewStatus = (string) ($storedAssessment['review_status'] ?? ($defaultAssessment['review_status'] ?? ($row['review_status'] ?? 'pending')));
         $scoreValue = null;
 
         if (array_key_exists('score_value', $storedAssessment) && is_numeric($storedAssessment['score_value'])) {
             $scoreValue = (float) $storedAssessment['score_value'];
+        } elseif (array_key_exists('score_value', $defaultAssessment) && is_numeric($defaultAssessment['score_value'])) {
+            $scoreValue = (float) $defaultAssessment['score_value'];
+        } elseif (is_numeric($row['presentation_score'] ?? null)) {
+            $scoreValue = (float) $row['presentation_score'];
         } elseif (is_numeric($row['score_value'] ?? null)) {
             $scoreValue = (float) $row['score_value'];
         }
@@ -1245,9 +1311,29 @@ class ReviewerAssessmentService
             'comments' => $comments,
             'general_comment' => $this->cleanHtml((string) $generalComment),
             'validator_note' => trim((string) $validatorNote),
+            'recommended_budget_amount' => $recommendedBudgetAmount,
             'review_status' => $reviewStatus,
             'score_value' => $scoreValue,
         ];
+    }
+
+    private function hasPresentationStorageColumns(): bool
+    {
+        if ($this->hasPresentationStorageColumns !== null) {
+            return $this->hasPresentationStorageColumns;
+        }
+
+        foreach (['presentation_score', 'presentation_notes', 'presentation_assessment', 'presentation_recommended_budget', 'presentation_reviewed_at'] as $field) {
+            if (!$this->db->fieldExists($field, 'proposal_reviewer_assignments')) {
+                $this->hasPresentationStorageColumns = false;
+
+                return $this->hasPresentationStorageColumns;
+            }
+        }
+
+        $this->hasPresentationStorageColumns = true;
+
+        return $this->hasPresentationStorageColumns;
     }
 
     private function normalizeProposalScores(array $scores): array
@@ -1335,6 +1421,32 @@ class ReviewerAssessmentService
     private function formatCurrency(int $amount): string
     {
         return 'Rp ' . number_format($amount, 0, ',', '.');
+    }
+
+    private function normalizeCurrencyAmount(mixed $value): ?int
+    {
+        $digits = preg_replace('/\D+/', '', (string) $value);
+
+        if ($digits === '') {
+            return null;
+        }
+
+        return max(0, (int) $digits);
+    }
+
+    private function decodePresentationAssessment(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (!is_string($value) || trim($value) === '') {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     private function mapProposalSummaryStatus(string $status): string

@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1deb3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 28, 2026 at 08:01 AM
+-- Host: localhost:3306
+-- Generation Time: Apr 28, 2026 at 10:01 PM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -399,7 +399,8 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (28, '2026-04-27-090000', 'App\\Database\\Migrations\\CreateProposalTransactionTables', 'default', 'App', 1777249271, 15),
 (29, '2026-04-27-095000', 'App\\Database\\Migrations\\AddMissingProposalMasterTables', 'default', 'App', 1777249548, 16),
 (30, '2026-04-27-130000', 'App\\Database\\Migrations\\CreateProposalReviewerAssignmentsTable', 'default', 'App', 1777301195, 17),
-(31, '2026-04-28-090000', 'App\\Database\\Migrations\\AddReviewScoreToProposalReviewerAssignmentsTable', 'default', 'App', 1777359289, 18);
+(31, '2026-04-28-090000', 'App\\Database\\Migrations\\AddReviewScoreToProposalReviewerAssignmentsTable', 'default', 'App', 1777359289, 18),
+(32, '2026-04-29-090000', 'App\\Database\\Migrations\\AddPresentationColumnsToProposalReviewerAssignmentsTable', 'default', 'App', 1777409478, 19);
 
 -- --------------------------------------------------------
 
@@ -758,7 +759,12 @@ CREATE TABLE `proposal_reviewer_assignments` (
   `status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'assigned' COMMENT 'assigned, reviewed, declined',
   `recommendation` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending' COMMENT 'pending, recommended, revision, rejected',
   `review_score` decimal(5,2) DEFAULT NULL,
+  `presentation_score` decimal(5,2) DEFAULT NULL,
   `review_notes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `presentation_notes` longtext COLLATE utf8mb4_general_ci,
+  `presentation_assessment` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON payload for presentation assessment state',
+  `presentation_recommended_budget` bigint UNSIGNED DEFAULT NULL,
+  `presentation_reviewed_at` datetime DEFAULT NULL,
   `reviewed_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -769,9 +775,9 @@ CREATE TABLE `proposal_reviewer_assignments` (
 -- Dumping data for table `proposal_reviewer_assignments`
 --
 
-INSERT INTO `proposal_reviewer_assignments` (`id`, `uuid`, `proposal_id`, `reviewer_user_id`, `assigned_by`, `assignment_notes`, `status`, `recommendation`, `review_score`, `review_notes`, `reviewed_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '429d8da8-7f1c-476b-bd41-2754fc2cbcf6', 6, 16, 6, NULL, 'reviewed', 'revision', 70.00, 'Nilai: 70,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: Ya\n\nCatatan Validator: ya', '2026-04-28 06:58:28', '2026-04-28 02:19:00', '2026-04-28 06:58:28', NULL),
-(2, '3aa05506-55f5-4cfa-a04c-38fc76711e43', 6, 18, 6, NULL, 'reviewed', 'revision', 79.00, 'Nilai: 79,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: ya oke\n\nCatatan Validator: hmmm oke', '2026-04-28 06:55:02', '2026-04-28 02:19:00', '2026-04-28 06:55:02', NULL);
+INSERT INTO `proposal_reviewer_assignments` (`id`, `uuid`, `proposal_id`, `reviewer_user_id`, `assigned_by`, `assignment_notes`, `status`, `recommendation`, `review_score`, `presentation_score`, `review_notes`, `presentation_notes`, `presentation_assessment`, `presentation_recommended_budget`, `presentation_reviewed_at`, `reviewed_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '429d8da8-7f1c-476b-bd41-2754fc2cbcf6', 6, 16, 6, NULL, 'reviewed', 'revision', 70.00, 76.00, 'Nilai: 70,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: Ya\n\nCatatan Validator: ya', 'Nilai Presentasi: 76,00\n\nKomentar Umum Presentasi: Oke\n\nRekomendasi Anggaran Disetujui: Rp 100.000', '{\"scores\":{\"keutuhan_gagasan\":4,\"kontribusi_akademik\":4,\"kelayakan_publikasi\":3,\"rasionalisasi_anggaran\":4},\"comments\":{\"keutuhan_gagasan\":\"\",\"kontribusi_akademik\":\"\",\"kelayakan_publikasi\":\"\",\"rasionalisasi_anggaran\":\"\"},\"general_comment\":\"<p>Oke<\\/p>\",\"validator_note\":\"\",\"recommended_budget_amount\":100000,\"total_score_raw\":380,\"score_value\":76,\"review_status\":\"completed\"}', 100000, '2026-04-28 20:51:26', '2026-04-28 06:58:28', '2026-04-28 02:19:00', '2026-04-28 20:51:26', NULL),
+(2, '3aa05506-55f5-4cfa-a04c-38fc76711e43', 6, 18, 6, NULL, 'reviewed', 'revision', 79.00, 50.00, 'Nilai: 79,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: ya oke\n\nCatatan Validator: hmmm oke', 'Nilai Presentasi: 50,00\n\nKomentar Umum Presentasi: oke\n\nRekomendasi Anggaran Disetujui: Rp 10.000', '{\"scores\":{\"keutuhan_gagasan\":3,\"kontribusi_akademik\":2,\"kelayakan_publikasi\":1,\"rasionalisasi_anggaran\":5},\"comments\":{\"keutuhan_gagasan\":\"\",\"kontribusi_akademik\":\"\",\"kelayakan_publikasi\":\"\",\"rasionalisasi_anggaran\":\"\"},\"general_comment\":\"<p>oke<\\/p>\",\"validator_note\":\"\",\"recommended_budget_amount\":10000,\"total_score_raw\":250,\"score_value\":50,\"review_status\":\"completed\"}', 10000, '2026-04-28 21:02:06', '2026-04-28 06:55:02', '2026-04-28 02:19:00', '2026-04-28 21:02:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -1027,7 +1033,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengkap`, `aktif`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'admin', 'admin@litapdimas.ac.id', '$2y$10$UJwZjl9OWBEaHy98AxkJDOvcZX9Y2AhHxHvSwkYBPoaKEAUkJXmDO', 'Administrator', 1, '2026-04-24 01:50:52', '2026-04-26 23:47:26', NULL, NULL, NULL),
+(6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'admin', 'admin@litapdimas.ac.id', '$2y$10$UJwZjl9OWBEaHy98AxkJDOvcZX9Y2AhHxHvSwkYBPoaKEAUkJXmDO', 'Admin LP2M', 1, '2026-04-24 01:50:52', '2026-04-28 10:54:22', NULL, NULL, NULL),
 (7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-26 23:47:30', NULL, NULL, NULL),
 (8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL),
 (9, 'a892502a-e93b-46b9-a6d5-109425776c85', 'Hernan', 'hernan@uinsi.ac.id', '$2y$10$iEf73ZnIKiPe2YF9TXUCNeKq9n/a4rKkiouBtjqOdYN45.jl8u8kC', 'Hernansyah', 1, '2026-04-24 10:35:53', '2026-04-26 06:38:15', NULL, NULL, NULL),
@@ -1448,7 +1454,7 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `permissions`

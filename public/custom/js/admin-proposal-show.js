@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  var PRESENTASI_TOAST_KEY = "adminProposalPresentasiToast";
+
   function toArray(nodeList) {
     return Array.prototype.slice.call(nodeList || []);
   }
@@ -89,7 +91,97 @@
     }
   }
 
+  function isPresentasiTargetActive() {
+    var hash = window.location.hash ? window.location.hash.substring(1) : "";
+
+    return hash === "proposalReviewerPresentasiTab" || hash === "proposalReviewerPresentasiPane";
+  }
+
+  function markPresentasiToastPending() {
+    try {
+      window.sessionStorage.setItem(PRESENTASI_TOAST_KEY, "1");
+    } catch (error) {
+      return;
+    }
+  }
+
+  function consumePresentasiToastPending() {
+    try {
+      if (window.sessionStorage.getItem(PRESENTASI_TOAST_KEY) !== "1") {
+        return false;
+      }
+
+      window.sessionStorage.removeItem(PRESENTASI_TOAST_KEY);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function maybeShowPresentasiSuccessToast() {
+    if (!isPresentasiTargetActive() || !consumePresentasiToastPending()) {
+      return;
+    }
+
+    if (typeof window.SwalToast === "function") {
+      window.SwalToast("success", "Tahap penilaian presentasi berhasil dibuka.");
+    }
+  }
+
+  function initPresentasiTrigger() {
+    var trigger = document.querySelector("[data-presentasi-trigger]");
+    if (!trigger || trigger.dataset.presentasiBound === "1") {
+      return;
+    }
+
+    trigger.addEventListener("click", function (event) {
+      var href = trigger.getAttribute("href");
+      if (!href) {
+        return;
+      }
+
+      if (typeof Swal === "undefined") {
+        return;
+      }
+
+      event.preventDefault();
+
+      Swal.fire({
+        title: trigger.dataset.presentasiTitle || "Buka penilaian presentasi?",
+        html: trigger.dataset.presentasiMessage || "Tahap penilaian presentasi akan dibuka.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: trigger.dataset.presentasiConfirmText || "Lanjutkan",
+        cancelButtonText: "Batal",
+        confirmButtonColor: "#198754",
+        cancelButtonColor: "#6c757d",
+        reverseButtons: true,
+        focusCancel: true,
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          var targetUrl = new URL(href, window.location.href);
+          var currentUrl = new URL(window.location.href);
+
+          markPresentasiToastPending();
+
+          if (targetUrl.pathname === currentUrl.pathname && targetUrl.search === currentUrl.search && targetUrl.hash === currentUrl.hash) {
+            activateTabFromHash();
+            maybeShowPresentasiSuccessToast();
+            return;
+          }
+
+          window.location.href = targetUrl.toString();
+        }
+      });
+    });
+
+    trigger.dataset.presentasiBound = "1";
+  }
+
   document.addEventListener("DOMContentLoaded", initReviewerFilter);
   document.addEventListener("DOMContentLoaded", activateTabFromHash);
+  document.addEventListener("DOMContentLoaded", maybeShowPresentasiSuccessToast);
+  document.addEventListener("DOMContentLoaded", initPresentasiTrigger);
   window.addEventListener("hashchange", activateTabFromHash);
+  window.addEventListener("hashchange", maybeShowPresentasiSuccessToast);
 })();

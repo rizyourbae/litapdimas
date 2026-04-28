@@ -27,8 +27,13 @@ class ProposalReviewerAssignment extends Model
         'status',
         'recommendation',
         'review_score',
+        'presentation_score',
         'review_notes',
+        'presentation_notes',
+        'presentation_assessment',
+        'presentation_recommended_budget',
         'reviewed_at',
+        'presentation_reviewed_at',
     ];
 
     protected $useTimestamps = true;

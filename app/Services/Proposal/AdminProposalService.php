@@ -332,6 +332,15 @@ class AdminProposalService
             $builder->select('proposal_reviewer_assignments.review_score AS review_score');
         }
 
+        if ($this->hasPresentationStorageColumns()) {
+            $builder->select([
+                'proposal_reviewer_assignments.presentation_score AS presentation_score',
+                'proposal_reviewer_assignments.presentation_notes AS presentation_notes',
+                'proposal_reviewer_assignments.presentation_recommended_budget AS presentation_recommended_budget',
+                'proposal_reviewer_assignments.presentation_reviewed_at AS presentation_reviewed_at',
+            ]);
+        }
+
         $assignments = $builder->get()->getResult();
 
         return array_map(function (object $assignment) use ($proposalUuid): array {
@@ -346,6 +355,10 @@ class AdminProposalService
                 'recommendation_badge_class' => $this->mapRecommendationBadgeClass((string) ($assignment->recommendation ?? 'pending')),
                 'review_score_display' => $this->formatReviewerScore($assignment),
                 'reviewed_at_label' => $this->formatDateTime($assignment->reviewed_at ?? null),
+                'presentation_score_display' => $this->formatPresentationScore($assignment),
+                'presentation_notes' => $this->valueOrFallback((string) ($assignment->presentation_notes ?? ''), 'Belum ada hasil penilaian presentasi.'),
+                'presentation_recommended_budget_label' => $this->formatPresentationBudget($assignment),
+                'presentation_reviewed_at_label' => $this->formatDateTime($assignment->presentation_reviewed_at ?? null),
                 'assignment_notes' => $this->valueOrFallback((string) ($assignment->assignment_notes ?? ''), '-'),
                 'review_notes' => $this->valueOrFallback((string) ($assignment->review_notes ?? ''), 'Belum ada catatan reviewer.'),
                 'remove_url' => site_url('admin/proposals/remove-reviewer/' . $proposalUuid . '/' . $assignment->uuid),
@@ -360,10 +373,17 @@ class AdminProposalService
             static fn(array $reviewer): bool => ($reviewer['status_label'] ?? '') === 'Sudah Direview'
         ));
         $allReviewed = !empty($assignedReviewers) && $reviewedCount === count($assignedReviewers);
+        $presentationItems = array_values(array_filter(
+            $assignedReviewers,
+            static fn(array $reviewer): bool => ($reviewer['presentation_score_display'] ?? '-') !== '-'
+                || (($reviewer['presentation_notes'] ?? '') !== 'Belum ada hasil penilaian presentasi.')
+        ));
 
         return [
             'items' => $assignedReviewers,
+            'presentation_items' => $presentationItems,
             'has_items' => !empty($assignedReviewers),
+            'has_presentation_items' => !empty($presentationItems),
             'reviewed_count' => $reviewedCount,
             'all_reviewed' => $allReviewed,
             'presentasi_url' => site_url('admin/proposals/show/' . $proposal->uuid . '#proposalReviewerPresentasiTab'),
@@ -597,9 +617,29 @@ class AdminProposalService
         return $score === null ? '-' : $this->formatScore($score);
     }
 
+    private function formatPresentationScore(object $assignment): string
+    {
+        if (property_exists($assignment, 'presentation_score') && $assignment->presentation_score !== null) {
+            return $this->formatScore((float) $assignment->presentation_score);
+        }
+
+        $score = $this->extractPresentationScoreFromNotes((string) ($assignment->presentation_notes ?? ''));
+
+        return $score === null ? '-' : $this->formatScore($score);
+    }
+
     private function extractReviewScoreFromNotes(string $notes): ?float
     {
         if (preg_match('/^Nilai:\s*([0-9]+(?:[\.,][0-9]+)?)/m', $notes, $matches) !== 1) {
+            return null;
+        }
+
+        return (float) str_replace(',', '.', $matches[1]);
+    }
+
+    private function extractPresentationScoreFromNotes(string $notes): ?float
+    {
+        if (preg_match('/^Nilai Presentasi:\s*([0-9]+(?:[\.,][0-9]+)?)/m', $notes, $matches) !== 1) {
             return null;
         }
 
@@ -619,6 +659,27 @@ class AdminProposalService
         return $hasColumn;
     }
 
+    private function hasPresentationStorageColumns(): bool
+    {
+        static $hasColumns = null;
+
+        if ($hasColumns !== null) {
+            return $hasColumns;
+        }
+
+        foreach (['presentation_score', 'presentation_notes', 'presentation_recommended_budget', 'presentation_reviewed_at'] as $field) {
+            if (!$this->db->fieldExists($field, 'proposal_reviewer_assignments')) {
+                $hasColumns = false;
+
+                return $hasColumns;
+            }
+        }
+
+        $hasColumns = true;
+
+        return $hasColumns;
+    }
+
     private function formatScore(?float $score): string
     {
         if ($score === null) {
@@ -626,6 +687,15 @@ class AdminProposalService
         }
 
         return number_format($score, 2, ',', '.');
+    }
+
+    private function formatPresentationBudget(object $assignment): string
+    {
+        if (!property_exists($assignment, 'presentation_recommended_budget') || !is_numeric($assignment->presentation_recommended_budget)) {
+            return '-';
+        }
+
+        return 'Rp ' . number_format((int) $assignment->presentation_recommended_budget, 0, ',', '.');
     }
 
     private function mapProposalStatusLabel(string $status): string

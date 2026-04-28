@@ -20,7 +20,7 @@ $documentRows = isset($documentRows) && is_array($documentRows) ? $documentRows 
 $assignmentPanel = isset($assignmentPanel) && is_array($assignmentPanel) ? $assignmentPanel : [];
 /** @var array{cards?: array<int, array{label: string, tone_class: string, value: string}>, note?: string} $decisionSummary */
 $decisionSummary = isset($decisionSummary) && is_array($decisionSummary) ? $decisionSummary : [];
-/** @var array{items?: array<int, array{reviewer_name: string, reviewer_email: string, reviewer_bidang_ilmu: string, status_badge_class: string, status_label: string, review_score_display?: string|int|null, recommendation_badge_class: string, recommendation_label: string, reviewed_at_label?: string, review_notes?: string}>, completion_message?: string, all_reviewed?: bool, presentasi_url?: string, presentasi_label?: string, presentasi_hint?: string} $reviewerResultsPanel */
+/** @var array{items?: array<int, array{reviewer_name: string, reviewer_email: string, reviewer_bidang_ilmu: string, status_badge_class: string, status_label: string, review_score_display?: string|int|null, recommendation_badge_class: string, recommendation_label: string, reviewed_at_label?: string, review_notes?: string}>, presentation_items?: array<int, array{reviewer_name: string, reviewer_email: string, reviewer_bidang_ilmu: string, status_badge_class: string, status_label: string, presentation_score_display?: string|int|null, presentation_notes?: string, presentation_recommended_budget_label?: string, presentation_reviewed_at_label?: string}>, completion_message?: string, all_reviewed?: bool, presentasi_url?: string, presentasi_label?: string, presentasi_hint?: string, has_presentation_items?: bool} $reviewerResultsPanel */
 $reviewerResultsPanel = isset($reviewerResultsPanel) && is_array($reviewerResultsPanel) ? $reviewerResultsPanel : [];
 
 /** @var array<int, array{id: int|string, name: string, email: string, bidang_ilmu: string, fit_badge_class: string, fit_label: string}> $recommendedReviewers */
@@ -34,6 +34,8 @@ $teamSectionCount = count($teamSections ?? []);
 $documentRowCount = count($documentRows);
 /** @var array<int, array{reviewer_name: string, reviewer_email: string, reviewer_bidang_ilmu: string, status_badge_class: string, status_label: string, review_score_display?: string|int|null, recommendation_badge_class: string, recommendation_label: string, reviewed_at_label?: string, review_notes?: string}> $reviewerResultItems */
 $reviewerResultItems = isset($reviewerResultsPanel['items']) && is_array($reviewerResultsPanel['items']) ? $reviewerResultsPanel['items'] : [];
+/** @var array<int, array{reviewer_name: string, reviewer_email: string, reviewer_bidang_ilmu: string, status_badge_class: string, status_label: string, presentation_score_display?: string|int|null, presentation_notes?: string, presentation_recommended_budget_label?: string, presentation_reviewed_at_label?: string}> $presentationResultItems */
+$presentationResultItems = isset($reviewerResultsPanel['presentation_items']) && is_array($reviewerResultsPanel['presentation_items']) ? $reviewerResultsPanel['presentation_items'] : [];
 ?>
 
 <div class="row g-3 admin-page admin-proposal-page">
@@ -343,8 +345,53 @@ $reviewerResultItems = isset($reviewerResultsPanel['items']) && is_array($review
                                             <div class="admin-note-box__body"><?= esc((string) ($reviewerResultsPanel['completion_message'] ?? '')) ?></div>
                                         </div>
 
+                                        <?php if (!empty($presentationResultItems)): ?>
+                                            <div class="admin-proposal-stack mb-3">
+                                                <?php foreach ($presentationResultItems as $reviewer): ?>
+                                                    <div class="admin-reviewer-card admin-reviewer-card--assigned">
+                                                        <div class="admin-reviewer-card__body">
+                                                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                                                <div>
+                                                                    <div class="fw-semibold"><?= esc($reviewer['reviewer_name']) ?></div>
+                                                                    <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
+                                                                </div>
+                                                                <div class="d-flex flex-column align-items-end gap-2">
+                                                                    <span class="badge <?= esc($reviewer['status_badge_class']) ?>"><?= esc($reviewer['status_label']) ?></span>
+                                                                    <span class="badge text-bg-success">Nilai Presentasi: <?= esc((string) ($reviewer['presentation_score_display'] ?? '-')) ?></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="small text-muted mb-1">Bidang Ilmu</div>
+                                                            <div class="mb-3"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></div>
+
+                                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                                <span class="badge text-bg-light border">Anggaran Disetujui: <?= esc((string) ($reviewer['presentation_recommended_budget_label'] ?? '-')) ?></span>
+                                                                <span class="badge text-bg-light border">Diperbarui: <?= esc((string) ($reviewer['presentation_reviewed_at_label'] ?? '-')) ?></span>
+                                                            </div>
+
+                                                            <div class="admin-note-box">
+                                                                <div class="admin-note-box__title">Catatan Presentasi</div>
+                                                                <div class="admin-note-box__body"><?= nl2br(esc((string) ($reviewer['presentation_notes'] ?? 'Belum ada hasil penilaian presentasi.'))) ?></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="admin-empty-state py-4 mb-3">
+                                                <i class="bi bi-easel2"></i>
+                                                <p class="mb-0 fw-semibold text-body-emphasis">Belum ada hasil penilaian presentasi yang tersimpan.</p>
+                                            </div>
+                                        <?php endif; ?>
+
                                         <?php if (!empty($reviewerResultsPanel['all_reviewed'])): ?>
-                                            <a href="<?= esc((string) ($reviewerResultsPanel['presentasi_url'] ?? '#')) ?>" class="btn btn-success w-100">
+                                            <a
+                                                href="<?= esc((string) ($reviewerResultsPanel['presentasi_url'] ?? '#')) ?>"
+                                                class="btn btn-success w-100"
+                                                data-presentasi-trigger="1"
+                                                data-presentasi-title="Buka penilaian presentasi?"
+                                                data-presentasi-message="Semua reviewer sudah menyelesaikan penilaian usulan. Lanjutkan untuk membuka tahap penilaian presentasi."
+                                                data-presentasi-confirm-text="Ya, buka sekarang">
                                                 <i class="bi bi-easel2 me-1"></i><?= esc((string) ($reviewerResultsPanel['presentasi_label'] ?? 'Buka Penilaian Presentasi')) ?>
                                             </a>
                                             <small class="text-muted d-block mt-2"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></small>

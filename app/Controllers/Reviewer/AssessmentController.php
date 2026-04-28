@@ -97,6 +97,7 @@ class AssessmentController extends BaseController
                 'comments' => (array) $this->request->getPost('comments'),
                 'general_comment' => (string) $this->request->getPost('general_comment'),
                 'validator_note' => (string) $this->request->getPost('validator_note'),
+                'recommended_budget' => (string) $this->request->getPost('recommended_budget'),
             ]
         );
 

@@ -568,6 +568,51 @@
   background: rgba(248, 250, 252, 0.9);
 }
 
+.reviewer-presentation-form-grid {
+  align-items: start;
+}
+
+.reviewer-presentation-score-field .form-select,
+.reviewer-presentation-budget-input .form-control,
+.reviewer-presentation-budget-input .input-group-text {
+  min-height: 3rem;
+}
+
+.reviewer-presentation-score-field .form-select {
+  border-radius: 0.9rem;
+}
+
+.reviewer-presentation-budget-input .input-group-text {
+  border-top-left-radius: 0.9rem;
+  border-bottom-left-radius: 0.9rem;
+}
+
+.reviewer-presentation-budget-input .form-control {
+  border-top-right-radius: 0.9rem;
+  border-bottom-right-radius: 0.9rem;
+}
+
+.reviewer-presentation-budget-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reviewer-presentation-budget-value {
+  font-size: 1.9rem;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.reviewer-presentation-editor .ql-container.ql-snow {
+  min-height: 14rem;
+}
+
+.reviewer-presentation-editor .ql-editor {
+  min-height: 13rem;
+}
+
 .admin-team-table th {
   white-space: nowrap;
 }
