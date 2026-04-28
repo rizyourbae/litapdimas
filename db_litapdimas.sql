@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb3
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 27, 2026 at 02:49 PM
+-- Host: localhost
+-- Generation Time: Apr 28, 2026 at 08:01 AM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -398,7 +398,8 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (27, '2026-04-27-080000', 'App\\Database\\Migrations\\CreateProposalMasterTables', 'default', 'App', 1777249271, 15),
 (28, '2026-04-27-090000', 'App\\Database\\Migrations\\CreateProposalTransactionTables', 'default', 'App', 1777249271, 15),
 (29, '2026-04-27-095000', 'App\\Database\\Migrations\\AddMissingProposalMasterTables', 'default', 'App', 1777249548, 16),
-(30, '2026-04-27-130000', 'App\\Database\\Migrations\\CreateProposalReviewerAssignmentsTable', 'default', 'App', 1777301195, 17);
+(30, '2026-04-27-130000', 'App\\Database\\Migrations\\CreateProposalReviewerAssignmentsTable', 'default', 'App', 1777301195, 17),
+(31, '2026-04-28-090000', 'App\\Database\\Migrations\\AddReviewScoreToProposalReviewerAssignmentsTable', 'default', 'App', 1777359289, 18);
 
 -- --------------------------------------------------------
 
@@ -712,7 +713,7 @@ CREATE TABLE `proposal_pengajuan` (
 --
 
 INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`, `pengelola_bantuan_id`, `klaster_bantuan_id`, `bidang_ilmu_id`, `tema_penelitian_id`, `jenis_penelitian_id`, `kontribusi_prodi_id`, `status`, `current_step`, `step_1_data`, `step_2_data`, `step_3_data`, `step_4_data`, `step_5_data`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'submitted', 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-04-27 14:14:09', NULL, NULL, NULL);
+(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'reviewed', 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-04-28 06:58:28', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -749,19 +750,28 @@ INSERT INTO `proposal_pengelola_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `i
 
 CREATE TABLE `proposal_reviewer_assignments` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
   `reviewer_user_id` int UNSIGNED NOT NULL,
   `assigned_by` int UNSIGNED DEFAULT NULL,
-  `assignment_notes` text COLLATE utf8mb4_general_ci,
-  `status` varchar(30) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'assigned' COMMENT 'assigned, reviewed, declined',
-  `recommendation` varchar(30) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending' COMMENT 'pending, recommended, revision, rejected',
-  `review_notes` longtext COLLATE utf8mb4_general_ci,
+  `assignment_notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'assigned' COMMENT 'assigned, reviewed, declined',
+  `recommendation` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending' COMMENT 'pending, recommended, revision, rejected',
+  `review_score` decimal(5,2) DEFAULT NULL,
+  `review_notes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `reviewed_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `proposal_reviewer_assignments`
+--
+
+INSERT INTO `proposal_reviewer_assignments` (`id`, `uuid`, `proposal_id`, `reviewer_user_id`, `assigned_by`, `assignment_notes`, `status`, `recommendation`, `review_score`, `review_notes`, `reviewed_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '429d8da8-7f1c-476b-bd41-2754fc2cbcf6', 6, 16, 6, NULL, 'reviewed', 'revision', 70.00, 'Nilai: 70,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: Ya\n\nCatatan Validator: ya', '2026-04-28 06:58:28', '2026-04-28 02:19:00', '2026-04-28 06:58:28', NULL),
+(2, '3aa05506-55f5-4cfa-a04c-38fc76711e43', 6, 18, 6, NULL, 'reviewed', 'revision', 79.00, 'Nilai: 79,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: ya oke\n\nCatatan Validator: hmmm oke', '2026-04-28 06:55:02', '2026-04-28 02:19:00', '2026-04-28 06:55:02', NULL);
 
 -- --------------------------------------------------------
 
@@ -1021,8 +1031,9 @@ INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengka
 (7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-26 23:47:30', NULL, NULL, NULL),
 (8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL),
 (9, 'a892502a-e93b-46b9-a6d5-109425776c85', 'Hernan', 'hernan@uinsi.ac.id', '$2y$10$iEf73ZnIKiPe2YF9TXUCNeKq9n/a4rKkiouBtjqOdYN45.jl8u8kC', 'Hernansyah', 1, '2026-04-24 10:35:53', '2026-04-26 06:38:15', NULL, NULL, NULL),
-(16, '550e8400-e29b-41d4-a716-446655550001', 'dosen1', 'dosen1@example.com', '$2y$10$W2bQEfcWSzQiQyZj7Vq1WuL6bNUBfcTGUqYWFpAQcBsgdTMtA9Tj6', 'Dr. Ahmad Wijaya', 1, NULL, NULL, NULL, 1, 1),
-(17, '550e8400-e29b-41d4-a716-446655550002', 'dosen2', 'dosen2@example.com', '$2y$10$W2bQEfcWSzQiQyZj7Vq1WuL6bNUBfcTGUqYWFpAQcBsgdTMtA9Tj6', 'Prof. Siti Nurhaliza', 1, NULL, NULL, NULL, 1, 1);
+(16, '550e8400-e29b-41d4-a716-446655550001', 'dosen1', 'dosen1@example.com', '$2y$10$YtKzsBjpC0WP8Zf5Wz174e7oR2o9F6bfZA/62105Vz.G97LbSUnDK', 'Dr. Ahmad Wijaya', 1, NULL, '2026-04-28 01:34:14', NULL, 1, 1),
+(17, '550e8400-e29b-41d4-a716-446655550002', 'dosen2', 'dosen2@example.com', '$2y$10$W2bQEfcWSzQiQyZj7Vq1WuL6bNUBfcTGUqYWFpAQcBsgdTMtA9Tj6', 'Prof. Siti Nurhaliza', 1, NULL, NULL, NULL, 1, 1),
+(18, '34630b6f-c3d6-4c54-a44b-0b26f564ad95', 'yuda', 'yuda@gmail.com', '$2y$10$VNsf2.DsqOa/8AkQDfeoV./jw8qGmeLvFTSER8wW/5jDCRYDBx2py', 'Yuda Marhusin', 1, '2026-04-28 01:33:56', '2026-04-28 01:33:56', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1088,8 +1099,9 @@ INSERT INTO `user_roles` (`user_id`, `role_id`, `created_at`) VALUES
 (8, 6, NULL),
 (9, 7, NULL),
 (9, 8, NULL),
-(16, 7, '2026-04-27 00:43:38'),
-(17, 7, '2026-04-27 00:43:38');
+(16, 8, NULL),
+(17, 7, '2026-04-27 00:43:38'),
+(18, 8, NULL);
 
 --
 -- Indexes for dumped tables
@@ -1436,7 +1448,7 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -1514,7 +1526,7 @@ ALTER TABLE `proposal_pengelola_bantuan`
 -- AUTO_INCREMENT for table `proposal_reviewer_assignments`
 --
 ALTER TABLE `proposal_reviewer_assignments`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `proposal_substansi_bagian`
@@ -1562,7 +1574,7 @@ ALTER TABLE `tema_penelitian`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`
