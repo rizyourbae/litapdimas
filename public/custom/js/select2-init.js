@@ -73,7 +73,27 @@
   window.Select2Init = {
     init: function (context, force) {
       findSelects(context, "select[data-select2]").forEach(function (selectEl) {
+        if (selectEl.closest(".modal")) {
+          return;
+        }
+
         initializeOne(selectEl, null, !!force);
+
+        // Terapkan queued value jika ada (mis. di-set sebelum TomSelect di-init)
+        try {
+          var queued = selectEl.getAttribute("data-admin-queued-value");
+          if (queued !== null) {
+            if (selectEl.tomselect && typeof selectEl.tomselect.setValue === "function") {
+              selectEl.tomselect.setValue(queued, true);
+            } else {
+              selectEl.value = queued;
+              selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+            selectEl.removeAttribute("data-admin-queued-value");
+          }
+        } catch (e) {
+          // ignore
+        }
       });
     },
 
@@ -84,6 +104,22 @@
     initModal: function (modalEl) {
       findSelects(modalEl, "select[data-select2]").forEach(function (selectEl) {
         initializeOne(selectEl, { dropdownParent: modalEl }, true);
+
+        // Jika ada nilai yang di-queue dari admin trigger, terapkan ke TomSelect
+        try {
+          var queued = selectEl.getAttribute("data-admin-queued-value");
+          if (queued !== null) {
+            if (selectEl.tomselect && typeof selectEl.tomselect.setValue === "function") {
+              selectEl.tomselect.setValue(queued, true);
+            } else {
+              selectEl.value = queued;
+              selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+            selectEl.removeAttribute("data-admin-queued-value");
+          }
+        } catch (e) {
+          // ignore
+        }
       });
     },
 

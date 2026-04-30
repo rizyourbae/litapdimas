@@ -2,6 +2,15 @@
 
 <?= $this->section('content') ?>
 
+<?php
+/** @var array<string,mixed> $hero */
+/** @var array<string,string> $actions */
+/** @var array<string,mixed> $evidence */
+/** @var array<int,array<string,mixed>> $summaryItems */
+/** @var array<int,array<string,mixed>> $detailItems */
+/** @var string $resumeHtml */
+?>
+
 <div class="row g-3 admin-page">
     <?php
     $evidenceHref = trim((string) ($evidence['url'] ?? ''));
@@ -16,24 +25,24 @@
                     <div>
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <span class="badge text-bg-light border px-3 py-2">Detail Kegiatan</span>
-                            <span class="badge <?= esc($hero['jenis_badge_class']) ?> px-3 py-2"><?= esc($hero['jenis_label']) ?></span>
-                            <span class="badge <?= esc($hero['klaster_badge_class']) ?> px-3 py-2"><?= esc($hero['klaster_label']) ?></span>
-                            <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc($hero['tahun']) ?></span>
+                            <span class="badge <?= esc((string) ($hero['jenis_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['jenis_label'] ?? '')) ?></span>
+                            <span class="badge <?= esc((string) ($hero['klaster_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['klaster_label'] ?? '')) ?></span>
+                            <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc((string) ($hero['tahun'] ?? '')) ?></span>
                         </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($hero['title']) ?></h2>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) ($hero['title'] ?? '')) ?></h2>
                         <p class="admin-hero__subtitle mb-0">
-                            <i class="bi bi-person-badge me-1"></i><?= esc($hero['subtitle']) ?>
+                            <i class="bi bi-person-badge me-1"></i><?= esc((string) ($hero['subtitle'] ?? '')) ?>
                         </p>
                     </div>
 
                     <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= esc($actions['back_url']) ?>" class="btn btn-outline-secondary">
+                        <a href="<?= esc((string) ($actions['back_url'] ?? '')) ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
-                        <a href="<?= esc($actions['edit_url']) ?>" class="btn btn-warning">
+                        <a href="<?= esc((string) ($actions['edit_url'] ?? '')) ?>" class="btn btn-warning">
                             <i class="bi bi-pencil-square me-1"></i>Edit
                         </a>
-                        <a href="<?= esc($evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        <a href="<?= esc((string) $evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
                             <i class="bi bi-box-arrow-up-right me-1"></i>Lihat Bukti
                         </a>
                     </div>
@@ -49,10 +58,10 @@
                 <h3 class="h5 mb-2">Ringkasan Kegiatan</h3>
                 <p class="text-muted mb-3">Baca konteks inti kegiatan di sisi kiri sebelum masuk ke resume, pendanaan, atau proses koreksi data.</p>
                 <div class="list-group list-group-flush admin-summary-list">
-                    <?php foreach ($summaryItems as $item): ?>
+                    <?php foreach ((array) $summaryItems as $item): $item = (array) $item; ?>
                         <div class="list-group-item px-0 py-3">
-                            <div class="small text-muted mb-1"><?= esc($item['label']) ?></div>
-                            <div class="fw-semibold"><?= esc($item['value']) ?></div>
+                            <div class="small text-muted mb-1"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                            <div class="fw-semibold"><?= esc((string) ($item['value'] ?? '')) ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -67,11 +76,11 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <?php foreach ($detailItems as $item): ?>
+                    <?php foreach ((array) $detailItems as $item): $item = (array) $item; ?>
                         <div class="col-md-6">
                             <div class="admin-detail-item">
-                                <div class="admin-detail-item__label"><?= esc($item['label']) ?></div>
-                                <div class="admin-detail-item__value"><?= esc($item['value']) ?></div>
+                                <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                <div class="admin-detail-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -114,14 +123,14 @@
 
                 <div class="admin-detail-item admin-detail-item--link">
                     <div class="admin-detail-item__label">Tautan Dokumen</div>
-                    <div class="admin-detail-item__value text-break"><?= esc($evidence['label']) ?></div>
+                    <div class="admin-detail-item__value text-break"><?= esc((string) ($evidence['label'] ?? '')) ?></div>
                 </div>
 
-                <a href="<?= esc($evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary w-100">
+                <a href="<?= esc((string) $evidenceHref, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary w-100">
                     <i class="bi bi-link-45deg me-1"></i>Buka Link Bukti Dukung
                 </a>
 
-                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc($actions['delete_url']) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
+                <button class="btn btn-outline-danger w-100 btn-delete" data-href="<?= esc((string) ($actions['delete_url'] ?? '')) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                     <i class="bi bi-trash me-1"></i>Hapus Kegiatan
                 </button>
             </div>

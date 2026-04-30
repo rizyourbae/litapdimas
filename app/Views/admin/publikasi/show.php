@@ -2,6 +2,22 @@
 
 <?= $this->section('content') ?>
 
+<?php
+/** @var string $title */
+/** @var array<string,mixed> $hero */
+/** @var array<string,string> $actions */
+/** @var array<int,array<string,mixed>> $summaryItems */
+/** @var string $metadataTitle */
+/** @var array<int,array<string,mixed>> $metadataItems */
+
+$title = (string) ($title ?? '');
+$hero = (array) ($hero ?? []);
+$actions = (array) ($actions ?? []);
+$summaryItems = (array) ($summaryItems ?? []);
+$metadataTitle = (string) ($metadataTitle ?? '');
+$metadataItems = (array) ($metadataItems ?? []);
+?>
+
 <div class="row g-3 admin-page">
     <div class="col-12">
         <div class="card admin-hero">
@@ -10,21 +26,21 @@
                     <div>
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <span class="badge text-bg-light border px-3 py-2">Detail Publikasi</span>
-                            <span class="badge <?= esc($hero['jenis_badge_class']) ?> px-3 py-2"><?= esc($hero['jenis_label']) ?></span>
-                            <span class="badge <?= esc($hero['klaster_badge_class']) ?> px-3 py-2"><?= esc($hero['klaster_label']) ?></span>
-                            <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc($hero['tahun']) ?></span>
+                            <span class="badge <?= esc((string) ($hero['jenis_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['jenis_label'] ?? '')) ?></span>
+                            <span class="badge <?= esc((string) ($hero['klaster_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['klaster_label'] ?? '')) ?></span>
+                            <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc((string) ($hero['tahun'] ?? '')) ?></span>
                         </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($hero['title']) ?></h2>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) ($hero['title'] ?? '')) ?></h2>
                         <p class="admin-hero__subtitle mb-0">
-                            <i class="bi bi-person-badge me-1"></i><?= esc($hero['subtitle']) ?>
+                            <i class="bi bi-person-badge me-1"></i><?= esc((string) ($hero['subtitle'] ?? '')) ?>
                         </p>
                     </div>
 
                     <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= esc($actions['back_url']) ?>" class="btn btn-outline-secondary">
+                        <a href="<?= esc((string) ($actions['back_url'] ?? '')) ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
-                        <a href="<?= esc($actions['edit_url']) ?>" class="btn btn-warning">
+                        <a href="<?= esc((string) ($actions['edit_url'] ?? '')) ?>" class="btn btn-warning">
                             <i class="bi bi-pencil-square me-1"></i>Edit
                         </a>
                     </div>
@@ -40,10 +56,10 @@
                 <h3 class="h5 mb-2">Ringkasan Publikasi</h3>
                 <p class="text-muted mb-3">Gunakan panel ini untuk membaca konteks inti publikasi sebelum melakukan perubahan atau penghapusan data.</p>
                 <div class="list-group list-group-flush admin-summary-list">
-                    <?php foreach ($summaryItems as $item): ?>
+                    <?php foreach ($summaryItems as $item): $item = (array) $item; ?>
                         <div class="list-group-item px-0 py-3">
-                            <div class="small text-muted mb-1"><?= esc($item['label']) ?></div>
-                            <div class="fw-semibold"><?= esc($item['value']) ?></div>
+                            <div class="small text-muted mb-1"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                            <div class="fw-semibold"><?= esc((string) ($item['value'] ?? '')) ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -54,7 +70,7 @@
     <div class="col-xl-8">
         <div class="card card-primary card-outline admin-table-card h-100">
             <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0"><?= esc($metadataTitle) ?></h3>
+                <h3 class="card-title mb-0"><?= esc((string) $metadataTitle) ?></h3>
             </div>
             <div class="card-body">
                 <?php if (empty($metadataItems)): ?>
@@ -64,25 +80,19 @@
                     </div>
                 <?php else: ?>
                     <div class="row g-3">
-                        <?php foreach ($metadataItems as $item): ?>
+                        <?php foreach ($metadataItems as $item): $item = (array) $item; ?>
                             <?php if (!empty($item['url'])): ?>
                                 <div class="col-12">
                                     <div class="admin-detail-item admin-detail-item--link">
-                                        <div class="admin-detail-item__label"><?= esc($item['label']) ?></div>
-                                        <?php
-                                        $href = trim((string) $item['url']);
-                                        if ($href !== '' && !preg_match('~^[a-z][a-z0-9+.-]*:~i', $href)) {
-                                            $href = 'https://' . ltrim($href, '/');
-                                        }
-                                        ?>
-                                        <a href="<?= esc($href, 'attr') ?>" target="_blank" rel="noopener noreferrer" class="admin-detail-item__value text-break text-decoration-none"><?= esc($item['value']) ?></a>
+                                        <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                        <a href="<?= esc((string) ($item['href'] ?? ''), 'attr') ?>" target="_blank" rel="noopener noreferrer" class="admin-detail-item__value text-break text-decoration-none"><?= esc((string) ($item['value'] ?? '')) ?></a>
                                     </div>
                                 </div>
                             <?php else: ?>
                                 <div class="col-md-6">
                                     <div class="admin-detail-item">
-                                        <div class="admin-detail-item__label"><?= esc($item['label']) ?></div>
-                                        <div class="admin-detail-item__value"><?= esc($item['value']) ?></div>
+                                        <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                        <div class="admin-detail-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -102,10 +112,10 @@
                     <p class="text-muted mb-0">Gunakan edit untuk memperbarui metadata atau hapus jika entri ini memang tidak valid dan tidak perlu dipertahankan.</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="<?= esc($actions['edit_url']) ?>" class="btn btn-warning">
+                    <a href="<?= esc((string) ($actions['edit_url'] ?? '')) ?>" class="btn btn-warning">
                         <i class="bi bi-pencil-square me-1"></i>Edit Publikasi
                     </a>
-                    <button class="btn btn-outline-danger btn-delete" data-href="<?= esc($actions['delete_url']) ?>" data-delete-label="Publikasi ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
+                    <button class="btn btn-outline-danger btn-delete" data-href="<?= esc((string) ($actions['delete_url'] ?? '')) ?>" data-delete-label="Publikasi ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                         <i class="bi bi-trash me-1"></i>Hapus Publikasi
                     </button>
                 </div>

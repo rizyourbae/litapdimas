@@ -11,7 +11,15 @@ use Psr\Log\LoggerInterface;
 
 abstract class BaseController extends Controller
 {
+    /** @var \CodeIgniter\HTTP\IncomingRequest */
     protected $request;
+
+    /** @var \CodeIgniter\HTTP\ResponseInterface */
+    protected $response;
+
+    /** @var \Psr\Log\LoggerInterface */
+    protected $logger;
+
     protected $helpers = ['menu'];
     protected $menuBuilder;
 

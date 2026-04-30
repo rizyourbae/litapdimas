@@ -1,5 +1,17 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
+<?php
+/** @var string $title */
+/** @var bool $useModal */
+/** @var string $routePrefix */
+/** @var string $addUrl */
+/** @var array<int, array<string,mixed>> $fields */
+/** @var array<int, array<string,mixed>> $items */
+/** @var string $jsonUrl */
+/** @var string $editUrl */
+/** @var string $deleteUrl */
+/** @var string $restoreUrl */
+?>
 <div class="row g-3 admin-page">
     <div class="col-12">
         <div class="card admin-hero">
@@ -10,7 +22,7 @@
                             <span class="badge text-bg-light border px-3 py-2">Master Data</span>
                             <span class="badge text-bg-primary px-3 py-2">Admin Workspace</span>
                         </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title) ?></h2>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) $title) ?></h2>
                     </div>
                     <div class="admin-hero__actions d-flex flex-wrap gap-2">
                         <?php if ($useModal): ?>
@@ -19,12 +31,12 @@
                                 data-admin-modal-target="#modalForm"
                                 data-admin-form-action="<?= site_url($routePrefix . 'store') ?>"
                                 data-admin-form-method="POST"
-                                data-admin-modal-title-text="Tambah <?= esc($title) ?>">
-                                <i class="bi bi-plus"></i> Tambah <?= esc($title) ?>
+                                data-admin-modal-title-text="Tambah <?= esc((string) $title) ?>">
+                                <i class="bi bi-plus"></i> Tambah <?= esc((string) $title) ?>
                             </button>
                         <?php else: ?>
-                            <a href="<?= $addUrl ?>" class="btn btn-primary">
-                                <i class="bi bi-plus"></i> Tambah <?= esc($title) ?>
+                            <a href="<?= esc((string) $addUrl) ?>" class="btn btn-primary">
+                                <i class="bi bi-plus"></i> Tambah <?= esc((string) $title) ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -38,7 +50,7 @@
             <div class="card-header border-0 pb-0">
                 <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
                     <h3 class="card-title mb-0">
-                        <i class="bi bi-table me-2"></i>Daftar <?= esc($title) ?>
+                        <i class="bi bi-table me-2"></i>Daftar <?= esc((string) $title) ?>
                     </h3>
                     <span class="badge text-bg-light border">Master reference</span>
                 </div>
@@ -49,43 +61,43 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <?php foreach ($fields as $field): ?>
-                                    <th><?= esc($field['label']) ?></th>
+                                <?php foreach ((array) $fields as $field): ?>
+                                    <th><?= esc((string) ($field['label'] ?? '')) ?></th>
                                 <?php endforeach; ?>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($items as $index => $item): ?>
+                            <?php foreach ((array) $items as $index => $item): ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <?php foreach ($fields as $field): ?>
-                                        <td><?= esc($item[$field['name']] ?? '') ?></td>
+                                    <?php foreach ((array) $fields as $field): ?>
+                                        <td><?= esc((string) ($item[$field['name']] ?? '')) ?></td>
                                     <?php endforeach; ?>
                                     <td>
                                         <?php if ($useModal): ?>
                                             <a href="#" class="btn btn-warning btn-sm btn-edit"
                                                 data-id="<?= $item['id'] ?>"
-                                                data-admin-fetch-url="<?= $jsonUrl . $item['id'] ?>"
+                                                data-admin-fetch-url="<?= esc($jsonUrl . (string) ($item['id'] ?? '')) ?>"
                                                 data-admin-modal-target="#modalForm"
-                                                data-admin-form-action="<?= site_url($routePrefix . 'update/') . $item['id'] ?>"
+                                                data-admin-form-action="<?= site_url($routePrefix . 'update/') . (string) ($item['id'] ?? '') ?>"
                                                 data-admin-form-method="PUT"
-                                                data-admin-modal-title-text="Edit <?= esc($title) ?>">
+                                                data-admin-modal-title-text="Edit <?= esc((string) $title) ?>">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a href="<?= $editUrl . $item['id'] ?>" class="btn btn-warning btn-sm">
+                                            <a href="<?= esc((string) ($editUrl . (string) ($item['id'] ?? ''))) ?>" class="btn btn-warning btn-sm">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                         <?php endif; ?>
                                         <?php if (!empty($item['deleted_at'])): ?>
-                                            <a href="<?= $restoreUrl . $item['id'] ?>" class="btn btn-success btn-sm">
+                                            <a href="<?= esc((string) ($restoreUrl . (string) ($item['id'] ?? ''))) ?>" class="btn btn-success btn-sm">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
                                             </a>
                                         <?php else: ?>
                                             <a href="#"
                                                 class="btn btn-danger btn-sm btn-delete"
-                                                data-href="<?= $deleteUrl . $item['id'] ?>"
+                                                data-href="<?= esc((string) ($deleteUrl . (string) ($item['id'] ?? ''))) ?>"
                                                 data-delete-label="data ini"
                                                 data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                                                 <i class="bi bi-trash"></i>
@@ -111,19 +123,19 @@
                 <input type="hidden" name="_method" value="POST">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle" data-admin-modal-title>Tambah <?= esc($title) ?></h5>
+                        <h5 class="modal-title" id="modalTitle" data-admin-modal-title>Tambah <?= esc((string) $title) ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <?php foreach ($fields as $field): ?>
+                        <?php foreach ((array) $fields as $field): ?>
                             <div class="mb-3">
-                                <label class="form-label"><?= esc($field['label']) ?></label>
-                                <input type="<?= $field['type'] ?? 'text' ?>"
-                                    name="<?= $field['name'] ?>"
+                                <label class="form-label"><?= esc((string) ($field['label'] ?? '')) ?></label>
+                                <input type="<?= esc((string) ($field['type'] ?? 'text')) ?>"
+                                    name="<?= esc((string) ($field['name'] ?? '')) ?>"
                                     class="form-control"
                                     <?= !empty($field['required']) ? 'required' : '' ?>
-                                    id="field_<?= $field['name'] ?>"
-                                    data-admin-field="<?= $field['name'] ?>">
+                                    id="field_<?= esc((string) ($field['name'] ?? '')) ?>"
+                                    data-admin-field="<?= esc((string) ($field['name'] ?? '')) ?>">
                             </div>
                         <?php endforeach; ?>
                     </div>

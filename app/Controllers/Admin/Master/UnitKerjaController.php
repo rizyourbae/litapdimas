@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
  */
 class UnitKerjaController extends BaseController
 {
+    /** @var UnitKerjaModel */
     protected $model;
 
     public function initController(
@@ -35,16 +36,39 @@ class UnitKerjaController extends BaseController
             ->get()
             ->getResultArray();
 
+        $parentOptions = $this->model->getParentOptions();
+
         return $this->renderView('admin/master/unit_kerja', [
             'title'     => 'Unit Kerja',
             'items'     => $items,
-            'options'   => $this->model->select('id, nama')->findAll(),
+            'parentGroups' => $this->groupParentOptions($parentOptions),
             'viewState' => [
                 'openModal' => session()->getFlashdata('open_modal') ?? null,
                 'errors'    => session()->getFlashdata('errors') ?? [],
                 'baseUrl'   => site_url('admin/master/unit_kerja'),
             ],
         ]);
+    }
+
+    /**
+     * @param array<int,array<string,mixed>> $options
+     * @return array<string,array<int,array<string,mixed>>>
+     */
+    private function groupParentOptions(array $options): array
+    {
+        $groups = [
+            'Lembaga' => [],
+            'Unit'    => [],
+        ];
+
+        foreach ($options as $option) {
+            $nama = trim((string) ($option['nama'] ?? ''));
+            $isLembaga = $nama !== '' && (stripos($nama, 'Lembaga') === 0 || stripos($nama, 'LPPM') !== false);
+
+            $groups[$isLembaga ? 'Lembaga' : 'Unit'][] = $option;
+        }
+
+        return array_filter($groups);
     }
 
     public function store()

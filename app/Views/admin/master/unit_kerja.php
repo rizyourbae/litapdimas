@@ -1,6 +1,13 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
+<?php
+/** @var string $title */
+/** @var array<string,mixed> $viewState */
+/** @var array<int,array<string,mixed>> $items */
+/** @var array<string,array<int,array<string,mixed>>> $parentGroups */
+?>
+
 <div class="row g-3 admin-page">
     <div class="col-12">
         <div class="card admin-hero">
@@ -24,12 +31,12 @@
     </div>
 
     <div class="col-12">
-        <div class="d-none" <?= !empty($viewState['openModal']) ? ' data-admin-auto-open-modal="modal-' . esc($viewState['openModal']) . '"' : '' ?>></div>
+        <div class="d-none" <?= !empty($viewState['openModal'] ?? '') ? ' data-admin-auto-open-modal="modal-' . esc((string) ($viewState['openModal'] ?? '')) . '"' : '' ?>></div>
         <div class="card card-info card-outline admin-table-card">
             <div class="card-body">
                 <div class="alert alert-light border-start border-4 border-info mb-3 admin-soft-banner">
                     <i class="bi bi-info-circle me-2"></i>
-                    <strong>Struktur Hierarki:</strong> Unit dengan indentasi adalah sub-unit dari unit di atasnya.
+                    <strong>Struktur Hierarki:</strong> Pilih induk dari grup Lembaga atau Unit, lalu isi sub-unit di bawahnya.
                 </div>
 
                 <?php if (empty($items)): ?>
@@ -79,9 +86,9 @@
                                             <td class="text-center"><?= esc((string) ($index + 1)) ?></td>
                                             <td>
                                                 <?php if (empty($item['parent_id'])): ?>
-                                                    <strong><?= esc($item['nama']) ?></strong>
+                                                    <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong>
                                                 <?php else: ?>
-                                                    <span class="ms-3 me-1">└</span><?= esc($item['nama']) ?>
+                                                    <span class="ms-3 me-1">└</span><?= esc((string) ($item['nama'] ?? '')) ?>
                                                 <?php endif; ?>
                                                 <?php if (!empty($item['deleted_at'])): ?>
                                                     <span class="badge bg-secondary ms-1">Nonaktif</span>
@@ -89,7 +96,7 @@
                                             </td>
                                             <td>
                                                 <?php if (!empty($item['nama_induk'])): ?>
-                                                    <span class="badge bg-light text-dark border"><i class="bi bi-diagram-2 me-1"></i><?= esc($item['nama_induk']) ?></span>
+                                                    <span class="badge bg-light text-dark border"><i class="bi bi-diagram-2 me-1"></i><?= esc((string) ($item['nama_induk'] ?? '')) ?></span>
                                                 <?php else: ?>
                                                     <span class="text-muted small"><i>— Tidak ada —</i></span>
                                                 <?php endif; ?>
@@ -97,9 +104,9 @@
                                             <td class="text-center btn-action-group admin-action-group">
                                                 <?php if (!empty($item['deleted_at'])): ?>
                                                     <a href="#" class="btn btn-success btn-sm btn-admin-restore"
-                                                        data-href="<?= site_url('admin/master/unit_kerja/restore/' . $item['id']) ?>"
+                                                        data-href="<?= site_url('admin/master/unit-kerja/restore/' . $item['id']) ?>"
                                                         data-confirm-title="Pulihkan data ini?"
-                                                        data-confirm-html="Data <strong><?= esc($item['nama']) ?></strong> akan diaktifkan kembali."
+                                                        data-confirm-html="Data <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong> akan diaktifkan kembali."
                                                         data-confirm-button="Ya, pulihkan"
                                                         title="Pulihkan">
                                                         <i class="bi bi-arrow-counterclockwise"></i>
@@ -107,16 +114,16 @@
                                                 <?php else: ?>
                                                     <button type="button" class="btn btn-warning btn-sm"
                                                         data-admin-modal-target="#modal-edit"
-                                                        data-admin-form-action="<?= site_url('admin/master/unit_kerja/update/' . $item['id']) ?>"
+                                                        data-admin-form-action="<?= site_url('admin/master/unit-kerja/update/' . $item['id']) ?>"
                                                         data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Unit Kerja"
-                                                        data-admin-value-nama="<?= esc($item['nama']) ?>"
+                                                        data-admin-value-nama="<?= esc((string) ($item['nama'] ?? '')) ?>"
                                                         data-admin-value-parent-id="<?= esc((string) ($item['parent_id'] ?? '')) ?>"
                                                         title="Edit">
                                                         <i class="bi bi-pencil"></i>
                                                     </button>
                                                     <a href="#" class="btn btn-danger btn-sm btn-delete"
-                                                        data-href="<?= site_url('admin/master/unit_kerja/delete/' . $item['id']) ?>"
-                                                        data-delete-label="<?= esc($item['nama']) ?>"
+                                                        data-href="<?= site_url('admin/master/unit-kerja/delete/' . $item['id']) ?>"
+                                                        data-delete-label="<?= esc((string) ($item['nama'] ?? '')) ?>"
                                                         data-delete-desc="Unit kerja akan dinonaktifkan dan bisa dipulihkan kembali."
                                                         title="Hapus">
                                                         <i class="bi bi-trash"></i>
@@ -138,36 +145,40 @@
 <div class="modal fade" id="modal-tambah" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="<?= site_url('admin/master/unit_kerja/store') ?>" method="post" data-submit-state-form>
+            <form action="<?= site_url('admin/master/unit-kerja/store') ?>" method="post" data-submit-state-form>
                 <?= csrf_field() ?>
                 <div class="modal-header">
                     <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Tambah Unit Kerja</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <?php if ($viewState['openModal'] === 'tambah' && !empty($viewState['errors'])): ?>
+                    <?php if (($viewState['openModal'] ?? '') === 'tambah' && !empty($viewState['errors'])): ?>
                         <div class="alert alert-danger py-2">
                             <ul class="mb-0 ps-3">
                                 <?php foreach ((array) $viewState['errors'] as $error): ?>
-                                    <li><?= esc($error) ?></li>
+                                    <li><?= esc((string) $error) ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Unit Kerja <span class="text-danger">*</span></label>
-                        <input type="text" name="nama" class="form-control <?= ($viewState['openModal'] === 'tambah' && !empty($viewState['errors']['nama'])) ? 'is-invalid' : '' ?>"
-                            value="<?= $viewState['openModal'] === 'tambah' ? esc(old('nama', '')) : '' ?>" placeholder="Contoh: Rektorat" required>
-                        <?php if ($viewState['openModal'] === 'tambah' && !empty($viewState['errors']['nama'])): ?>
-                            <div class="invalid-feedback"><?= esc($viewState['errors']['nama']) ?></div>
+                        <input type="text" name="nama" class="form-control <?= (($viewState['openModal'] ?? '') === 'tambah' && !empty($viewState['errors']['nama'])) ? 'is-invalid' : '' ?>"
+                            value="<?= ($viewState['openModal'] ?? '') === 'tambah' ? esc(old('nama', '')) : '' ?>" placeholder="Contoh: Rektorat" required>
+                        <?php if (($viewState['openModal'] ?? '') === 'tambah' && !empty($viewState['errors']['nama'])): ?>
+                            <div class="invalid-feedback"><?= esc((string) ($viewState['errors']['nama'] ?? '')) ?></div>
                         <?php endif; ?>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Unit Induk <span class="text-muted">(Opsional)</span></label>
-                        <select name="parent_id" class="form-select" data-select2>
+                        <select name="parent_id" class="form-select">
                             <option value="">-- Tidak ada (Root Unit) --</option>
-                            <?php foreach ($options as $unit): ?>
-                                <option value="<?= $unit['id'] ?>" <?= ($viewState['openModal'] === 'tambah' && old('parent_id') == $unit['id']) ? 'selected' : '' ?>><?= esc($unit['nama']) ?></option>
+                            <?php foreach ($parentGroups as $groupLabel => $groupItems): ?>
+                                <optgroup label="<?= esc($groupLabel) ?>">
+                                    <?php foreach ($groupItems as $unit): ?>
+                                        <option value="<?= esc((string) ($unit['id'] ?? '')) ?>" <?= (($viewState['openModal'] ?? '') === 'tambah' && old('parent_id') == ($unit['id'] ?? '')) ? 'selected' : '' ?>><?= esc((string) ($unit['nama'] ?? '')) ?></option>
+                                    <?php endforeach; ?>
+                                </optgroup>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -200,10 +211,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Unit Induk <span class="text-muted">(Opsional)</span></label>
-                        <select name="parent_id" id="editParentId" class="form-select" data-admin-field="parent_id" data-select2>
+                        <select name="parent_id" id="editParentId" class="form-select" data-admin-field="parent_id">
                             <option value="">-- Tidak ada (Root Unit) --</option>
-                            <?php foreach ($options as $unit): ?>
-                                <option value="<?= $unit['id'] ?>"><?= esc($unit['nama']) ?></option>
+                            <?php foreach ($parentGroups as $groupLabel => $groupItems): ?>
+                                <optgroup label="<?= esc($groupLabel) ?>">
+                                    <?php foreach ($groupItems as $unit): ?>
+                                        <option value="<?= esc((string) ($unit['id'] ?? '')) ?>"><?= esc((string) ($unit['nama'] ?? '')) ?></option>
+                                    <?php endforeach; ?>
+                                </optgroup>
                             <?php endforeach; ?>
                         </select>
                     </div>

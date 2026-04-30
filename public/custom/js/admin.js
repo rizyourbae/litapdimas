@@ -147,8 +147,9 @@
         return;
       }
 
-      modal.addEventListener("show.bs.modal", function () {
+      modal.addEventListener("shown.bs.modal", function () {
         if (window.Select2Init && typeof window.Select2Init.initModal === "function") {
+          // initialize when modal is fully shown to avoid issues initializing hidden selects
           window.Select2Init.initModal(modal);
         }
       });
@@ -163,10 +164,24 @@
     }
 
     var normalizedValue = value == null ? "" : value;
+
+    // Simpan nilai yang di-queue supaya bisa diterapkan ketika TomSelect di-inisialisasi
+    try {
+      field.setAttribute("data-admin-queued-value", normalizedValue);
+    } catch (e) {}
+
     field.value = normalizedValue;
 
     if (field.matches("[data-select2]")) {
-      field.dispatchEvent(new Event("change", { bubbles: true }));
+      if (window.Select2Init && typeof window.Select2Init.setValue === "function" && field.tomselect) {
+        try {
+          window.Select2Init.setValue(field, normalizedValue);
+        } catch (e) {
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      } else {
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+      }
     }
   }
 

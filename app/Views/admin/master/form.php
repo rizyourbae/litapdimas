@@ -1,34 +1,47 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
+<?php
+/** @var string $title */
+/** @var string $action */
+/** @var array<int, array<string,mixed>> $fields */
+/** @var array<string, array<int, array<string,mixed>>> $dropdowns */
+/** @var array<string,mixed> $item */
+/** @var string $routePrefix */
+?>
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><?= $title ?></h3>
+                <h3 class="card-title"><?= esc((string) $title) ?></h3>
             </div>
-            <form action="<?= $action ?>" method="post">
+            <form action="<?= esc((string) $action) ?>" method="post">
                 <?= csrf_field() ?>
                 <div class="card-body">
-                    <?php foreach ($fields as $field): ?>
+                    <?php foreach ((array) $fields as $field): ?>
+                        <?php
+                        $field = (array) $field;
+                        $fName = (string) ($field['name'] ?? '');
+                        $fType = (string) ($field['type'] ?? 'text');
+                        $fLabel = (string) ($field['label'] ?? '');
+                        ?>
                         <div class="mb-3">
-                            <label class="form-label"><?= $field['label'] ?></label>
-                            <?php if ($field['type'] === 'dropdown'): ?>
-                                <select name="<?= $field['name'] ?>" class="form-select" <?= !empty($field['required']) ? 'required' : '' ?>>
+                            <label class="form-label"><?= esc($fLabel) ?></label>
+                            <?php if ($fType === 'dropdown'): ?>
+                                <?php $options = $dropdowns[$fName] ?? []; ?>
+                                <?php $selected = (string) ($item[$fName] ?? ''); ?>
+                                <select name="<?= esc($fName) ?>" class="form-select" <?= !empty($field['required']) ? 'required' : '' ?>>
                                     <option value="">-- Pilih --</option>
-                                    <?php
-                                    $options = $dropdowns[$field['name']] ?? [];
-                                    $selected = isset($item) ? $item[$field['name']] : '';
-                                    foreach ($options as $opt): ?>
-                                        <option value="<?= $opt['value'] ?>" <?= $selected == $opt['value'] ? 'selected' : '' ?>>
-                                            <?= $opt['label'] ?>
+                                    <?php foreach ((array) $options as $opt): $opt = (array) $opt; ?>
+                                        <option value="<?= esc((string) ($opt['value'] ?? '')) ?>" <?= $selected == ($opt['value'] ?? '') ? 'selected' : '' ?>>
+                                            <?= esc((string) ($opt['label'] ?? '')) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                             <?php else: ?>
-                                <input type="<?= $field['type'] ?? 'text' ?>"
-                                    name="<?= $field['name'] ?>"
+                                <input type="<?= esc($fType) ?>"
+                                    name="<?= esc($fName) ?>"
                                     class="form-control"
-                                    value="<?= isset($item) ? esc($item[$field['name']] ?? '') : '' ?>"
+                                    value="<?= esc((string) ($item[$fName] ?? '')) ?>"
                                     <?= !empty($field['required']) ? 'required' : '' ?>>
                             <?php endif; ?>
                         </div>

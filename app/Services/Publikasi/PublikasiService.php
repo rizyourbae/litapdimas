@@ -359,10 +359,16 @@ class PublikasiService
 
     private function buildLinkMetadataItem(string $label, string $url): array
     {
+        $href = trim($url);
+        if ($href !== '' && !preg_match('~^[a-z][a-z0-9+.-]*:~i', $href)) {
+            $href = 'https://' . ltrim($href, '/');
+        }
+
         return [
             'label' => $label,
             'value' => $this->valueOrDash($url),
             'url' => trim($url),
+            'href' => $href,
         ];
     }
 

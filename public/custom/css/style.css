@@ -131,6 +131,13 @@
   z-index: 1065;
 }
 
+.modal .ts-wrapper,
+.modal .ts-wrapper .ts-control,
+.modal .ts-wrapper .ts-control input,
+.modal .ts-dropdown {
+  pointer-events: auto !important;
+}
+
 /* ---------------------------------------------------------------
    4. Card & Table UI polish
    --------------------------------------------------------------- */

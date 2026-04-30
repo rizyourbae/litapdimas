@@ -2,6 +2,11 @@
 
 <?= $this->section('content') ?>
 
+<?php
+/** @var string $title */
+/** @var array<int,array<string,mixed>> $tableRows */
+?>
+
 <div class="row g-3 admin-page">
     <div class="col-12">
         <div class="card admin-hero">
@@ -12,7 +17,7 @@
                             <span class="badge text-bg-light border px-3 py-2">Operasional Admin</span>
                             <span class="badge text-bg-primary px-3 py-2">Kegiatan Mandiri</span>
                         </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title ?? 'Data Kegiatan Mandiri') ?></h2>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) $title) ?></h2>
                         <p class="admin-hero__subtitle mb-0">Pantau kegiatan mandiri dosen</p>
                     </div>
                     <div class="admin-hero__actions d-flex flex-wrap gap-2">
@@ -60,35 +65,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($tableRows as $index => $row): ?>
+                                <?php foreach ((array) $tableRows as $index => $row): $row = (array) $row; ?>
                                     <tr>
                                         <td class="text-center"><?= $index + 1 ?></td>
-                                        <td><?= esc($row['display_name']) ?></td>
+                                        <td><?= esc((string) ($row['display_name'] ?? '')) ?></td>
                                         <td>
-                                            <a href="<?= esc($row['show_url']) ?>" class="text-decoration-none fw-semibold text-body-emphasis">
-                                                <?= esc($row['judul_kegiatan']) ?>
+                                            <a href="<?= esc((string) ($row['show_url'] ?? '')) ?>" class="text-decoration-none fw-semibold text-body-emphasis">
+                                                <?= esc((string) ($row['judul_kegiatan'] ?? '')) ?>
                                             </a>
                                         </td>
                                         <td>
-                                            <span class="badge <?= esc($row['jenis_badge_class']) ?>">
-                                                <?= esc($row['jenis_kegiatan']) ?>
+                                            <span class="badge <?= esc((string) ($row['jenis_badge_class'] ?? '')) ?>">
+                                                <?= esc((string) ($row['jenis_kegiatan'] ?? '')) ?>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="badge <?= esc($row['klaster_badge_class']) ?>">
-                                                <?= esc($row['klaster_label']) ?>
+                                            <span class="badge <?= esc((string) ($row['klaster_badge_class'] ?? '')) ?>">
+                                                <?= esc((string) ($row['klaster_label'] ?? '')) ?>
                                             </span>
                                         </td>
-                                        <td class="text-center"><?= esc($row['tahun']) ?></td>
+                                        <td class="text-center"><?= esc((string) ($row['tahun'] ?? '')) ?></td>
                                         <td class="text-center">
                                             <div class="admin-action-inline">
-                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info btn-sm admin-icon-btn" title="Detail">
+                                                <a href="<?= esc((string) ($row['show_url'] ?? '')) ?>" class="btn btn-info btn-sm admin-icon-btn" title="Detail">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning btn-sm admin-icon-btn" title="Edit">
+                                                <a href="<?= esc((string) ($row['edit_url'] ?? '')) ?>" class="btn btn-warning btn-sm admin-icon-btn" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <button class="btn btn-danger btn-sm btn-delete admin-icon-btn" title="Hapus" data-href="<?= esc($row['delete_url']) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
+                                                <button class="btn btn-danger btn-sm btn-delete admin-icon-btn" title="Hapus" data-href="<?= esc((string) ($row['delete_url'] ?? '')) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>

@@ -1,3 +1,17 @@
+<?php
+
+/** @var string $title */
+/** @var array<string,mixed> $viewState */
+/** @var array<int,array<string,mixed>> $fakultasRows */
+/** @var array<int,array<string,mixed>> $prodi */
+/** @var array<int,array<string,mixed>> $fakultasOptions */
+
+$title = $title ?? '';
+$viewState = $viewState ?? [];
+$fakultasRows = $fakultasRows ?? [];
+$prodi = $prodi ?? [];
+$fakultasOptions = $fakultasOptions ?? [];
+?>
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
@@ -11,7 +25,7 @@
                             <span class="badge text-bg-light border px-3 py-2">Master Data</span>
                             <span class="badge text-bg-success px-3 py-2">Akademik</span>
                         </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title) ?></h2>
+                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) $title) ?></h2>
                     </div>
                 </div>
             </div>
@@ -19,18 +33,18 @@
     </div>
 
     <div class="col-12">
-        <div class="d-none" data-admin-auto-open-tab="tab-<?= esc($viewState['activeTab']) ?>-link" <?= !empty($viewState['openModal']) ? ' data-admin-auto-open-modal="modal-' . esc($viewState['openModal']) . '"' : '' ?>></div>
+        <div class="d-none" data-admin-auto-open-tab="tab-<?= esc((string) ($viewState['activeTab'] ?? '')) ?>-link" <?= !empty($viewState['openModal'] ?? '') ? ' data-admin-auto-open-modal="modal-' . esc((string) ($viewState['openModal'] ?? '')) . '"' : '' ?>></div>
         <div class="card card-success card-outline admin-table-card card-outline-tabs">
             <div class="card-header p-0 pt-1 border-bottom-0">
                 <ul class="nav nav-tabs" id="akademikTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link <?= $viewState['activeTab'] === 'fakultas' ? 'active' : '' ?>" id="tab-fakultas-link" data-bs-toggle="tab" href="#tab-fakultas" role="tab">
+                        <a class="nav-link <?= (($viewState['activeTab'] ?? '') === 'fakultas') ? 'active' : '' ?>" id="tab-fakultas-link" data-bs-toggle="tab" href="#tab-fakultas" role="tab">
                             <i class="bi bi-building me-1"></i>Fakultas
                             <span class="badge bg-secondary ms-1"><?= esc((string) count($fakultasRows)) ?></span>
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link <?= $viewState['activeTab'] === 'prodi' ? 'active' : '' ?>" id="tab-prodi-link" data-bs-toggle="tab" href="#tab-prodi" role="tab">
+                        <a class="nav-link <?= (($viewState['activeTab'] ?? '') === 'prodi') ? 'active' : '' ?>" id="tab-prodi-link" data-bs-toggle="tab" href="#tab-prodi" role="tab">
                             <i class="bi bi-mortarboard me-1"></i>Program Studi
                             <span class="badge bg-secondary ms-1"><?= esc((string) count($prodi)) ?></span>
                         </a>
@@ -40,7 +54,7 @@
 
             <div class="card-body">
                 <div class="tab-content" id="akademikTabsContent">
-                    <div class="tab-pane fade <?= $viewState['activeTab'] === 'fakultas' ? 'show active' : '' ?>" id="tab-fakultas" role="tabpanel">
+                    <div class="tab-pane fade <?= (($viewState['activeTab'] ?? '') === 'fakultas') ? 'show active' : '' ?>" id="tab-fakultas" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="mb-0 text-muted"><i class="bi bi-building me-1"></i>Daftar Fakultas &mdash; <strong><?= esc((string) count($fakultasRows)) ?></strong> data</h6>
                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-tambah-fakultas"><i class="bi bi-plus-lg me-1"></i>Tambah Fakultas</button>
@@ -91,8 +105,8 @@
                                                 <tr>
                                                     <td class="text-center"><?= esc((string) $row['number']) ?></td>
                                                     <td>
-                                                        <?= esc($row['name']) ?>
-                                                        <?php if ($row['isArchived']): ?><span class="badge bg-secondary ms-1">Nonaktif</span><?php endif; ?>
+                                                        <?= esc((string) ($row['name'] ?? '')) ?>
+                                                        <?php if (!empty($row['isArchived'])): ?><span class="badge bg-secondary ms-1">Nonaktif</span><?php endif; ?>
                                                     </td>
                                                     <td class="text-center">
                                                         <?php if ($row['prodiCount'] > 0): ?>
@@ -103,10 +117,10 @@
                                                     </td>
                                                     <td class="text-center btn-action-group admin-action-group">
                                                         <?php if ($row['isArchived']): ?>
-                                                            <a href="#" class="btn btn-success btn-sm btn-admin-restore" data-href="<?= site_url('admin/master/akademik/restore/fakultas/' . $row['id']) ?>" data-confirm-title="Pulihkan data ini?" data-confirm-html="Data <strong><?= esc($row['name']) ?></strong> akan diaktifkan kembali." data-confirm-button="Ya, pulihkan" title="Pulihkan"><i class="bi bi-arrow-counterclockwise"></i></a>
+                                                            <a href="#" class="btn btn-success btn-sm btn-admin-restore" data-href="<?= site_url('admin/master/akademik/restore/fakultas/' . $row['id']) ?>" data-confirm-title="Pulihkan data ini?" data-confirm-html="Data <strong><?= esc((string) ($row['name'] ?? '')) ?></strong> akan diaktifkan kembali." data-confirm-button="Ya, pulihkan" title="Pulihkan"><i class="bi bi-arrow-counterclockwise"></i></a>
                                                         <?php else: ?>
-                                                            <button type="button" class="btn btn-warning btn-sm" data-admin-modal-target="#modal-edit-fakultas" data-admin-form-action="<?= site_url('admin/master/akademik/update/fakultas/' . $row['id']) ?>" data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Fakultas" data-admin-value-nama="<?= esc($row['name']) ?>" title="Edit"><i class="bi bi-pencil"></i></button>
-                                                            <a href="#" class="btn btn-danger btn-sm btn-delete" data-href="<?= site_url('admin/master/akademik/delete/fakultas/' . $row['id']) ?>" data-delete-label="<?= esc($row['name']) ?>" data-delete-desc="Fakultas akan dinonaktifkan dan bisa dipulihkan kembali." title="Hapus"><i class="bi bi-trash"></i></a>
+                                                            <button type="button" class="btn btn-warning btn-sm" data-admin-modal-target="#modal-edit-fakultas" data-admin-form-action="<?= site_url('admin/master/akademik/update/fakultas/' . $row['id']) ?>" data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Fakultas" data-admin-value-nama="<?= esc((string) ($row['name'] ?? '')) ?>" title="Edit"><i class="bi bi-pencil"></i></button>
+                                                            <a href="#" class="btn btn-danger btn-sm btn-delete" data-href="<?= site_url('admin/master/akademik/delete/fakultas/' . $row['id']) ?>" data-delete-label="<?= esc((string) ($row['name'] ?? '')) ?>" data-delete-desc="Fakultas akan dinonaktifkan dan bisa dipulihkan kembali." title="Hapus"><i class="bi bi-trash"></i></a>
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
@@ -118,7 +132,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="tab-pane fade <?= $viewState['activeTab'] === 'prodi' ? 'show active' : '' ?>" id="tab-prodi" role="tabpanel">
+                    <div class="tab-pane fade <?= (($viewState['activeTab'] ?? '') === 'prodi') ? 'show active' : '' ?>" id="tab-prodi" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="mb-0 text-muted"><i class="bi bi-mortarboard me-1"></i>Daftar Program Studi &mdash; <strong><?= esc((string) count($prodi)) ?></strong> data</h6>
                             <?php if (!empty($fakultasOptions)): ?>
@@ -172,20 +186,20 @@
                                             <?php foreach ($prodi as $index => $item): ?>
                                                 <tr>
                                                     <td class="text-center"><?= esc((string) ($index + 1)) ?></td>
-                                                    <td><?= esc($item['nama']) ?><?php if (!empty($item['deleted_at'])): ?><span class="badge bg-secondary ms-1">Nonaktif</span><?php endif; ?></td>
+                                                    <td><?= esc((string) ($item['nama'] ?? '')) ?><?php if (!empty($item['deleted_at'])): ?><span class="badge bg-secondary ms-1">Nonaktif</span><?php endif; ?></td>
                                                     <td>
                                                         <?php if (!empty($item['nama_fakultas'])): ?>
-                                                            <span class="badge bg-light text-dark border"><i class="bi bi-building me-1"></i><?= esc($item['nama_fakultas']) ?></span>
+                                                            <span class="badge bg-light text-dark border"><i class="bi bi-building me-1"></i><?= esc((string) ($item['nama_fakultas'] ?? '')) ?></span>
                                                         <?php else: ?>
                                                             <span class="text-muted small"><i>Tidak terdata</i></span>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td class="text-center btn-action-group admin-action-group">
                                                         <?php if (!empty($item['deleted_at'])): ?>
-                                                            <a href="#" class="btn btn-success btn-sm btn-admin-restore" data-href="<?= site_url('admin/master/akademik/restore/prodi/' . $item['id']) ?>" data-confirm-title="Pulihkan data ini?" data-confirm-html="Data <strong><?= esc($item['nama']) ?></strong> akan diaktifkan kembali." data-confirm-button="Ya, pulihkan" title="Pulihkan"><i class="bi bi-arrow-counterclockwise"></i></a>
+                                                            <a href="#" class="btn btn-success btn-sm btn-admin-restore" data-href="<?= site_url('admin/master/akademik/restore/prodi/' . $item['id']) ?>" data-confirm-title="Pulihkan data ini?" data-confirm-html="Data <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong> akan diaktifkan kembali." data-confirm-button="Ya, pulihkan" title="Pulihkan"><i class="bi bi-arrow-counterclockwise"></i></a>
                                                         <?php else: ?>
-                                                            <button type="button" class="btn btn-warning btn-sm" data-admin-modal-target="#modal-edit-prodi" data-admin-form-action="<?= site_url('admin/master/akademik/update/prodi/' . $item['id']) ?>" data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Program Studi" data-admin-value-nama="<?= esc($item['nama']) ?>" data-admin-value-fakultas-id="<?= esc((string) $item['fakultas_id']) ?>" title="Edit"><i class="bi bi-pencil"></i></button>
-                                                            <a href="#" class="btn btn-danger btn-sm btn-delete" data-href="<?= site_url('admin/master/akademik/delete/prodi/' . $item['id']) ?>" data-delete-label="<?= esc($item['nama']) ?>" data-delete-desc="Program studi akan dinonaktifkan dan bisa dipulihkan kembali." title="Hapus"><i class="bi bi-trash"></i></a>
+                                                            <button type="button" class="btn btn-warning btn-sm" data-admin-modal-target="#modal-edit-prodi" data-admin-form-action="<?= site_url('admin/master/akademik/update/prodi/' . $item['id']) ?>" data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Program Studi" data-admin-value-nama="<?= esc((string) ($item['nama'] ?? '')) ?>" data-admin-value-fakultas-id="<?= esc((string) ($item['fakultas_id'] ?? '')) ?>" title="Edit"><i class="bi bi-pencil"></i></button>
+                                                            <a href="#" class="btn btn-danger btn-sm btn-delete" data-href="<?= site_url('admin/master/akademik/delete/prodi/' . $item['id']) ?>" data-delete-label="<?= esc((string) ($item['nama'] ?? '')) ?>" data-delete-desc="Program studi akan dinonaktifkan dan bisa dipulihkan kembali." title="Hapus"><i class="bi bi-trash"></i></a>
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
@@ -202,7 +216,7 @@
     </div>
 </div>
 
-<?php $hasFakultasError = $viewState['openModal'] === 'tambah-fakultas'; ?>
+<?php $hasFakultasError = (($viewState['openModal'] ?? '') === 'tambah-fakultas'); ?>
 <div class="modal fade" id="modal-tambah-fakultas" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -212,15 +226,15 @@
                     <h5 class="modal-title"><i class="bi bi-building me-2"></i>Tambah Fakultas</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <?php if ($hasFakultasError && !empty($viewState['errors'])): ?>
+                    <?php if ($hasFakultasError && !empty($viewState['errors'] ?? [])): ?>
                         <div class="alert alert-danger py-2">
-                            <ul class="mb-0 ps-3"><?php foreach ((array) $viewState['errors'] as $error): ?><li><?= esc($error) ?></li><?php endforeach; ?></ul>
+                            <ul class="mb-0 ps-3"><?php foreach ((array) ($viewState['errors'] ?? []) as $error): ?><li><?= esc((string) $error) ?></li><?php endforeach; ?></ul>
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Fakultas <span class="text-danger">*</span></label>
                         <input type="text" name="nama" class="form-control <?= ($hasFakultasError && !empty($viewState['errors']['nama'])) ? 'is-invalid' : '' ?>" value="<?= $hasFakultasError ? esc(old('nama', '')) : '' ?>" placeholder="Contoh: Fakultas Teknik" required>
-                        <?php if ($hasFakultasError && !empty($viewState['errors']['nama'])): ?><div class="invalid-feedback"><?= esc($viewState['errors']['nama']) ?></div><?php endif; ?>
+                        <?php if ($hasFakultasError && !empty($viewState['errors']['nama'])): ?><div class="invalid-feedback"><?= esc((string) ($viewState['errors']['nama'] ?? '')) ?></div><?php endif; ?>
                     </div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Batal</button><button type="submit" class="btn btn-success" data-submit-trigger><span class="d-inline-flex align-items-center gap-2" data-submit-default-content><i class="bi bi-save"></i><span>Simpan</span></span><span class="d-none align-items-center gap-2" data-submit-loading-content><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span>Menyimpan...</span></span></button></div>
@@ -246,7 +260,7 @@
     </div>
 </div>
 
-<?php $hasProdiError = $viewState['openModal'] === 'tambah-prodi'; ?>
+<?php $hasProdiError = (($viewState['openModal'] ?? '') === 'tambah-prodi'); ?>
 <div class="modal fade" id="modal-tambah-prodi" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -256,14 +270,17 @@
                     <h5 class="modal-title"><i class="bi bi-mortarboard me-2"></i>Tambah Program Studi</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <?php if ($hasProdiError && !empty($viewState['errors'])): ?>
+                    <?php if ($hasProdiError && !empty($viewState['errors'] ?? [])): ?>
                         <div class="alert alert-danger py-2">
-                            <ul class="mb-0 ps-3"><?php foreach ((array) $viewState['errors'] as $error): ?><li><?= esc($error) ?></li><?php endforeach; ?></ul>
+                            <ul class="mb-0 ps-3"><?php foreach ((array) ($viewState['errors'] ?? []) as $error): ?><li><?= esc((string) $error) ?></li><?php endforeach; ?></ul>
                         </div>
                     <?php endif; ?>
-                    <div class="mb-3"><label class="form-label fw-semibold">Nama Program Studi <span class="text-danger">*</span></label><input type="text" name="nama" class="form-control <?= ($hasProdiError && !empty($viewState['errors']['nama'])) ? 'is-invalid' : '' ?>" value="<?= $hasProdiError ? esc(old('nama', '')) : '' ?>" placeholder="Contoh: Teknik Informatika" required><?php if ($hasProdiError && !empty($viewState['errors']['nama'])): ?><div class="invalid-feedback"><?= esc($viewState['errors']['nama']) ?></div><?php endif; ?></div>
-                    <div class="mb-3"><label class="form-label fw-semibold">Fakultas <span class="text-danger">*</span></label><select name="fakultas_id" class="form-select" data-select2 required>
-                            <option value="">-- Pilih Fakultas --</option><?php foreach ($fakultasOptions as $fak): ?><option value="<?= $fak['id'] ?>" <?= ($hasProdiError && old('fakultas_id') == $fak['id']) ? 'selected' : '' ?>><?= esc($fak['nama']) ?></option><?php endforeach; ?>
+                    <div class="mb-3"><label class="form-label fw-semibold">Nama Program Studi <span class="text-danger">*</span></label><input type="text" name="nama" class="form-control <?= ($hasProdiError && !empty($viewState['errors']['nama'])) ? 'is-invalid' : '' ?>" value="<?= $hasProdiError ? esc(old('nama', '')) : '' ?>" placeholder="Contoh: Teknik Informatika" required><?php if ($hasProdiError && !empty($viewState['errors']['nama'])): ?><div class="invalid-feedback"><?= esc((string) ($viewState['errors']['nama'] ?? '')) ?></div><?php endif; ?></div>
+                    <div class="mb-3"><label class="form-label fw-semibold">Fakultas <span class="text-danger">*</span></label><select name="fakultas_id" class="form-select" required>
+                            <option value="">-- Pilih Fakultas --</option>
+                            <?php foreach ($fakultasOptions as $fak): ?>
+                                <option value="<?= esc((string) ($fak['id'] ?? '')) ?>" <?= ($hasProdiError && old('fakultas_id') == ($fak['id'] ?? '')) ? 'selected' : '' ?>><?= esc((string) ($fak['nama'] ?? '')) ?></option>
+                            <?php endforeach; ?>
                         </select></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Batal</button><button type="submit" class="btn btn-success" data-submit-trigger><span class="d-inline-flex align-items-center gap-2" data-submit-default-content><i class="bi bi-save"></i><span>Simpan</span></span><span class="d-none align-items-center gap-2" data-submit-loading-content><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span>Menyimpan...</span></span></button></div>
@@ -283,7 +300,10 @@
                 <div class="modal-body">
                     <div class="mb-3"><label class="form-label fw-semibold">Nama Program Studi <span class="text-danger">*</span></label><input type="text" name="nama" class="form-control" data-admin-field="nama" placeholder="Nama Program Studi" required></div>
                     <div class="mb-3"><label class="form-label fw-semibold">Fakultas <span class="text-danger">*</span></label><select name="fakultas_id" id="editProdiFakultasId" class="form-select" data-admin-field="fakultas_id" data-select2 required>
-                            <option value="">-- Pilih Fakultas --</option><?php foreach ($fakultasOptions as $fak): ?><option value="<?= $fak['id'] ?>"><?= esc($fak['nama']) ?></option><?php endforeach; ?>
+                            <option value="">-- Pilih Fakultas --</option>
+                            <?php foreach ($fakultasOptions as $fak): ?>
+                                <option value="<?= esc((string) ($fak['id'] ?? '')) ?>"><?= esc((string) ($fak['nama'] ?? '')) ?></option>
+                            <?php endforeach; ?>
                         </select></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Batal</button><button type="submit" class="btn btn-warning" data-submit-trigger><span class="d-inline-flex align-items-center gap-2" data-submit-default-content><i class="bi bi-save"></i><span>Simpan Perubahan</span></span><span class="d-none align-items-center gap-2" data-submit-loading-content><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span>Menyimpan...</span></span></button></div>
