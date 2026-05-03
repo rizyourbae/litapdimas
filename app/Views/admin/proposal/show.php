@@ -1,5 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
+<?php $hide_header = true; ?>
+
 <?= $this->section('content') ?>
 
 <?php
@@ -38,368 +40,325 @@ $reviewerResultItems = isset($reviewerResultsPanel['items']) && is_array($review
 $presentationResultItems = isset($reviewerResultsPanel['presentation_items']) && is_array($reviewerResultsPanel['presentation_items']) ? $reviewerResultsPanel['presentation_items'] : [];
 ?>
 
-<div class="row g-3 admin-page admin-proposal-page">
+<div class="row g-3 admin-page">
+    <div class="col-12 mb-2">
+        <?= view('components/ui-hero', [
+            'type' => 'admin',
+            'title' => esc((string) ($hero['title'] ?? $title)),
+            'subtitle' => esc((string) ($hero['subtitle'] ?? '')),
+            'badges' => [
+                ['label' => 'Proposal Detail', 'class' => 'text-bg-light border shadow-sm'],
+                ['label' => esc((string) ($hero['status_label'] ?? '')), 'class' => esc((string) ($hero['status_class'] ?? 'text-bg-primary')) . ' shadow-sm']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Kembali',
+                    'class' => 'btn btn-outline-secondary',
+                    'icon' => 'bi bi-arrow-left',
+                    'url' => site_url('admin/proposal')
+                ]
+            ]
+        ]) ?>
+    </div>
+
     <div class="col-xl-8">
-        <div class="card admin-panel-card reviewer-detail-shell">
-            <div class="card-header p-0 pt-1 border-bottom-0">
-                <ul class="nav nav-tabs" id="proposalShowTabs" role="tablist">
+        <div class="card shadow-sm border-0 overflow-hidden mb-4">
+            <div class="card-header p-0 bg-light border-bottom">
+                <ul class="nav admin-nav-tabs border-0 px-3" id="proposalShowTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="proposalShowDetailTab" data-bs-toggle="tab" data-bs-target="#proposalShowDetailPane" type="button" role="tab" aria-controls="proposalShowDetailPane" aria-selected="true">
-                            <i class="bi bi-file-earmark-text me-1"></i>Detail Proposal
+                        <button class="nav-link active border-0 py-3 fw-bold" id="proposalShowDetailTab" data-bs-toggle="tab" data-bs-target="#proposalShowDetailPane" type="button" role="tab">
+                            <i class="bi bi-file-earmark-text-fill me-2"></i>Konten Proposal
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="proposalShowResultTab" data-bs-toggle="tab" data-bs-target="#proposalShowResultPane" type="button" role="tab" aria-controls="proposalShowResultPane" aria-selected="false">
-                            <i class="bi bi-chat-square-text me-1"></i>Hasil Review
+                        <button class="nav-link border-0 py-3 fw-bold" id="proposalShowResultTab" data-bs-toggle="tab" data-bs-target="#proposalShowResultPane" type="button" role="tab">
+                            <i class="bi bi-chat-left-dots-fill me-2"></i>Evaluasi & Review
                         </button>
                     </li>
                 </ul>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-4 p-lg-5">
                 <div class="tab-content" id="proposalShowTabsContent">
-                    <div class="tab-pane fade show active" id="proposalShowDetailPane" role="tabpanel" aria-labelledby="proposalShowDetailTab" tabindex="0">
-                        <div class="admin-summary-grid">
+                    <div class="tab-pane fade show active" id="proposalShowDetailPane" role="tabpanel">
+                        <div class="row g-4 mb-5">
                             <?php foreach ($summaryItems as $item): ?>
-                                <div class="admin-detail-item">
-                                    <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                                    <div class="admin-detail-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                                <div class="col-md-4">
+                                    <div class="p-3 bg-light rounded-3 border h-100">
+                                        <div class="small text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.7rem;"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                        <div class="fw-bold text-dark"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
 
-                        <div class="card admin-panel-card mt-3">
-                            <div class="card-body">
-                                <div class="admin-proposal-section__header mb-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Substansi</div>
-                                        <h3 class="h5 mb-0"><?= esc($abstract['title']) ?></h3>
-                                    </div>
-                                </div>
+                        <div class="mb-5">
+                            <h6 class="fw-bold text-primary text-uppercase small mb-4 ls-1 border-bottom pb-2">Abstrak & Substansi Utama</h6>
+                            <div class="p-4 bg-white border rounded-4 shadow-sm">
+                                <h4 class="h5 fw-bold mb-3"><?= esc($abstract['title']) ?></h4>
                                 <?php if (!empty($abstract['html'])): ?>
-                                    <div class="admin-proposal-rich"><?= $abstract['html'] ?></div>
+                                    <div class="admin-proposal-rich fs-6 lh-lg text-secondary"><?= $abstract['html'] ?></div>
                                 <?php else: ?>
-                                    <div class="admin-empty-state py-4">
-                                        <i class="bi bi-card-text"></i>
-                                        <p class="mb-0 fw-semibold text-body-emphasis"><?= esc($abstract['empty_message']) ?></p>
+                                    <div class="text-center py-5 opacity-50">
+                                        <i class="bi bi-card-text display-4 mb-2"></i>
+                                        <p class="mb-0 fw-semibold"><?= esc($abstract['empty_message']) ?></p>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
-                        <div class="card admin-panel-card mt-3">
-                            <div class="card-body">
-                                <div class="admin-proposal-section__header mb-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Struktur Proposal</div>
-                                        <h3 class="h5 mb-0">Bagian Substansi</h3>
-                                    </div>
-                                    <?php if (!empty($substansiSections)): ?>
-                                        <button
-                                            class="btn btn-sm btn-outline-secondary admin-collapse-toggle collapsed"
-                                            type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#proposalStructureCollapse"
-                                            aria-expanded="false"
-                                            aria-controls="proposalStructureCollapse">
-                                            <span class="badge text-bg-light border"><?= esc((string) $substansiSectionCount) ?> bagian</span>
-                                            <span class="admin-collapse-toggle__label">Buka Struktur</span>
-                                            <i class="bi bi-chevron-down admin-collapse-toggle__icon" aria-hidden="true"></i>
-                                        </button>
-                                    <?php endif; ?>
+                        <div class="mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                                <h6 class="fw-bold text-primary text-uppercase small mb-0 ls-1">Struktur Detail Proposal</h6>
+                                <?php if (!empty($substansiSections)): ?>
+                                    <span class="badge text-bg-light border px-3 rounded-pill"><?= esc((string) $substansiSectionCount) ?> Bagian</span>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (empty($substansiSections)): ?>
+                                <div class="p-4 bg-light text-center rounded-4 border">
+                                    <i class="bi bi-layout-text-window fs-2 text-muted mb-2"></i>
+                                    <p class="mb-0 text-muted small">Belum ada bagian substansi terperinci.</p>
                                 </div>
-                                <?php if (empty($substansiSections)): ?>
-                                    <div class="admin-empty-state py-4">
-                                        <i class="bi bi-layout-text-window"></i>
-                                        <p class="mb-0 fw-semibold text-body-emphasis">Belum ada bagian substansi yang tersimpan.</p>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="collapse" id="proposalStructureCollapse">
-                                        <div class="admin-proposal-stack">
-                                            <?php foreach ($substansiSections as $section): ?>
-                                                <div class="admin-proposal-section-block">
-                                                    <div class="admin-proposal-section__header">
-                                                        <div>
-                                                            <div class="small text-uppercase text-muted mb-1">Bagian <?= esc((string) $section['number']) ?></div>
-                                                            <h4 class="h6 mb-0"><?= esc($section['title']) ?></h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="admin-proposal-rich mt-3"><?= $section['content_html'] ?></div>
+                            <?php else: ?>
+                                <div class="accordion accordion-flush admin-proposal-accordion border rounded-4 overflow-hidden" id="substansiAccordion">
+                                    <?php foreach ($substansiSections as $index => $section): ?>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?> fw-bold py-3 px-4 bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#sec-<?= $index ?>">
+                                                    <span class="badge text-bg-primary me-3"><?= esc((string) $section['number']) ?></span>
+                                                    <?= esc($section['title']) ?>
+                                                </button>
+                                            </h2>
+                                            <div id="sec-<?= $index ?>" class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" data-bs-parent="#substansiAccordion">
+                                                <div class="accordion-body p-4 fs-6 text-secondary lh-base">
+                                                    <?= $section['content_html'] ?>
                                                 </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <div class="card admin-panel-card mt-3">
-                            <div class="card-body">
-                                <div class="admin-proposal-section__header mb-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Data Pendukung</div>
-                                        <h3 class="h5 mb-0">Informasi Jurnal</h3>
-                                    </div>
-                                </div>
-                                <div class="admin-summary-grid admin-summary-grid--compact mb-3">
-                                    <?php foreach ($journalInfo['items'] as $item): ?>
-                                        <div class="admin-detail-item">
-                                            <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                                            <div class="admin-detail-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                                <?php if (!empty($journalInfo['links'])): ?>
-                                    <div class="admin-link-stack">
-                                        <?php foreach ($journalInfo['links'] as $link): ?>
-                                            <a href="<?= esc((string) ($link['url'] ?? '#')) ?>" target="_blank" rel="noopener noreferrer" class="admin-link-chip">
-                                                <span class="admin-link-chip__label"><?= esc((string) ($link['label'] ?? '')) ?></span>
-                                                <span class="admin-link-chip__value"><?= esc((string) ($link['value'] ?? '')) ?></span>
-                                            </a>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="card admin-panel-card mt-3">
-                            <div class="card-body">
-                                <div class="admin-proposal-section__header mb-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Tim Proposal</div>
-                                        <h3 class="h5 mb-0">Komposisi Peneliti dan Mitra</h3>
+
+                        <div class="mb-5">
+                            <h6 class="fw-bold text-primary text-uppercase small mb-4 ls-1 border-bottom pb-2">Informasi Pendukung & Luaran</h6>
+                            <div class="row g-3">
+                                <?php foreach ($journalInfo['items'] as $item): ?>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="p-3 bg-white border rounded-3">
+                                            <div class="small text-muted mb-1"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                            <div class="fw-bold text-dark small"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                                        </div>
                                     </div>
-                                    <button
-                                        class="btn btn-sm btn-outline-secondary admin-collapse-toggle collapsed"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#proposalTeamCollapse"
-                                        aria-expanded="false"
-                                        aria-controls="proposalTeamCollapse">
-                                        <span class="badge text-bg-light border"><?= esc((string) $teamSectionCount) ?> grup</span>
-                                        <span class="admin-collapse-toggle__label">Buka Tim</span>
-                                        <i class="bi bi-chevron-down admin-collapse-toggle__icon" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="collapse" id="proposalTeamCollapse">
-                                    <div class="admin-proposal-stack">
-                                        <?php foreach ($teamSections as $section): ?>
-                                            <div class="admin-proposal-section-block">
-                                                <h4 class="h6 mb-3"><?= esc($section['title']) ?></h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered table-sm align-middle admin-team-table mb-0">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <?php foreach ($section['headers'] as $header): ?>
-                                                                    <th><?= esc($header) ?></th>
-                                                                <?php endforeach; ?>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php if (empty($section['rows'])): ?>
-                                                                <tr>
-                                                                    <td colspan="<?= esc((string) $section['colspan']) ?>" class="text-center text-muted"><?= esc($section['empty_message']) ?></td>
-                                                                </tr>
-                                                            <?php else: ?>
-                                                                <?php foreach ($section['rows'] as $row): ?>
-                                                                    <tr>
-                                                                        <?php foreach ($row['cells'] as $cell): ?>
-                                                                            <td><?= esc((string) $cell) ?></td>
-                                                                        <?php endforeach; ?>
-                                                                    </tr>
-                                                                <?php endforeach; ?>
-                                                            <?php endif; ?>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
+                            <?php if (!empty($journalInfo['links'])): ?>
+                                <div class="d-flex flex-wrap gap-2 mt-3">
+                                    <?php foreach ($journalInfo['links'] as $link): ?>
+                                        <a href="<?= esc((string) ($link['url'] ?? '#')) ?>" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm">
+                                            <i class="bi bi-link-45deg me-1"></i><?= esc((string) ($link['label'] ?? '')) ?>: <?= esc((string) ($link['value'] ?? '')) ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="card admin-panel-card mt-3">
-                            <div class="card-body">
-                                <div class="admin-proposal-section__header mb-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Berkas</div>
-                                        <h3 class="h5 mb-0">Dokumen Proposal</h3>
+                        <div class="mb-5">
+                            <h6 class="fw-bold text-primary text-uppercase small mb-4 ls-1 border-bottom pb-2">Komposisi Tim & Peneliti</h6>
+                            <?php foreach ($teamSections as $section): ?>
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <div class="vr" style="width: 4px; border-radius: 2px; background-color: var(--bs-primary); opacity: 1;"></div>
+                                        <h6 class="fw-bold mb-0 text-dark"><?= esc($section['title']) ?></h6>
                                     </div>
-                                    <button
-                                        class="btn btn-sm btn-outline-secondary admin-collapse-toggle collapsed"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#proposalDocumentCollapse"
-                                        aria-expanded="false"
-                                        aria-controls="proposalDocumentCollapse">
-                                        <span class="badge text-bg-light border"><?= esc((string) $documentRowCount) ?> dokumen</span>
-                                        <span class="admin-collapse-toggle__label">Buka Dokumen</span>
-                                        <i class="bi bi-chevron-down admin-collapse-toggle__icon" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="collapse" id="proposalDocumentCollapse">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-sm align-middle mb-0">
-                                            <thead class="table-light">
+                                    <div class="table-responsive border rounded-3 overflow-hidden shadow-sm">
+                                        <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.85rem;">
+                                            <thead class="bg-light border-bottom">
                                                 <tr>
-                                                    <th>Jenis Dokumen</th>
-                                                    <th>Nama File</th>
-                                                    <th>Ukuran</th>
-                                                    <th style="width:110px">Aksi</th>
+                                                    <?php foreach ($section['headers'] as $header): ?>
+                                                        <th class="p-3 fw-bold text-muted text-uppercase small" style="letter-spacing: 0.05em;"><?= esc($header) ?></th>
+                                                    <?php endforeach; ?>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php foreach ($documentRows as $row): ?>
+                                                <?php if (empty($section['rows'])): ?>
                                                     <tr>
-                                                        <td><?= esc($row['label']) ?></td>
-                                                        <td><?= esc($row['file_name']) ?></td>
-                                                        <td><?= esc($row['file_size_label']) ?></td>
-                                                        <td>
-                                                            <?php if (!empty($row['view_url'])): ?>
-                                                                <a href="<?= esc($row['view_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
-                                                                    <i class="bi bi-box-arrow-up-right me-1"></i>Lihat
-                                                                </a>
-                                                            <?php else: ?>
-                                                                <span class="text-muted small">Belum ada file</span>
-                                                            <?php endif; ?>
-                                                        </td>
+                                                        <td colspan="<?= esc((string) $section['colspan']) ?>" class="p-4 text-center text-muted italic"><?= esc($section['empty_message']) ?></td>
                                                     </tr>
-                                                <?php endforeach; ?>
+                                                <?php else: ?>
+                                                    <?php foreach ($section['rows'] as $row): ?>
+                                                        <tr>
+                                                            <?php foreach ($row['cells'] as $cell): ?>
+                                                                <td class="p-3 text-dark"><?= esc((string) $cell) ?></td>
+                                                            <?php endforeach; ?>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="mb-0">
+                            <h6 class="fw-bold text-primary text-uppercase small mb-4 ls-1 border-bottom pb-2">Dokumen & Lampiran Resmi</h6>
+                            <div class="row g-3">
+                                <?php foreach ($documentRows as $row): ?>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between shadow-sm hover-shadow-sm transition-all">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="bg-light p-2 rounded text-primary">
+                                                    <i class="bi bi-file-earmark-pdf fs-4"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark small mb-0"><?= esc($row['label']) ?></div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;"><?= esc($row['file_name']) ?> (<?= esc($row['file_size_label']) ?>)</div>
+                                                </div>
+                                            </div>
+                                            <?php if (!empty($row['view_url'])): ?>
+                                                <a href="<?= esc($row['view_url']) ?>" target="_blank" class="btn btn-light btn-sm rounded-circle border p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Buka Dokumen">
+                                                    <i class="bi bi-eye-fill text-primary"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="proposalShowResultPane" role="tabpanel" aria-labelledby="proposalShowResultTab" tabindex="0">
-                        <div class="card admin-panel-card mt-0">
-                            <div class="card-body">
-                                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
-                                    <div>
-                                        <div class="small text-uppercase text-muted mb-1">Hasil Review</div>
-                                        <h3 class="h5 mb-0">Komentar dan Nilai Reviewer</h3>
-                                    </div>
-                                    <span class="badge text-bg-light border"><?= esc((string) count($reviewerResultItems)) ?> reviewer</span>
+
+                    <div class="tab-pane fade" id="proposalShowResultPane" role="tabpanel">
+                        <div class="mb-5">
+                            <h6 class="fw-bold text-primary text-uppercase small mb-4 ls-1 border-bottom pb-2">Hasil Evaluasi Reviewer</h6>
+
+                            <ul class="nav nav-pills mb-4 bg-light p-1 rounded-3 d-inline-flex" id="proposalReviewerResultTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active rounded-2 py-2 px-4 small fw-bold" id="proposalReviewerResultListTab" data-bs-toggle="tab" data-bs-target="#proposalReviewerResultListPane" type="button" role="tab">
+                                        <i class="bi bi-chat-left-text me-2"></i>Penilaian Substansi
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-2 py-2 px-4 small fw-bold" id="proposalReviewerPresentasiTab" data-bs-toggle="tab" data-bs-target="#proposalReviewerPresentasiPane" type="button" role="tab">
+                                        <i class="bi bi-easel me-2"></i>Penilaian Presentasi
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="proposalReviewerResultTabsContent">
+                                <div class="tab-pane fade show active" id="proposalReviewerResultListPane" role="tabpanel">
+                                    <?php if (empty($reviewerResultItems)): ?>
+                                        <div class="p-5 text-center bg-light rounded-4 border">
+                                            <i class="bi bi-inbox fs-1 text-muted mb-2"></i>
+                                            <p class="mb-0 text-muted">Belum ada hasil review dari reviewer.</p>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="d-flex flex-column gap-3">
+                                            <?php foreach ($reviewerResultItems as $reviewer): ?>
+                                                <div class="p-4 border rounded-4 bg-white shadow-sm">
+                                                    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px;">
+                                                                <?= strtoupper(substr($reviewer['reviewer_name'], 0, 1)) ?>
+                                                            </div>
+                                                            <div>
+                                                                <h6 class="fw-bold mb-0 text-dark"><?= esc($reviewer['reviewer_name']) ?></h6>
+                                                                <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <div class="badge <?= esc($reviewer['status_badge_class']) ?> mb-1 rounded-pill px-3"><?= esc($reviewer['status_label']) ?></div>
+                                                            <div class="h4 fw-bold text-dark mb-0"><?= esc((string) ($reviewer['review_score_display'] ?? '-')) ?></div>
+                                                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">Total Skor</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row g-3 mb-4">
+                                                        <div class="col-md-6">
+                                                            <div class="small text-muted mb-1">Bidang Keahlian</div>
+                                                            <div class="fw-bold small text-dark"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="small text-muted mb-1">Rekomendasi</div>
+                                                            <span class="badge <?= esc($reviewer['recommendation_badge_class']) ?>"><?= esc($reviewer['recommendation_label']) ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="bg-light p-3 rounded-3 border-start border-4 border-primary">
+                                                        <div class="small fw-bold text-primary text-uppercase mb-2" style="font-size: 0.7rem;">Catatan & Review</div>
+                                                        <div class="small text-secondary lh-base"><?= nl2br(esc((string) ($reviewer['review_notes'] ?? 'Belum ada catatan.'))) ?></div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
 
-                                <ul class="nav nav-tabs mt-3" id="proposalReviewerResultTabs" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="proposalReviewerResultListTab" data-bs-toggle="tab" data-bs-target="#proposalReviewerResultListPane" type="button" role="tab" aria-controls="proposalReviewerResultListPane" aria-selected="true">
-                                            <i class="bi bi-chat-square-text me-1"></i>Hasil Reviewer
-                                        </button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="proposalReviewerPresentasiTab" data-bs-toggle="tab" data-bs-target="#proposalReviewerPresentasiPane" type="button" role="tab" aria-controls="proposalReviewerPresentasiPane" aria-selected="false">
-                                            <i class="bi bi-easel2 me-1"></i>Penilaian Presentasi
-                                        </button>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content pt-3" id="proposalReviewerResultTabsContent">
-                                    <div class="tab-pane fade show active" id="proposalReviewerResultListPane" role="tabpanel" aria-labelledby="proposalReviewerResultListTab" tabindex="0">
-                                        <?php if (empty($reviewerResultItems)): ?>
-                                            <div class="admin-empty-state py-4">
-                                                <i class="bi bi-inbox"></i>
-                                                <p class="mb-0 fw-semibold text-body-emphasis">Belum ada hasil review reviewer.</p>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="admin-proposal-stack">
-                                                <?php foreach ($reviewerResultItems as $reviewer): ?>
-                                                    <div class="admin-reviewer-card admin-reviewer-card--assigned">
-                                                        <div class="admin-reviewer-card__body">
-                                                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                                <div>
-                                                                    <div class="fw-semibold"><?= esc($reviewer['reviewer_name']) ?></div>
-                                                                    <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
-                                                                </div>
-                                                                <div class="d-flex flex-column align-items-end gap-2">
-                                                                    <span class="badge <?= esc($reviewer['status_badge_class']) ?>"><?= esc($reviewer['status_label']) ?></span>
-                                                                    <span class="badge text-bg-dark">Nilai: <?= esc((string) ($reviewer['review_score_display'] ?? '-')) ?></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="small text-muted mb-1">Bidang Ilmu</div>
-                                                            <div class="mb-3"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></div>
-
-                                                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                                                <span class="badge <?= esc($reviewer['recommendation_badge_class']) ?>"><?= esc($reviewer['recommendation_label']) ?></span>
-                                                                <span class="badge text-bg-light border">Diperbarui: <?= esc((string) ($reviewer['reviewed_at_label'] ?? '-')) ?></span>
-                                                            </div>
-
-                                                            <div class="admin-note-box">
-                                                                <div class="admin-note-box__title">Komentar Reviewer</div>
-                                                                <div class="admin-note-box__body"><?= nl2br(esc((string) ($reviewer['review_notes'] ?? 'Belum ada catatan reviewer.'))) ?></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php endif; ?>
+                                <div class="tab-pane fade" id="proposalReviewerPresentasiPane" role="tabpanel">
+                                    <div class="alert alert-info border-0 shadow-sm rounded-3 mb-4 small">
+                                        <i class="bi bi-info-circle-fill me-2"></i>
+                                        <?= esc((string) ($reviewerResultsPanel['completion_message'] ?? '')) ?>
                                     </div>
 
-                                    <div class="tab-pane fade" id="proposalReviewerPresentasiPane" role="tabpanel" aria-labelledby="proposalReviewerPresentasiTab" tabindex="0">
-                                        <div class="admin-note-box mb-3">
-                                            <div class="admin-note-box__title">Kesiapan Tahap Presentasi</div>
-                                            <div class="admin-note-box__body"><?= esc((string) ($reviewerResultsPanel['completion_message'] ?? '')) ?></div>
-                                        </div>
-
-                                        <?php if (!empty($presentationResultItems)): ?>
-                                            <div class="admin-proposal-stack mb-3">
-                                                <?php foreach ($presentationResultItems as $reviewer): ?>
-                                                    <div class="admin-reviewer-card admin-reviewer-card--assigned">
-                                                        <div class="admin-reviewer-card__body">
-                                                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                                <div>
-                                                                    <div class="fw-semibold"><?= esc($reviewer['reviewer_name']) ?></div>
-                                                                    <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
-                                                                </div>
-                                                                <div class="d-flex flex-column align-items-end gap-2">
-                                                                    <span class="badge <?= esc($reviewer['status_badge_class']) ?>"><?= esc($reviewer['status_label']) ?></span>
-                                                                    <span class="badge text-bg-success">Nilai Presentasi: <?= esc((string) ($reviewer['presentation_score_display'] ?? '-')) ?></span>
-                                                                </div>
+                                    <?php if (!empty($presentationResultItems)): ?>
+                                        <div class="d-flex flex-column gap-3 mb-4">
+                                            <?php foreach ($presentationResultItems as $reviewer): ?>
+                                                <div class="p-4 border rounded-4 bg-white shadow-sm">
+                                                    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px;">
+                                                                <?= strtoupper(substr($reviewer['reviewer_name'], 0, 1)) ?>
                                                             </div>
-
-                                                            <div class="small text-muted mb-1">Bidang Ilmu</div>
-                                                            <div class="mb-3"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></div>
-
-                                                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                                                <span class="badge text-bg-light border">Anggaran Disetujui: <?= esc((string) ($reviewer['presentation_recommended_budget_label'] ?? '-')) ?></span>
-                                                                <span class="badge text-bg-light border">Diperbarui: <?= esc((string) ($reviewer['presentation_reviewed_at_label'] ?? '-')) ?></span>
-                                                            </div>
-
-                                                            <div class="admin-note-box">
-                                                                <div class="admin-note-box__title">Catatan Presentasi</div>
-                                                                <div class="admin-note-box__body"><?= nl2br(esc((string) ($reviewer['presentation_notes'] ?? 'Belum ada hasil penilaian presentasi.'))) ?></div>
+                                                            <div>
+                                                                <h6 class="fw-bold mb-0 text-dark"><?= esc($reviewer['reviewer_name']) ?></h6>
+                                                                <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
                                                             </div>
                                                         </div>
+                                                        <div class="text-end">
+                                                            <div class="badge <?= esc($reviewer['status_badge_class']) ?> mb-1 rounded-pill px-3"><?= esc($reviewer['status_label']) ?></div>
+                                                            <div class="h4 fw-bold text-success mb-0"><?= esc((string) ($reviewer['presentation_score_display'] ?? '-')) ?></div>
+                                                        </div>
                                                     </div>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="admin-empty-state py-4 mb-3">
-                                                <i class="bi bi-easel2"></i>
-                                                <p class="mb-0 fw-semibold text-body-emphasis">Belum ada hasil penilaian presentasi yang tersimpan.</p>
-                                            </div>
-                                        <?php endif; ?>
 
+                                                    <div class="row g-3 mb-4">
+                                                        <div class="col-md-6">
+                                                            <div class="small text-muted mb-1">Anggaran Disetujui</div>
+                                                            <div class="fw-bold text-dark"><?= esc((string) ($reviewer['presentation_recommended_budget_label'] ?? '-')) ?></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="small text-muted mb-1">Update Terakhir</div>
+                                                            <div class="small text-dark fw-bold"><?= esc((string) ($reviewer['presentation_reviewed_at_label'] ?? '-')) ?></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="bg-light p-3 rounded-3 border-start border-4 border-success">
+                                                        <div class="small fw-bold text-success text-uppercase mb-2" style="font-size: 0.7rem;">Catatan Presentasi</div>
+                                                        <div class="small text-secondary lh-base"><?= nl2br(esc((string) ($reviewer['presentation_notes'] ?? 'Belum ada hasil penilaian presentasi.'))) ?></div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="p-5 text-center bg-light rounded-4 border mb-4">
+                                            <i class="bi bi-easel fs-1 text-muted mb-2"></i>
+                                            <p class="mb-0 text-muted">Belum ada hasil penilaian presentasi.</p>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <div class="text-center mt-4">
                                         <?php if (!empty($reviewerResultsPanel['all_reviewed'])): ?>
-                                            <a
-                                                href="<?= esc((string) ($reviewerResultsPanel['presentasi_url'] ?? '#')) ?>"
-                                                class="btn btn-success w-100"
-                                                data-presentasi-trigger="1"
-                                                data-presentasi-title="Buka penilaian presentasi?"
-                                                data-presentasi-message="Semua reviewer sudah menyelesaikan penilaian usulan. Lanjutkan untuk membuka tahap penilaian presentasi."
-                                                data-presentasi-confirm-text="Ya, buka sekarang">
-                                                <i class="bi bi-easel2 me-1"></i><?= esc((string) ($reviewerResultsPanel['presentasi_label'] ?? 'Buka Penilaian Presentasi')) ?>
+                                            <a href="<?= esc((string) ($reviewerResultsPanel['presentasi_url'] ?? '#')) ?>" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
+                                                <i class="bi bi-easel2 me-2"></i><?= esc((string) ($reviewerResultsPanel['presentasi_label'] ?? 'Buka Penilaian Presentasi')) ?>
                                             </a>
-                                            <small class="text-muted d-block mt-2"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></small>
+                                            <p class="small text-muted mt-2 px-lg-5"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></p>
                                         <?php else: ?>
-                                            <button type="button" class="btn btn-outline-secondary w-100" disabled>
-                                                <i class="bi bi-lock me-1"></i><?= esc((string) ($reviewerResultsPanel['presentasi_label'] ?? 'Buka Penilaian Presentasi')) ?>
+                                            <button type="button" class="btn btn-outline-secondary btn-lg px-5 rounded-pill" disabled>
+                                                <i class="bi bi-lock-fill me-2"></i>Penilaian Presentasi Belum Tersedia
                                             </button>
-                                            <small class="text-muted d-block mt-2"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></small>
+                                            <p class="small text-muted mt-2 px-lg-5"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -412,206 +371,209 @@ $presentationResultItems = isset($reviewerResultsPanel['presentation_items']) &&
     </div>
 
     <div class="col-xl-4">
-        <div class="card admin-panel-card admin-assignment-card">
-            <div class="card-body">
-                <div class="admin-proposal-section__header mb-3">
-                    <div>
-                        <div class="small text-uppercase text-muted mb-1">Penugasan Reviewer</div>
-                        <h3 class="h5 mb-0">Reviewer Aktif</h3>
-                    </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-2">
+                    <i class="bi bi-person-check-fill text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0 text-dark text-uppercase small ls-1">Tim Reviewer Aktif</h6>
                 </div>
 
                 <?php if (empty($assignmentPanel['assigned_reviewers'])): ?>
-                    <div class="admin-empty-state py-4">
-                        <i class="bi bi-clipboard-x"></i>
-                        <p class="mb-0 fw-semibold text-body-emphasis">Belum ada reviewer yang ditugaskan.</p>
+                    <div class="p-4 text-center bg-light rounded-4 border mb-4">
+                        <i class="bi bi-clipboard-x fs-2 text-muted mb-2"></i>
+                        <p class="mb-0 text-muted small">Belum ada reviewer ditugaskan.</p>
                     </div>
                 <?php else: ?>
-                    <div class="admin-proposal-stack mb-3">
+                    <div class="d-flex flex-column gap-3 mb-4">
                         <?php foreach ($assignmentPanel['assigned_reviewers'] as $reviewer): ?>
-                            <div class="admin-reviewer-card admin-reviewer-card--assigned">
-                                <div class="admin-reviewer-card__body">
-                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                        <div>
-                                            <div class="fw-semibold"><?= esc($reviewer['reviewer_name']) ?></div>
-                                            <div class="small text-muted"><?= esc($reviewer['reviewer_email']) ?></div>
-                                        </div>
-                                        <span class="badge <?= esc($reviewer['status_badge_class']) ?>"><?= esc($reviewer['status_label']) ?></span>
-                                    </div>
-                                    <div class="small text-muted mb-1">Bidang Ilmu</div>
-                                    <div class="mb-2"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></div>
-                                    <div class="d-flex flex-wrap gap-2 mb-2">
-                                        <span class="badge <?= esc($reviewer['recommendation_badge_class']) ?>"><?= esc($reviewer['recommendation_label']) ?></span>
-                                    </div>
-                                    <div class="small text-muted mb-1">Catatan Reviewer</div>
-                                    <div class="small text-body mb-3"><?= esc($reviewer['review_notes']) ?></div>
+                            <div class="p-3 border rounded-3 bg-white hover-shadow-sm transition-all position-relative overflow-hidden">
+                                <div class="position-absolute top-0 end-0 p-2">
                                     <form action="<?= esc($reviewer['remove_url']) ?>" method="post">
                                         <?= csrf_field() ?>
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                                            <i class="bi bi-trash me-1"></i><?= esc($assignmentPanel['remove_button_label']) ?>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm border-0 p-1" title="Hapus Penugasan">
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
+                                </div>
+                                <div class="fw-bold text-dark small mb-0 pe-4"><?= esc($reviewer['reviewer_name']) ?></div>
+                                <div class="text-muted mb-2" style="font-size: 0.7rem;"><?= esc($reviewer['reviewer_email']) ?></div>
+                                <div class="d-flex flex-wrap gap-1">
+                                    <span class="badge <?= esc($reviewer['status_badge_class']) ?> small" style="font-size: 0.65rem;"><?= esc($reviewer['status_label']) ?></span>
+                                    <span class="badge text-bg-light border small" style="font-size: 0.65rem;"><?= esc($reviewer['reviewer_bidang_ilmu']) ?></span>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
 
-                <div class="admin-proposal-section__header mb-3 mt-4">
-                    <div>
-                        <div class="small text-uppercase text-muted mb-1">Pilih Reviewer</div>
-                        <h3 class="h6 mb-0">Tambahkan Reviewer Baru</h3>
-                    </div>
+                <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-2 mt-2">
+                    <i class="bi bi-person-plus-fill text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0 text-dark text-uppercase small ls-1">Tugaskan Reviewer Baru</h6>
                 </div>
-                <p class="text-muted small mb-3"><?= esc($assignmentPanel['assignment_hint']) ?></p>
+
+                <p class="text-muted small mb-3 lh-sm" style="font-size: 0.75rem;"><?= esc($assignmentPanel['assignment_hint']) ?></p>
 
                 <?php if (!$assignmentPanel['has_candidates']): ?>
-                    <div class="admin-empty-state py-4">
-                        <i class="bi bi-people"></i>
-                        <p class="mb-0 fw-semibold text-body-emphasis"><?= esc($assignmentPanel['empty_message']) ?></p>
+                    <div class="p-4 text-center bg-light rounded-4 border">
+                        <p class="mb-0 text-muted small"><?= esc($assignmentPanel['empty_message']) ?></p>
                     </div>
                 <?php else: ?>
-                    <form action="<?= esc($assignmentPanel['form_action']) ?>" method="post">
+                    <form action="<?= esc($assignmentPanel['form_action']) ?>" method="post" id="assignmentForm">
                         <?= csrf_field() ?>
-                        <div class="admin-proposal-stack">
-                            <?php if (!empty($recommendedReviewers)): ?>
-                                <div class="admin-reviewer-group">
-                                    <div class="small text-uppercase text-muted mb-2">Rekomendasi Sistem</div>
-                                    <div class="admin-assignment-note mb-3">
-                                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-semibold text-body-emphasis">Prioritas otomatis ditampilkan lebih dulu</div>
-                                                <div class="small text-muted">Sistem hanya menampilkan reviewer paling relevan di tampilan awal agar panel tetap ringkas.</div>
+
+                        <?php if (!empty($recommendedReviewers)): ?>
+                            <div class="mb-4">
+                                <div class="small fw-bold text-muted text-uppercase mb-3" style="font-size: 0.65rem;">Saran Sistem (Match Score Tinggi)</div>
+                                <div class="d-flex flex-column gap-2">
+                                    <?php foreach ($recommendedReviewers as $reviewer): ?>
+                                        <label class="p-3 border rounded-3 bg-white d-flex align-items-center gap-3 cursor-pointer hover-shadow-sm transition-all border-primary-hover">
+                                            <input class="form-check-input mt-0 shadow-none" type="checkbox" name="reviewer_ids[]" value="<?= esc((string) $reviewer['id']) ?>">
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <div class="fw-bold text-dark small text-truncate"><?= esc($reviewer['name']) ?></div>
+                                                <div class="badge <?= esc($reviewer['fit_badge_class']) ?> mt-1" style="font-size: 0.6rem;"><?= esc($reviewer['fit_label']) ?></div>
                                             </div>
-                                            <span class="badge text-bg-success"><?= esc((string) ($assignmentPanel['recommended_total'] ?? count($recommendedReviewers))) ?> prioritas</span>
-                                        </div>
-                                        <?php if ($recommendedHiddenCount > 0): ?>
-                                            <div class="small text-muted mt-2"><?= esc((string) $recommendedHiddenCount) ?> kandidat relevan lain tetap tersedia di pencarian manual.</div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="admin-proposal-stack">
-                                        <?php foreach ($recommendedReviewers as $reviewer): ?>
-                                            <label class="admin-reviewer-card admin-reviewer-card--recommended">
-                                                <div class="admin-reviewer-card__selector">
-                                                    <input class="form-check-input" type="checkbox" name="reviewer_ids[]" value="<?= esc((string) $reviewer['id']) ?>">
-                                                </div>
-                                                <div class="admin-reviewer-card__body">
-                                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                        <div>
-                                                            <div class="fw-semibold"><?= esc($reviewer['name']) ?></div>
-                                                            <div class="small text-muted"><?= esc($reviewer['email']) ?></div>
-                                                        </div>
-                                                        <span class="badge <?= esc($reviewer['fit_badge_class']) ?>"><?= esc($reviewer['fit_label']) ?></span>
-                                                    </div>
-                                                    <div class="small text-muted mb-1">Bidang Ilmu</div>
-                                                    <div><?= esc($reviewer['bidang_ilmu']) ?></div>
-                                                </div>
-                                            </label>
-                                        <?php endforeach; ?>
-                                    </div>
+                                        </label>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
 
-                            <?php if (!empty($manualReviewers)): ?>
-                                <div class="admin-reviewer-group">
-                                    <div class="small text-uppercase text-muted mb-2">Pencarian Manual</div>
-                                    <div class="admin-assignment-note mb-3">
-                                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-semibold text-body-emphasis">Buka kandidat lain saat diperlukan</div>
-                                                <div class="small text-muted"><?= esc($assignmentPanel['manual_hint'] ?? '') ?></div>
-                                            </div>
-                                            <span class="badge text-bg-light border"><span id="manualReviewerVisibleCount"><?= esc((string) $manualReviewerCount) ?></span> reviewer</span>
-                                        </div>
-                                    </div>
-
-                                    <button class="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#manualReviewerCollapse" aria-expanded="false" aria-controls="manualReviewerCollapse">
-                                        <span><i class="bi bi-search me-2"></i>Lihat reviewer lain</span>
-                                        <span class="badge text-bg-secondary"><?= esc((string) $manualReviewerCount) ?></span>
-                                    </button>
-
-                                    <div class="collapse mt-3" id="manualReviewerCollapse">
-                                        <div class="admin-reviewer-search-panel">
-                                            <label for="manualReviewerSearch" class="form-label small text-muted fw-semibold">Cari reviewer</label>
-                                            <input
-                                                type="search"
-                                                id="manualReviewerSearch"
-                                                class="form-control"
-                                                placeholder="Cari nama, email, atau bidang ilmu"
-                                                data-reviewer-filter-input="#manualReviewerList"
-                                                data-reviewer-empty-target="#manualReviewerEmpty"
-                                                data-reviewer-count-target="#manualReviewerVisibleCount">
-                                        </div>
-
-                                        <div class="admin-proposal-stack admin-reviewer-scroll mt-3" id="manualReviewerList">
-                                            <?php foreach ($manualReviewers as $reviewer): ?>
-                                                <label class="admin-reviewer-card" data-reviewer-card-filter-item data-reviewer-search="<?= esc(strtolower(trim(($reviewer['name'] ?? '') . ' ' . ($reviewer['email'] ?? '') . ' ' . ($reviewer['bidang_ilmu'] ?? '')))) ?>">
-                                                    <div class="admin-reviewer-card__selector">
-                                                        <input class="form-check-input" type="checkbox" name="reviewer_ids[]" value="<?= esc((string) $reviewer['id']) ?>">
-                                                    </div>
-                                                    <div class="admin-reviewer-card__body">
-                                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                                            <div>
-                                                                <div class="fw-semibold"><?= esc($reviewer['name']) ?></div>
-                                                                <div class="small text-muted"><?= esc($reviewer['email']) ?></div>
-                                                            </div>
-                                                            <span class="badge <?= esc($reviewer['fit_badge_class']) ?>"><?= esc($reviewer['fit_label']) ?></span>
-                                                        </div>
-                                                        <div class="small text-muted mb-1">Bidang Ilmu</div>
-                                                        <div><?= esc($reviewer['bidang_ilmu']) ?></div>
-                                                    </div>
-                                                </label>
-                                            <?php endforeach; ?>
-                                        </div>
-
-                                        <div id="manualReviewerEmpty" class="admin-empty-state py-4 d-none mt-3">
-                                            <i class="bi bi-search"></i>
-                                            <p class="mb-0 fw-semibold text-body-emphasis">Tidak ada reviewer yang cocok dengan pencarian.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mt-3">
-                            <label for="assignment_notes" class="form-label small text-muted fw-semibold">Catatan Penugasan</label>
-                            <textarea id="assignment_notes" name="assignment_notes" class="form-control" rows="3" placeholder="Opsional. Catatan ini akan tersimpan pada assignment reviewer yang dipilih."></textarea>
-                        </div>
-
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-person-plus me-1"></i>Tugaskan Reviewer Terpilih
+                        <div class="mb-4">
+                            <button class="btn btn-light w-100 btn-sm text-muted fw-bold d-flex justify-content-between align-items-center rounded-pill px-3" type="button" data-bs-toggle="collapse" data-bs-target="#manualReviewerCollapse">
+                                <span style="font-size: 0.75rem;"><i class="bi bi-search me-2"></i>Pencarian Manual</span>
+                                <i class="bi bi-chevron-down small"></i>
                             </button>
+
+                            <div class="collapse mt-3" id="manualReviewerCollapse">
+                                <input type="search" id="manualReviewerSearch" class="form-control form-control-sm mb-3 shadow-none bg-light border-0" placeholder="Cari nama, email, atau bidang..."
+                                    data-reviewer-filter-input="#manualReviewerList" data-reviewer-empty-target="#manualReviewerEmpty" data-reviewer-count-target="#manualReviewerVisibleCount">
+
+                                <div class="d-flex flex-column gap-2 overflow-auto" style="max-height: 300px;" id="manualReviewerList">
+                                    <?php foreach ($manualReviewers as $reviewer): ?>
+                                        <label class="p-2 border rounded-3 bg-white d-flex align-items-center gap-3 cursor-pointer hover-shadow-sm transition-all small" data-reviewer-card-filter-item data-reviewer-search="<?= esc(strtolower(trim(($reviewer['name'] ?? '') . ' ' . ($reviewer['email'] ?? '') . ' ' . ($reviewer['bidang_ilmu'] ?? '')))) ?>">
+                                            <input class="form-check-input mt-0 shadow-none" type="checkbox" name="reviewer_ids[]" value="<?= esc((string) $reviewer['id']) ?>">
+                                            <div class="overflow-hidden">
+                                                <div class="fw-bold text-dark text-truncate" style="font-size: 0.75rem;"><?= esc($reviewer['name']) ?></div>
+                                                <div class="text-muted" style="font-size: 0.65rem;"><?= esc($reviewer['bidang_ilmu']) ?></div>
+                                            </div>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div id="manualReviewerEmpty" class="text-center py-3 d-none">
+                                    <small class="text-muted italic">Tidak ditemukan.</small>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Catatan Admin (Internal)</label>
+                            <textarea name="assignment_notes" class="form-control form-control-sm shadow-none" rows="2" placeholder="Tulis instruksi khusus..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm rounded-pill">
+                            <i class="bi bi-person-plus-fill me-1"></i>Tugaskan Reviewer
+                        </button>
                     </form>
                 <?php endif; ?>
             </div>
         </div>
 
-        <div class="card admin-panel-card mt-3">
-            <div class="card-body">
-                <div class="admin-proposal-section__header mb-3">
-                    <div>
-                        <div class="small text-uppercase text-muted mb-1">Ringkasan Keputusan</div>
-                        <h3 class="h5 mb-0">Kesiapan Keputusan Akhir Admin</h3>
-                    </div>
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-2">
+                    <i class="bi bi-check2-square text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0 text-dark text-uppercase small ls-1">Keputusan Akhir</h6>
                 </div>
-                <div class="admin-decision-grid mb-3">
+
+                <div class="row g-2 mb-4">
                     <?php foreach ($decisionSummary['cards'] as $card): ?>
-                        <div class="admin-detail-item">
-                            <div class="admin-detail-item__label"><?= esc($card['label']) ?></div>
-                            <div class="admin-detail-item__value <?= esc($card['tone_class']) ?>"><?= esc($card['value']) ?></div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light border rounded-3 text-center">
+                                <div class="small text-muted fw-bold mb-1" style="font-size: 0.6rem;"><?= esc($card['label']) ?></div>
+                                <div class="fw-bold <?= esc($card['tone_class']) ?>" style="font-size: 0.9rem;"><?= esc($card['value']) ?></div>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <div class="admin-note-box">
-                    <div class="admin-note-box__title">Catatan</div>
-                    <div class="admin-note-box__body"><?= esc($decisionSummary['note']) ?></div>
+
+                <div class="bg-light p-3 rounded-3 border-start border-4 border-primary mb-4">
+                    <div class="small fw-bold text-primary text-uppercase mb-1" style="font-size: 0.65rem;">Ringkasan & Panduan</div>
+                    <div class="small text-secondary lh-sm"><?= esc($decisionSummary['note']) ?></div>
                 </div>
+
+                <?php if ($decisionSummary['can_decide']): ?>
+                    <button type="button" class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#modal-final-decision">
+                        <i class="bi bi-check-circle-fill me-2"></i>Berikan Keputusan Akhir
+                    </button>
+                <?php elseif ($decisionSummary['is_decided']): ?>
+                    <div class="p-3 border rounded-3 bg-light">
+                        <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.6rem;">Status Akhir Terpilih</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-info-circle-fill <?= $hero['status_class'] ?? 'text-primary' ?>"></i>
+                            <span class="fw-bold <?= $hero['status_class'] ?? 'text-primary' ?>"><?= esc($hero['status_label'] ?? '') ?></span>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <button type="button" class="btn btn-outline-secondary w-100 fw-bold rounded-pill" disabled title="Tunggu semua reviewer selesai memberikan penilaian">
+                        <i class="bi bi-hourglass-split me-2"></i>Menunggu Penilaian
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL FINAL DECISION -->
+<div class="modal fade" id="modal-final-decision" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <form action="<?= site_url('admin/proposals/decide/' . $uuid) ?>" method="post">
+                <?= csrf_field() ?>
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="fw-bold text-dark mb-0">Keputusan Akhir Proposal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 rounded-3 small mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Pastikan Anda telah meninjau seluruh hasil evaluasi reviewer sebelum mengambil keputusan akhir.
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted text-uppercase ls-1">Pilih Keputusan <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-3">
+                            <div class="flex-grow-1">
+                                <input type="radio" class="btn-check" name="decision" id="dec_approve" value="approved" required>
+                                <label class="btn btn-outline-success w-100 py-3 rounded-3 fw-bold" for="dec_approve">
+                                    <i class="bi bi-check-circle-fill d-block fs-4 mb-1"></i>
+                                    Setujui
+                                </label>
+                            </div>
+                            <div class="flex-grow-1">
+                                <input type="radio" class="btn-check" name="decision" id="dec_reject" value="rejected" required>
+                                <label class="btn btn-outline-danger w-100 py-3 rounded-3 fw-bold" for="dec_reject">
+                                    <i class="bi bi-x-circle-fill d-block fs-4 mb-1"></i>
+                                    Tolak
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label for="decision_notes" class="form-label fw-bold small text-muted text-uppercase ls-1">Catatan Akhir Admin (Opsional)</label>
+                        <textarea class="form-control rounded-3 shadow-sm" id="decision_notes" name="decision_notes" rows="4" placeholder="Tulis catatan atau alasan keputusan untuk pengusul..."></textarea>
+                        <div class="form-text small mt-2">Catatan ini akan dapat dilihat oleh pengusul (Dosen) pada dashboard mereka.</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">Konfirmasi Keputusan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <?= $this->endSection() ?>
 

@@ -1,12 +1,23 @@
 <?php
+/** @var array<string,mixed> $proposal */
+/** @var string $proposalUuid */
 
-/**
- * dosen/proposals/review.php
- * Review page - ringkasan proposal sebelum submit
- */
 $this->extend('layouts/main');
-$this->section('content');
 
+$this->section('content');
+?>
+
+<?= view('components/ui-hero', [
+    'type' => 'dosen',
+    'title' => 'Final Review Proposal',
+    'subtitle' => 'Periksa kembali seluruh data sebelum melakukan submit akhir. Data tidak dapat diubah setelah dikirim.',
+    'badges' => [
+        ['label' => 'Final Check', 'class' => 'text-bg-warning px-3']
+    ]
+]) ?>
+
+
+<?php
 $overviewCards = $proposal['review_overview_cards'] ?? [];
 $step1Items = $proposal['review_step1_items'] ?? [];
 $step2Sections = $proposal['review_step2_sections'] ?? [];
@@ -15,247 +26,40 @@ $step5Summary = $proposal['review_step5_summary'] ?? [];
 $documents = $proposal['documents'] ?? [];
 ?>
 
-<?= view('components/dosen-hero', [
-    'title' => 'Review Proposal',
-    'subtitle' => 'Cek kembali isi proposal, pastikan semua data sudah benar sebelum submit final.',
-    'icon' => 'fas fa-check-double',
-]) ?>
-
-<div class="container-fluid proposal-review-page">
-    <style>
-        .proposal-review-page .review-card {
-            border: 0;
-            border-radius: 0.95rem;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
-        }
-
-        .proposal-review-page .review-overview-grid {
-            display: grid;
-            gap: 0.9rem;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            margin-bottom: 1rem;
-        }
-
-        .proposal-review-page .review-overview-card {
-            border: 1px solid #dbeafe;
-            border-radius: 0.85rem;
-            background: linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
-            padding: 0.95rem 1rem;
-        }
-
-        .proposal-review-page .review-overview-label {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #64748b;
-            margin-bottom: 0.45rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-        }
-
-        .proposal-review-page .review-overview-value {
-            color: #0f172a;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .proposal-review-page .review-section {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.85rem;
-            padding: 1rem;
-            background: #fff;
-        }
-
-        .proposal-review-page .review-section+.review-section {
-            margin-top: 1rem;
-        }
-
-        .proposal-review-page .review-section-title {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 0.95rem;
-        }
-
-        .proposal-review-page .review-section-dot {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
-            box-shadow: inset 0 0 0 1px rgba(147, 197, 253, 0.65);
-            flex-shrink: 0;
-        }
-
-        .proposal-review-page .review-list {
-            display: grid;
-            gap: 0.8rem;
-        }
-
-        .proposal-review-page .review-item-row {
-            display: grid;
-            gap: 0.35rem;
-            grid-template-columns: minmax(150px, 180px) minmax(0, 1fr);
-            align-items: start;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid #eef2f7;
-        }
-
-        .proposal-review-page .review-item-row:last-child {
-            padding-bottom: 0;
-            border-bottom: 0;
-        }
-
-        .proposal-review-page .review-label {
-            color: #64748b;
-            font-size: 0.88rem;
-            font-weight: 600;
-        }
-
-        .proposal-review-page .review-value {
-            color: #0f172a;
-            font-weight: 500;
-            min-width: 0;
-        }
-
-        .proposal-review-page .review-table {
-            color: #334155;
-        }
-
-        .proposal-review-page .review-table thead th {
-            background: #f8fafc;
-            color: #0f172a;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .proposal-review-page .review-table tbody td {
-            vertical-align: top;
-        }
-
-        .proposal-review-page .review-link-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.65rem;
-            flex-wrap: wrap;
-        }
-
-        .proposal-review-page .review-link-host {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            font-size: 0.82rem;
-            font-weight: 600;
-            word-break: break-all;
-        }
-
-        .proposal-review-page .review-link-btn {
-            border-radius: 999px;
-            white-space: nowrap;
-        }
-
-        .proposal-review-page .review-rich {
-            color: #334155;
-            line-height: 1.7;
-        }
-
-        .proposal-review-page .review-rich p:last-child {
-            margin-bottom: 0;
-        }
-
-        .proposal-review-page .review-note {
-            border: 1px dashed #cbd5e1;
-            border-radius: 0.85rem;
-            padding: 1rem;
-            background: #f8fafc;
-        }
-
-        .proposal-review-page .review-note-title {
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 0.4rem;
-        }
-
-        .proposal-review-page .review-note-body {
-            color: #64748b;
-            line-height: 1.65;
-        }
-
-        .proposal-review-page .warning-box {
-            border: 1px solid #fcd34d;
-            background: #fffbeb;
-            border-radius: 0.8rem;
-            padding: 0.9rem 1rem;
-        }
-
-        .proposal-review-page .action-bar {
-            border-top: 1px solid #e5e7eb;
-            padding-top: 1rem;
-        }
-
-        @media (max-width: 991.98px) {
-            .proposal-review-page .review-overview-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .proposal-review-page .review-overview-grid {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .proposal-review-page .review-item-row {
-                grid-template-columns: minmax(0, 1fr);
-            }
-        }
-    </style>
-
-    <div class="card review-card dosen-form-card">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 class="mb-0"><i class="fas fa-list-check me-1"></i> Ringkasan Proposal</h5>
-            <span class="badge text-bg-light">Final Check</span>
-        </div>
-
-        <div class="card-body">
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle me-1"></i> <?= esc(session()->getFlashdata('error')) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-
-            <div class="review-overview-grid">
+<div class="proposal-review-page">
+            <div class="row g-3 mb-4">
                 <?php foreach ($overviewCards as $card): ?>
-                    <div class="review-overview-card">
-                        <div class="review-overview-label"><i class="<?= esc($card['icon'] ?? 'fas fa-circle') ?>"></i> <?= esc($card['label'] ?? '-') ?></div>
-                        <div class="review-overview-value"><?= esc($card['value'] ?? '-') ?></div>
+                    <div class="col-6 col-md-3">
+                        <?= view('components/ui-stat-card', [
+                            'label' => $card['label'] ?? '-',
+                            'value' => $card['value'] ?? '-',
+                            'icon' => $card['icon'] ?? 'bi bi-info-circle',
+                            'colorClass' => 'text-dark'
+                        ]) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
 
-            <div class="review-section">
-                <div class="review-section-title"><span class="review-section-dot" aria-hidden="true"></span>Step 1: Pernyataan Peneliti</div>
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered align-middle review-table mb-0">
-                        <tbody>
-                            <?php foreach ($step1Items as $item): ?>
-                                <tr>
-                                    <td class="fw-semibold" style="width: 26%;"><?= esc($item['label'] ?? '-') ?></td>
-                                    <td><?= esc($item['value'] ?? '-') ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light py-3 px-4">
+                    <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1">Step 1: Pernyataan Peneliti</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <tbody>
+                                <?php foreach ($step1Items as $item): ?>
+                                    <tr>
+                                        <td class="fw-bold text-muted px-4" style="width: 30%;"><?= esc($item['label'] ?? '-') ?></td>
+                                        <td class="px-4 text-dark"><?= esc($item['value'] ?? '-') ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
 
             <div class="review-section">
                 <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
@@ -268,7 +72,7 @@ $documents = $proposal['documents'] ?? [];
                         <div class="review-section-title"><span class="review-section-dot" aria-hidden="true"></span><?= esc($section['title'] ?? '-') ?></div>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered align-middle review-table mb-0">
-                                <thead>
+                                <thead class="bg-light">
                                     <tr>
                                         <?php foreach (($section['columns'] ?? []) as $column): ?>
                                             <th><?= esc($column) ?></th>
@@ -334,7 +138,7 @@ $documents = $proposal['documents'] ?? [];
 
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered align-middle review-table mb-0">
-                        <thead>
+                        <thead class="bg-light">
                             <tr>
                                 <th>Nama Berkas</th>
                                 <th>Berkas Terunggah</th>
@@ -354,8 +158,8 @@ $documents = $proposal['documents'] ?? [];
                                         </td>
                                         <td>
                                             <div class="review-link-chip">
-                                                <span class="review-link-host"><?= esc((string) ($document['file_name'] ?? '-')) ?></span>
-                                                <a href="<?= esc($document['view_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary review-link-btn"><i class="fas fa-eye me-1"></i>Lihat Berkas</a>
+                                                <span class="review-link-host"><?= esc((string) ($document['nama_file'] ?? '-')) ?></span>
+                                                <a href="<?= esc((string) $document['view_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary review-link-btn"><i class="bi bi-eye me-1"></i>Lihat Berkas</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -387,16 +191,16 @@ $documents = $proposal['documents'] ?? [];
                     </div>
                     <div class="review-item-row">
                         <div class="review-label">Total Pengajuan Dana</div>
-                        <div class="review-value"><?= !empty($step5Summary['total_pengajuan_dana']) ? 'Rp ' . number_format((float) $step5Summary['total_pengajuan_dana'], 0, ',', '.') : '-' ?></div>
+                        <div class="review-value fw-bold text-success"><?= !empty($step5Summary['total_pengajuan_dana']) ? 'Rp ' . number_format((float) $step5Summary['total_pengajuan_dana'], 0, ',', '.') : '-' ?></div>
                     </div>
                     <?php foreach ($step5Summary['links'] ?? [] as $link): ?>
                         <div class="review-item-row">
                             <div class="review-label"><?= esc($link['label'] ?? '-') ?></div>
                             <div class="review-value">
-                                <?php if (!empty($link['has_url'])): ?>
+                                <?php if (!empty($link['url'])): ?>
                                     <div class="review-link-chip">
-                                        <span class="review-link-host"><?= esc($link['host'] ?? '-') ?></span>
-                                        <a href="<?= esc($link['url'] ?? '#') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary review-link-btn"><i class="fas fa-arrow-up-right-from-square me-1"></i>Buka</a>
+                                        <span class="review-link-host"><?= esc(parse_url((string) $link['url'], PHP_URL_HOST) ?: $link['url']) ?></span>
+                                        <a href="<?= esc((string) $link['url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary review-link-btn"><i class="bi bi-box-arrow-up-right me-1"></i>Buka</a>
                                     </div>
                                 <?php else: ?>
                                     <span class="text-muted">-</span>
@@ -407,20 +211,25 @@ $documents = $proposal['documents'] ?? [];
                 </div>
             </div>
 
-            <div class="warning-box mb-4">
-                <i class="fas fa-triangle-exclamation text-warning me-1"></i>
-                Setelah Anda submit proposal, data tidak dapat diubah. Pastikan seluruh informasi sudah benar.
+            <div class="alert alert-warning border-0 shadow-sm mb-4">
+                <div class="d-flex gap-2">
+                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                    <div>
+                        <div class="fw-bold">Peringatan</div>
+                        Setelah Anda submit proposal, data tidak dapat diubah kembali. Pastikan seluruh informasi sudah benar.
+                    </div>
+                </div>
             </div>
 
-            <div class="action-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="action-bar d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 border-top">
                 <a href="<?= site_url('dosen/proposals/step/5/' . esc($proposalUuid)) ?>" class="btn btn-outline-secondary">
-                    <i class="fas fa-chevron-left me-1"></i> Kembali Edit
+                    <i class="bi bi-chevron-left me-1"></i> Kembali Edit
                 </a>
 
                 <form method="POST" action="<?= site_url('dosen/proposals/submit/' . esc($proposalUuid)) ?>" class="m-0" id="proposalReviewForm" data-confirm-title="Submit proposal ini?" data-confirm-message="Setelah submit, proposal akan terkirim untuk review dan tidak bisa diubah lagi.">
                     <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="fas fa-paper-plane me-1"></i> Submit Proposal
+                    <button type="submit" class="btn btn-success btn-lg px-4">
+                        <i class="bi bi-send me-1"></i> Submit Proposal
                     </button>
                 </form>
             </div>

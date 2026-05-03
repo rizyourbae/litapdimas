@@ -12,7 +12,7 @@ $sections = $stepData['substansi_bagian'] ?? [];
 
 <div class="card border-0 bg-light mb-4" style="border-radius:0.8rem;">
     <div class="card-body py-3">
-        <h6 class="mb-1"><i class="fas fa-file-lines text-primary me-1"></i> Substansi Usulan</h6>
+        <h6 class="mb-1"><i class="bi bi-file-text text-primary me-1"></i> Substansi Usulan</h6>
         <p class="text-muted small mb-0">Tulis abstrak yang ringkas dan susun substansi proposal dalam beberapa bagian agar mudah direview.</p>
     </div>
 </div>
@@ -30,7 +30,7 @@ $sections = $stepData['substansi_bagian'] ?? [];
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="mb-0 flex-grow-1">Bagian Substansi <span class="text-danger">*</span></h6>
         <button type="button" class="btn btn-success btn-sm ms-2" onclick="addSubstansiSection()">
-            <i class="fas fa-plus me-1"></i> Tambah Bagian
+            <i class="bi bi-plus-lg me-1"></i> Tambah Bagian
         </button>
     </div>
     <div class="card-body">
@@ -55,7 +55,7 @@ $sections = $stepData['substansi_bagian'] ?? [];
                             </div>
 
                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSubstansiSection(this)">
-                                <i class="fas fa-trash me-1"></i> Hapus Bagian
+                                <i class="bi bi-trash me-1"></i> Hapus Bagian
                             </button>
                         </div>
                     </div>
@@ -93,7 +93,7 @@ $sections = $stepData['substansi_bagian'] ?? [];
                 </div>
 
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSubstansiSection(this)">
-                    <i class="fas fa-trash me-1"></i> Hapus Bagian
+                    <i class="bi bi-trash me-1"></i> Hapus Bagian
                 </button>
             </div>
         </div>`;

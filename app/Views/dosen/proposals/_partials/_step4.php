@@ -8,7 +8,7 @@
 
 <div class="card border-0 bg-light mb-4" style="border-radius:0.8rem;">
     <div class="card-body py-3">
-        <h6 class="mb-1"><i class="fas fa-file-arrow-up text-danger me-1"></i> Unggah Berkas Proposal</h6>
+        <h6 class="mb-1"><i class="bi bi-file-earmark-arrow-up text-danger me-1"></i> Unggah Berkas Proposal</h6>
         <p class="text-muted small mb-0">Format PDF, maksimal 2 MB per file. Tiga dokumen wajib harus tersedia sebelum lanjut.</p>
     </div>
 </div>
@@ -26,7 +26,7 @@
                     ondragout="handleDragOut(event)"
                     onclick="document.getElementById('file_proposal').click()"
                     style="cursor:pointer; border-style:dashed;">
-                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                    <i class="bi bi-cloud-arrow-up fa-2x text-primary mb-2"></i>
                     <p class="mb-1 small"><strong>Klik atau seret file</strong></p>
                     <p class="text-muted small mb-0">PDF, max 2 MB</p>
                     <input type="file" id="file_proposal" name="file_proposal" class="d-none" accept=".pdf" onchange="handleFileSelect(event)">
@@ -38,7 +38,7 @@
                     <small class="text-muted">Uploading...</small>
                 </div>
                 <div class="upload-success mt-2" style="display:none;">
-                    <p class="text-success mb-1"><i class="fas fa-check-circle me-1"></i> File berhasil dipilih</p>
+                    <p class="text-success mb-1"><i class="bi bi-check-circle me-1"></i> File berhasil dipilih</p>
                     <small class="text-muted" id="file_proposal_name"></small>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                     ondragout="handleDragOut(event)"
                     onclick="document.getElementById('file_rab').click()"
                     style="cursor:pointer; border-style:dashed;">
-                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                    <i class="bi bi-cloud-arrow-up fa-2x text-primary mb-2"></i>
                     <p class="mb-1 small"><strong>Klik atau seret file</strong></p>
                     <p class="text-muted small mb-0">PDF, max 2 MB</p>
                     <input type="file" id="file_rab" name="file_rab" class="d-none" accept=".pdf" onchange="handleFileSelect(event)">
@@ -69,7 +69,7 @@
                     <small class="text-muted">Uploading...</small>
                 </div>
                 <div class="upload-success mt-2" style="display:none;">
-                    <p class="text-success mb-1"><i class="fas fa-check-circle me-1"></i> File berhasil dipilih</p>
+                    <p class="text-success mb-1"><i class="bi bi-check-circle me-1"></i> File berhasil dipilih</p>
                     <small class="text-muted" id="file_rab_name"></small>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                     ondragout="handleDragOut(event)"
                     onclick="document.getElementById('file_similarity').click()"
                     style="cursor:pointer; border-style:dashed;">
-                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                    <i class="bi bi-cloud-arrow-up fa-2x text-primary mb-2"></i>
                     <p class="mb-1 small"><strong>Klik atau seret file</strong></p>
                     <p class="text-muted small mb-0">PDF, max 2 MB</p>
                     <input type="file" id="file_similarity" name="file_similarity" class="d-none" accept=".pdf" onchange="handleFileSelect(event)">
@@ -100,7 +100,7 @@
                     <small class="text-muted">Uploading...</small>
                 </div>
                 <div class="upload-success mt-2" style="display:none;">
-                    <p class="text-success mb-1"><i class="fas fa-check-circle me-1"></i> File berhasil dipilih</p>
+                    <p class="text-success mb-1"><i class="bi bi-check-circle me-1"></i> File berhasil dipilih</p>
                     <small class="text-muted" id="file_similarity_name"></small>
                 </div>
             </div>
@@ -110,7 +110,7 @@
 
 <div class="card" style="border-radius:0.8rem;">
     <div class="card-header">
-        <h6 class="mb-0"><i class="fas fa-paperclip text-secondary me-1"></i> File Pendukung (Opsional)</h6>
+        <h6 class="mb-0"><i class="bi bi-paperclip text-secondary me-1"></i> File Pendukung (Opsional)</h6>
     </div>
     <div class="card-body">
         <label for="file_pendukung" class="form-label">Lampiran Tambahan</label>
@@ -121,7 +121,7 @@
             ondragout="handleDragOut(event)"
             onclick="document.getElementById('file_pendukung').click()"
             style="cursor:pointer; border-style:dashed;">
-            <i class="fas fa-cloud-upload-alt fa-2x text-secondary mb-2"></i>
+            <i class="bi bi-cloud-arrow-up fa-2x text-secondary mb-2"></i>
             <p class="mb-1 small"><strong>Klik atau seret file</strong></p>
             <p class="text-muted small mb-0">PDF, max 2 MB, boleh lebih dari satu file</p>
             <input type="file" id="file_pendukung" name="file_pendukung[]" class="d-none" accept=".pdf" onchange="handleFileSelect(event)" multiple>

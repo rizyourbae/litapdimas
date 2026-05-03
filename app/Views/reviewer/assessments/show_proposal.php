@@ -24,42 +24,36 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
 
 <div class="row g-3 admin-page reviewer-proposal-page">
     <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <?php foreach (($hero['badges'] ?? []) as $badge): ?>
-                                <span class="badge <?= esc((string) ($badge['class'] ?? 'text-bg-light border')) ?> px-3 py-2"><?= esc((string) ($badge['label'] ?? '')) ?></span>
-                            <?php endforeach; ?>
-                            <span class="badge <?= esc((string) ($detail['review_status_badge_class'] ?? 'text-bg-light border')) ?> px-3 py-2"><?= esc((string) ($detail['review_status_label'] ?? 'Belum Dinilai')) ?></span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) ($hero['title'] ?? 'Penilaian Proposal')) ?></h2>
-                        <p class="admin-hero__subtitle mb-0"><?= esc((string) ($hero['subtitle'] ?? '')) ?></p>
-                    </div>
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= esc((string) ($detail['back_url'] ?? '#')) ?>" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i>Kembali
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?= view('components/ui-hero', [
+            'type' => 'reviewer',
+            'title' => esc((string) ($hero['title'] ?? 'Penilaian Proposal')),
+            'subtitle' => esc((string) ($hero['subtitle'] ?? 'Tinjau substansi proposal dan berikan skor sesuai kriteria.')),
+            'badges' => array_merge(
+                [['label' => 'Detail Penilaian', 'class' => 'text-bg-light border']],
+                $hero['badges'] ?? [],
+                [['label' => esc((string) ($detail['review_status_label'] ?? 'Belum Dinilai')), 'class' => esc((string) ($detail['review_status_badge_class'] ?? 'text-bg-light border'))]]
+            ),
+            'actions' => '
+                <a href="' . esc((string) ($detail['back_url'] ?? '#')) . '" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Kembali ke Antrian
+                </a>
+            '
+        ]) ?>
     </div>
 
     <div class="col-12">
-        <div class="card admin-panel-card reviewer-proposal-summary-card">
-            <div class="card-header border-0 pb-0">
-                <h3 class="card-title mb-0">
-                    <i class="bi bi-journal-richtext me-2"></i><?= esc((string) ($proposal['summary_card_title'] ?? 'Ringkasan Usulan')) ?>
-                </h3>
+        <div class="card shadow-sm border-0 overflow-hidden mb-4">
+            <div class="card-header bg-light py-3 px-4">
+                <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1">
+                    <i class="bi bi-journal-richtext me-2 text-primary"></i><?= esc((string) ($proposal['summary_card_title'] ?? 'Ringkasan Usulan')) ?>
+                </h5>
             </div>
-            <div class="card-body">
-                <div class="reviewer-proposal-summary-grid">
+            <div class="card-body p-4">
+                <div class="row g-4">
                     <?php foreach ($summaryItems as $item): ?>
-                        <div class="reviewer-proposal-summary-item">
-                            <div class="reviewer-proposal-summary-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                            <div class="reviewer-proposal-summary-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                            <div class="fw-bold text-dark"><?= esc((string) ($item['value'] ?? '')) ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -68,56 +62,61 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
     </div>
 
     <div class="col-12">
-        <div class="card card-primary card-outline admin-table-card card-outline-tabs reviewer-proposal-form-card">
-            <div class="card-header p-0 pt-1 border-bottom-0">
-                <ul class="nav nav-tabs reviewer-proposal-tabs" id="reviewerProposalDetailTabs" role="tablist">
-                    <?php foreach ($detailTabs as $tab): ?>
-                        <li class="nav-item" role="presentation">
-                            <button
-                                class="<?= esc((string) ($tab['button_class'] ?? 'nav-link')) ?>"
-                                id="<?= esc((string) ($tab['button_id'] ?? '')) ?>"
-                                data-bs-toggle="tab"
-                                data-bs-target="#<?= esc((string) ($tab['pane_id'] ?? '')) ?>"
-                                type="button"
-                                role="tab"
-                                aria-controls="<?= esc((string) ($tab['pane_id'] ?? '')) ?>"
-                                aria-selected="<?= esc((string) ($tab['aria_selected'] ?? 'false')) ?>">
-                                <i class="<?= esc((string) ($tab['icon'] ?? 'bi bi-circle')) ?> me-1"></i><?= esc((string) ($tab['label'] ?? '')) ?>
-                            </button>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+        <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post" id="assessmentForm">
+            <?= csrf_field() ?>
+            
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="card-header p-0 bg-light border-bottom">
+                    <ul class="nav nav-tabs nav-fill border-0" id="reviewerProposalDetailTabs" role="tablist">
+                        <?php foreach ($detailTabs as $tab): ?>
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    class="<?= esc((string) ($tab['button_class'] ?? 'nav-link')) ?> border-0 py-3 fw-bold"
+                                    id="<?= esc((string) ($tab['button_id'] ?? '')) ?>"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#<?= esc((string) ($tab['pane_id'] ?? '')) ?>"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="<?= esc((string) ($tab['pane_id'] ?? '')) ?>"
+                                    aria-selected="<?= esc((string) ($tab['aria_selected'] ?? 'false')) ?>">
+                                    <i class="<?= esc((string) ($tab['icon'] ?? 'bi bi-circle')) ?> me-2"></i><?= esc((string) ($tab['label'] ?? '')) ?>
+                                </button>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
 
-            <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post">
-                <?= csrf_field() ?>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <div class="tab-content" id="reviewerProposalDetailTabsContent">
+                        <!-- Tab: Review Substansi -->
                         <div class="<?= esc((string) (($detailTabs[0]['pane_class'] ?? 'tab-pane fade show active'))) ?>" id="<?= esc((string) ($detailTabs[0]['pane_id'] ?? 'reviewer-detail-pane-review')) ?>" role="tabpanel" aria-labelledby="<?= esc((string) ($detailTabs[0]['button_id'] ?? 'reviewer-detail-tab-review')) ?>" tabindex="0">
-                            <div class="reviewer-proposal-stack">
-                                <div class="reviewer-proposal-section-card">
-                                    <div class="reviewer-proposal-section-card__header">
-                                        <div>
-                                            <h3 class="h5 mb-1"><?= esc((string) ($review['card_title'] ?? 'Review Isian Substansi')) ?></h3>
-                                            <p class="text-muted small mb-0">Telaah isi proposal sesuai naskah yang diunggah dosen, lalu berikan catatan reviewer pada setiap bagian yang perlu diperjelas.</p>
-                                        </div>
-                                    </div>
+                            
+                            <div class="alert alert-info border-0 shadow-sm mb-4 d-flex align-items-center gap-3">
+                                <i class="bi bi-info-circle-fill fs-4"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Panduan Telaah</h6>
+                                    <p class="small mb-0 text-dark-50">Tinjau isian substansi di bawah ini, lalu berikan catatan per bagian jika diperlukan.</p>
                                 </div>
+                            </div>
 
+                            <div class="d-flex flex-column gap-4">
                                 <?php foreach ($reviewSections as $section): ?>
-                                    <div class="reviewer-proposal-section-card">
-                                        <div class="reviewer-proposal-section-card__header">
-                                            <h4 class="h6 mb-0"><?= esc((string) ($section['title'] ?? 'Bagian Proposal')) ?></h4>
+                                    <div class="border rounded-3 p-4 bg-white">
+                                        <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">
+                                            <i class="bi bi-bookmark-fill me-2 small"></i><?= esc((string) ($section['title'] ?? 'Bagian Proposal')) ?>
+                                        </h6>
+                                        <div class="reviewer-proposal-content admin-proposal-rich mb-4 p-3 bg-light rounded text-dark lh-base" style="font-size: 0.95rem;">
+                                            <?= $section['content_html'] ?? '' ?>
                                         </div>
-                                        <div class="reviewer-proposal-content admin-proposal-rich"><?= $section['content_html'] ?? '' ?></div>
                                         <div class="reviewer-proposal-field">
-                                            <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($section['comment_label'] ?? 'Komentar Reviewer')) ?></label>
+                                            <label class="form-label fw-bold text-muted small mb-2"><?= esc((string) ($section['comment_label'] ?? 'Catatan Reviewer')) ?></label>
                                             <div
                                                 id="<?= esc((string) ($section['editor_id'] ?? '')) ?>"
-                                                class="reviewer-proposal-editor"
+                                                class="reviewer-proposal-editor bg-white border rounded"
+                                                style="min-height: 150px;"
                                                 data-reviewer-quill
                                                 data-reviewer-hidden-input="#<?= esc((string) ($section['input_id'] ?? '')) ?>"
-                                                data-reviewer-placeholder="Tuliskan komentar reviewer untuk bagian ini..."><?= $section['comment_value'] ?? '' ?></div>
+                                                data-reviewer-placeholder="Tuliskan masukan atau catatan untuk bagian ini..."><?= $section['comment_value'] ?? '' ?></div>
                                             <input type="hidden" id="<?= esc((string) ($section['input_id'] ?? '')) ?>" name="<?= esc((string) ($section['comment_field_name'] ?? 'comments[]')) ?>" value="<?= esc((string) ($section['comment_value'] ?? '')) ?>">
                                         </div>
                                     </div>
@@ -125,79 +124,96 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
                             </div>
                         </div>
 
+                        <!-- Tab: Skor & Penilaian -->
                         <div class="<?= esc((string) (($detailTabs[1]['pane_class'] ?? 'tab-pane fade'))) ?>" id="<?= esc((string) ($detailTabs[1]['pane_id'] ?? 'reviewer-detail-pane-scoring')) ?>" role="tabpanel" aria-labelledby="<?= esc((string) ($detailTabs[1]['button_id'] ?? 'reviewer-detail-tab-scoring')) ?>" tabindex="0">
-                            <div class="reviewer-proposal-stack">
-                                <div class="reviewer-proposal-section-card">
-                                    <div class="reviewer-proposal-section-card__header reviewer-proposal-section-card__header--split">
-                                        <div>
-                                            <h3 class="h5 mb-1"><?= esc((string) ($scoring['card_title'] ?? 'Skor Penilaian')) ?></h3>
-                                            <p class="text-muted small mb-0">Setiap aspek menggunakan skala 1 sampai 5. Nilai akhir reviewer mengikuti rumus bobot dikali skor lalu dikonversi ke skala 100.</p>
+                            
+                            <div class="row g-4">
+                                <div class="col-lg-8">
+                                    <div class="border rounded-3 p-4 bg-white mb-4">
+                                        <h6 class="fw-bold text-primary mb-4 border-bottom pb-2">
+                                            <i class="bi bi-check2-square me-2"></i>Parameter Penilaian
+                                        </h6>
+                                        <div class="d-flex flex-column gap-3">
+                                            <?php foreach ($aspects as $aspect): ?>
+                                                <div class="reviewer-proposal-field">
+                                                    <label class="form-label fw-bold text-dark small mb-1"><?= esc((string) ($aspect['label'] ?? 'Aspek Penilaian')) ?><span class="text-danger ms-1">*</span></label>
+                                                    <select name="<?= esc((string) ($aspect['field_name'] ?? 'scores[]')) ?>" class="form-select form-select-lg shadow-none" required>
+                                                        <?php foreach (($aspect['options'] ?? []) as $option): ?>
+                                                            <option value="<?= esc((string) ($option['value'] ?? '')) ?>" <?= (($aspect['selected_value'] ?? '') === ($option['value'] ?? '')) ? 'selected' : '' ?>>
+                                                                <?= esc((string) ($option['label'] ?? '')) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            <?php endforeach; ?>
                                         </div>
-                                        <span class="badge text-bg-light border">Skala 1-5</span>
                                     </div>
 
-                                    <div class="reviewer-proposal-total-grid">
-                                        <div class="admin-note-box">
-                                            <div class="admin-note-box__title"><?= esc((string) ($totals['raw_label'] ?? 'Total Bobot x Skor')) ?></div>
-                                            <div class="reviewer-proposal-total-value"><?= esc((string) ($totals['raw_value'] ?? '0')) ?></div>
+                                    <div class="border rounded-3 p-4 bg-white">
+                                        <h6 class="fw-bold text-primary mb-4 border-bottom pb-2">
+                                            <i class="bi bi-chat-left-text me-2"></i>Kesimpulan & Rekomendasi
+                                        </h6>
+                                        <div class="reviewer-proposal-field mb-4">
+                                            <label class="form-label fw-bold text-dark small mb-2"><?= esc((string) ($generalComment['label'] ?? 'Komentar Umum Proposal')) ?></label>
+                                            <div
+                                                id="<?= esc((string) ($generalComment['editor_id'] ?? 'reviewer-general-comment')) ?>"
+                                                class="reviewer-proposal-editor bg-white border rounded"
+                                                style="min-height: 200px;"
+                                                data-reviewer-quill
+                                                data-reviewer-hidden-input="#<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-general-comment-input')) ?>"
+                                                data-reviewer-placeholder="Berikan ulasan akhir dan rekomendasi untuk usulan ini..."><?= $generalComment['value'] ?? '' ?></div>
+                                            <input type="hidden" id="<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-general-comment-input')) ?>" name="<?= esc((string) ($generalComment['field_name'] ?? 'general_comment')) ?>" value="<?= esc((string) ($generalComment['value'] ?? '')) ?>">
                                         </div>
-                                        <div class="admin-note-box">
-                                            <div class="admin-note-box__title"><?= esc((string) ($totals['normalized_label'] ?? 'Nilai Akhir Reviewer')) ?></div>
-                                            <div class="reviewer-proposal-total-value reviewer-proposal-total-value--accent"><?= esc((string) ($totals['normalized_value'] ?? '-')) ?></div>
-                                        </div>
-                                    </div>
 
-                                    <div class="reviewer-proposal-score-grid">
-                                        <?php foreach ($aspects as $aspect): ?>
-                                            <div class="reviewer-proposal-field">
-                                                <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($aspect['label'] ?? 'Aspek Penilaian')) ?><span class="text-danger">*</span></label>
-                                                <select name="<?= esc((string) ($aspect['field_name'] ?? 'scores[]')) ?>" class="form-select" required>
-                                                    <?php foreach (($aspect['options'] ?? []) as $option): ?>
-                                                        <option value="<?= esc((string) ($option['value'] ?? '')) ?>" <?= (($aspect['selected_value'] ?? '') === ($option['value'] ?? '')) ? 'selected' : '' ?>>
-                                                            <?= esc((string) ($option['label'] ?? '')) ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        <?php endforeach; ?>
+                                        <div class="reviewer-proposal-field">
+                                            <label class="form-label fw-bold text-dark small mb-2"><?= esc((string) ($validatorNote['label'] ?? 'Catatan Khusus (Internal)')) ?><span class="text-danger ms-1">*</span></label>
+                                            <textarea name="<?= esc((string) ($validatorNote['field_name'] ?? 'validator_note')) ?>" class="form-control shadow-none" rows="4" placeholder="Tuliskan catatan internal..." required><?= esc((string) ($validatorNote['value'] ?? '')) ?></textarea>
+                                            <small class="text-muted d-block mt-2"><i class="bi bi-info-circle me-1"></i><?= esc((string) ($validatorNote['hint'] ?? '')) ?></small>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="reviewer-proposal-section-card">
-                                    <div class="reviewer-proposal-field">
-                                        <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($generalComment['label'] ?? 'Komentar Umum Proposal')) ?></label>
-                                        <div
-                                            id="<?= esc((string) ($generalComment['editor_id'] ?? 'reviewer-general-comment')) ?>"
-                                            class="reviewer-proposal-editor reviewer-proposal-editor--large"
-                                            data-reviewer-quill
-                                            data-reviewer-hidden-input="#<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-general-comment-input')) ?>"
-                                            data-reviewer-placeholder="Tuliskan komentar umum reviewer untuk proposal ini..."><?= $generalComment['value'] ?? '' ?></div>
-                                        <input type="hidden" id="<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-general-comment-input')) ?>" name="<?= esc((string) ($generalComment['field_name'] ?? 'general_comment')) ?>" value="<?= esc((string) ($generalComment['value'] ?? '')) ?>">
-                                    </div>
+                                <div class="col-lg-4">
+                                    <div class="sticky-top" style="top: 2rem;">
+                                        <div class="card border-0 bg-primary text-white shadow-sm mb-3">
+                                            <div class="card-body p-4">
+                                                <div class="small text-uppercase opacity-75 fw-bold mb-3 ls-1">Ringkasan Nilai</div>
+                                                
+                                                <div class="mb-4">
+                                                    <div class="small opacity-75 mb-1"><?= esc((string) ($totals['raw_label'] ?? 'Bobot x Skor')) ?></div>
+                                                    <div class="h3 fw-bold mb-0"><?= esc((string) ($totals['raw_value'] ?? '0')) ?></div>
+                                                </div>
 
-                                    <div class="reviewer-proposal-field mt-4">
-                                        <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($validatorNote['label'] ?? 'Catatan Validator')) ?><span class="text-danger">*</span></label>
-                                        <textarea name="<?= esc((string) ($validatorNote['field_name'] ?? 'validator_note')) ?>" class="form-control reviewer-proposal-textarea" rows="4" required><?= esc((string) ($validatorNote['value'] ?? '')) ?></textarea>
-                                        <small class="text-muted d-block mt-2"><?= esc((string) ($validatorNote['hint'] ?? '')) ?></small>
+                                                <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-25">
+                                                    <div class="small opacity-75 mb-1"><?= esc((string) ($totals['normalized_label'] ?? 'Nilai Akhir (Skala 100)')) ?></div>
+                                                    <div class="h2 fw-bold mb-0 text-warning"><?= esc((string) ($totals['normalized_value'] ?? '-')) ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card border-0 bg-light shadow-none">
+                                            <div class="card-body p-4">
+                                                <div class="d-grid gap-2">
+                                                    <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold">
+                                                        <i class="bi bi-check-all me-2"></i><?= esc((string) ($form['submit_label'] ?? 'Simpan Penilaian')) ?>
+                                                    </button>
+                                                    <p class="text-muted small text-center mb-0 mt-2">
+                                                        <?= esc((string) ($totals['hint'] ?? '')) ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer admin-form-footer reviewer-proposal-form-footer d-flex flex-column gap-3">
-                    <div class="text-muted small"><?= esc((string) ($totals['hint'] ?? '')) ?></div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-danger px-4">
-                            <i class="bi bi-save me-1"></i><?= esc((string) ($form['submit_label'] ?? 'Simpan Penilaian Proposal')) ?>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
 
 <?= $this->endSection() ?>
 

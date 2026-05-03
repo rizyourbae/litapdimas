@@ -9,7 +9,7 @@
 <div class="card border-0 bg-light mb-4" style="border-radius:0.8rem;">
     <div class="card-body py-3">
         <div class="d-flex align-items-start gap-2">
-            <i class="fas fa-circle-info text-primary mt-1"></i>
+            <i class="bi bi-info-circle text-primary mt-1"></i>
             <div>
                 <h6 class="mb-1">Informasi Dasar Proposal</h6>
                 <p class="text-muted small mb-0">Lengkapi data utama proposal dan pastikan semua pilihan kategori sesuai fokus penelitian.</p>
@@ -31,82 +31,52 @@
         <small class="text-muted">Minimal 3 kata kunci dipisahkan dengan koma.</small>
     </div>
 
-    <div class="col-md-6">
-        <label for="pengelola_bantuan_id" class="form-label">Pengelola Bantuan <span class="text-danger">*</span></label>
-        <select class="form-select" id="pengelola_bantuan_id" name="pengelola_bantuan_id" required>
-            <option value="">-- Pilih Pengelola Bantuan --</option>
-            <?php foreach ($masterOptions['pengelola_bantuan'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('pengelola_bantuan_id', $proposal['pengelola_bantuan_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'pengelola_bantuan_id',
+        'label' => 'Pengelola Bantuan',
+        'options' => $masterOptions['pengelola_bantuan'] ?? [],
+        'selected' => old('pengelola_bantuan_id', $proposal['pengelola_bantuan_id'] ?? 0)
+    ]) ?>
 
-    <div class="col-md-6">
-        <label for="klaster_bantuan_id" class="form-label">Klaster Bantuan <span class="text-danger">*</span></label>
-        <select class="form-select" id="klaster_bantuan_id" name="klaster_bantuan_id" required>
-            <option value="">-- Pilih Klaster Bantuan --</option>
-            <?php foreach ($masterOptions['klaster_bantuan'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('klaster_bantuan_id', $proposal['klaster_bantuan_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'klaster_bantuan_id',
+        'label' => 'Klaster Bantuan',
+        'options' => $masterOptions['klaster_bantuan'] ?? [],
+        'selected' => old('klaster_bantuan_id', $proposal['klaster_bantuan_id'] ?? 0)
+    ]) ?>
 
-    <div class="col-md-6">
-        <label for="bidang_ilmu_id" class="form-label">Bidang Ilmu <span class="text-danger">*</span></label>
-        <select class="form-select" id="bidang_ilmu_id" name="bidang_ilmu_id" required>
-            <option value="">-- Pilih Bidang Ilmu --</option>
-            <?php foreach ($masterOptions['bidang_ilmu'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('bidang_ilmu_id', $proposal['bidang_ilmu_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'bidang_ilmu_id',
+        'label' => 'Bidang Ilmu',
+        'options' => $masterOptions['bidang_ilmu'] ?? [],
+        'selected' => old('bidang_ilmu_id', $proposal['bidang_ilmu_id'] ?? 0)
+    ]) ?>
 
-    <div class="col-md-6">
-        <label for="tema_penelitian_id" class="form-label">Tema Penelitian <span class="text-danger">*</span></label>
-        <select class="form-select" id="tema_penelitian_id" name="tema_penelitian_id" required>
-            <option value="">-- Pilih Tema Penelitian --</option>
-            <?php foreach ($masterOptions['tema_penelitian'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('tema_penelitian_id', $proposal['tema_penelitian_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'tema_penelitian_id',
+        'label' => 'Tema Penelitian',
+        'options' => $masterOptions['tema_penelitian'] ?? [],
+        'selected' => old('tema_penelitian_id', $proposal['tema_penelitian_id'] ?? 0)
+    ]) ?>
 
-    <div class="col-md-6">
-        <label for="jenis_penelitian_id" class="form-label">Jenis Penelitian <span class="text-danger">*</span></label>
-        <select class="form-select" id="jenis_penelitian_id" name="jenis_penelitian_id" required>
-            <option value="">-- Pilih Jenis Penelitian --</option>
-            <?php foreach ($masterOptions['jenis_penelitian'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('jenis_penelitian_id', $proposal['jenis_penelitian_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'jenis_penelitian_id',
+        'label' => 'Jenis Penelitian',
+        'options' => $masterOptions['jenis_penelitian'] ?? [],
+        'selected' => old('jenis_penelitian_id', $proposal['jenis_penelitian_id'] ?? 0)
+    ]) ?>
 
-    <div class="col-md-6">
-        <label for="kontribusi_prodi_id" class="form-label">Kontribusi Prodi <span class="text-danger">*</span></label>
-        <select class="form-select" id="kontribusi_prodi_id" name="kontribusi_prodi_id" required>
-            <option value="">-- Pilih Kontribusi Prodi --</option>
-            <?php foreach ($masterOptions['kontribusi_prodi'] ?? [] as $opt): ?>
-                <option value="<?= esc($opt['id']) ?>" <?= (int) old('kontribusi_prodi_id', $proposal['kontribusi_prodi_id'] ?? 0) === (int) $opt['id'] ? 'selected' : '' ?>>
-                    <?= esc($opt['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <?= view('dosen/proposals/_partials/_form_select', [
+        'name' => 'kontribusi_prodi_id',
+        'label' => 'Kontribusi Prodi',
+        'options' => $masterOptions['kontribusi_prodi'] ?? [],
+        'selected' => old('kontribusi_prodi_id', $proposal['kontribusi_prodi_id'] ?? 0)
+    ]) ?>
 </div>
 
 <div class="card border-warning mt-4" style="border-radius:0.8rem;">
     <div class="card-header bg-warning-subtle">
-        <h6 class="mb-0"><i class="fas fa-handshake me-1"></i> Pernyataan Peneliti</h6>
+        <h6 class="mb-0"><i class="bi bi-shield-check me-1"></i> Pernyataan Peneliti</h6>
     </div>
     <div class="card-body">
         <p class="text-muted small">Centang semua pernyataan untuk melanjutkan ke tahap berikutnya.</p>

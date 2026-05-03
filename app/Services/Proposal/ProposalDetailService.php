@@ -3,6 +3,11 @@
 namespace App\Services\Proposal;
 
 use App\Models\Proposal\ProposalDokumen;
+use App\Models\Proposal\ProposalReviewerAssignment;
+use App\Models\Proposal\ProposalLogbook;
+use App\Models\Proposal\ProposalOutput;
+use App\Models\Proposal\ProposalReport;
+use App\Models\Proposal\ProposalOutcome;
 
 class ProposalDetailService
 {
@@ -10,10 +15,25 @@ class ProposalDetailService
 
     private ProposalDokumen $proposalDokumenModel;
 
+    private ProposalReviewerAssignment $assignmentModel;
+
+    private ProposalLogbook $logbookModel;
+
+    private ProposalOutput $outputModel;
+
+    private ProposalReport $reportModel;
+
+    private ProposalOutcome $outcomeModel;
+
     public function __construct()
     {
         $this->masterOptionService = new ProposalMasterOptionService();
         $this->proposalDokumenModel = new ProposalDokumen();
+        $this->assignmentModel = new ProposalReviewerAssignment();
+        $this->logbookModel = new ProposalLogbook();
+        $this->outputModel = new ProposalOutput();
+        $this->reportModel = new ProposalReport();
+        $this->outcomeModel = new ProposalOutcome();
     }
 
     public function buildDetailPayload(object $proposal): array
@@ -61,6 +81,8 @@ class ProposalDetailService
             },
             'status_label' => ucfirst((string) $proposal->status),
             'current_step' => (int) ($proposal->current_step ?? 1),
+            'created_at' => $proposal->created_at,
+            'updated_at' => $proposal->updated_at,
             'created_at_formatted' => date_format(date_create($proposal->created_at), 'd M Y H:i'),
             'overview_cards' => [
                 [
@@ -96,8 +118,11 @@ class ProposalDetailService
                 'issn' => $step5['issn'] ?? '',
                 'nama_jurnal' => $step5['nama_jurnal'] ?? '',
                 'url_website' => $step5['url_website'] ?? '',
+                'url_website_formatted' => $this->formatJournalLink($step5['url_website'] ?? null, 'Buka Website Jurnal'),
                 'url_scopus_wos' => $step5['url_scopus_wos'] ?? '',
+                'url_scopus_wos_formatted' => $this->formatJournalLink($step5['url_scopus_wos'] ?? null, 'Buka Scopus/WoS'),
                 'url_surat_rekomendasi' => $step5['url_surat_rekomendasi'] ?? '',
+                'url_surat_rekomendasi_formatted' => $this->formatJournalLink($step5['url_surat_rekomendasi'] ?? null, 'Buka Surat Rekomendasi'),
                 'total_pengajuan_dana' => $step5['total_pengajuan_dana'] ?? '',
             ],
             'review_summary' => [
@@ -116,6 +141,23 @@ class ProposalDetailService
                 'step_1' => $step1,
                 'step_3' => $step3,
                 'step_5' => $step5,
+            ],
+            'reviewer_results' => $this->prepareAnonymizedReviewerResults((int) $proposal->id),
+            'logbooks' => $this->prepareLogbookData((int) $proposal->id),
+            'outputs' => $this->prepareOutputData((int) $proposal->id),
+            'reports' => $this->prepareReportData((int) $proposal->id),
+            'finance' => [
+                'proposed_amount' => $proposal->total_pengajuan_dana ?? 0,
+                'approved_amount' => $proposal->approved_amount ?? 0,
+                'proposed_formatted' => number_format((int) ($proposal->total_pengajuan_dana ?? 0), 0, ',', '.'),
+                'approved_formatted' => number_format((int) ($proposal->approved_amount ?? 0), 0, ',', '.'),
+            ],
+            'outcomes' => $this->prepareOutcomeData((int) $proposal->id),
+            'admin_decision' => [
+                'notes' => $proposal->admin_notes ?? '',
+                'outcome_notes' => $proposal->outcome_admin_notes ?? '',
+                'decided_at' => !empty($proposal->decided_at) ? date_format(date_create($proposal->decided_at), 'd M Y H:i') : null,
+                'is_decided' => !empty($proposal->decided_at),
             ],
         ];
     }
@@ -454,5 +496,160 @@ class ProposalDetailService
         }
 
         return number_format($size / 1024, 2) . ' KB';
+    }
+
+    private function prepareAnonymizedReviewerResults(int $proposalId): array
+    {
+        $assignments = $this->assignmentModel->getActiveByProposal($proposalId);
+        $results = [];
+
+        foreach ($assignments as $index => $assignment) {
+            if ($assignment->status !== 'reviewed') {
+                continue;
+            }
+
+            $recommendationLabel = match ($assignment->recommendation) {
+                'recommended' => 'Direkomendasikan',
+                'revision' => 'Perlu Revisi',
+                'rejected' => 'Ditolak',
+                default => 'Tertunda',
+            };
+
+            $recommendationBadge = match ($assignment->recommendation) {
+                'recommended' => 'text-bg-success',
+                'revision' => 'text-bg-warning',
+                'rejected' => 'text-bg-danger',
+                default => 'text-bg-secondary',
+            };
+
+            $results[] = [
+                'reviewer_label' => 'Reviewer ' . ($index + 1),
+                'recommendation_label' => $recommendationLabel,
+                'recommendation_badge' => $recommendationBadge,
+                'notes' => $assignment->review_notes ?: 'Tidak ada catatan.',
+                'reviewed_at' => $assignment->reviewed_at,
+                'reviewed_at_formatted' => date_format(date_create($assignment->reviewed_at), 'd M Y'),
+                'score' => $assignment->review_score,
+            ];
+        }
+
+        return $results;
+    }
+
+    private function prepareLogbookData(int $proposalId): array
+    {
+        $logbooks = $this->logbookModel->getByProposal($proposalId);
+        
+        return array_map(function ($log) {
+            return [
+                'uuid' => $log->uuid,
+                'tanggal' => date_format(date_create($log->tanggal), 'd M Y'),
+                'tempat' => $log->tempat,
+                'nama_kegiatan' => $log->nama_kegiatan,
+                'teknik' => $log->teknik,
+                'deskripsi' => $log->deskripsi_kegiatan,
+                'berkas_url' => $log->berkas_path ? base_url($log->berkas_path) : null,
+                'delete_url' => site_url('dosen/proposals/logbook/delete/' . $log->uuid),
+            ];
+        }, $logbooks);
+    }
+
+    private function prepareOutputData(int $proposalId): array
+    {
+        $outputs = $this->outputModel->getByProposal($proposalId);
+        $kategoriWajib = [
+            'HKI',
+            'Laporan Bantuan Lengkap',
+            'Draft Artikel',
+            'Dummy Buku',
+            'Dokumen Kemanfaatan',
+            'Executive Summary'
+        ];
+
+        $outputMap = [];
+        foreach ($outputs as $out) {
+            $outputMap[$out->kategori] = $out;
+        }
+
+        $result = [];
+        foreach ($kategoriWajib as $kat) {
+            $existing = $outputMap[$kat] ?? null;
+            $result[] = [
+                'kategori' => $kat,
+                'file_path' => $existing ? $existing->file_path : null,
+                'file_url' => $existing ? base_url($existing->file_path) : null,
+                'original_filename' => $existing ? $existing->original_filename : null,
+                'uploaded_at' => $existing ? format_indo($existing->created_at, true) : null,
+            ];
+        }
+
+        return $result;
+    }
+
+    private function prepareReportData(int $proposalId): array
+    {
+        $reports = $this->reportModel->getByProposal($proposalId);
+        $kategoriWajib = [
+            'Laporan Antara',
+            'Laporan Keuangan Sementara',
+            'Laporan Akademik',
+            'Laporan Keuangan'
+        ];
+
+        $reportMap = [];
+        foreach ($reports as $rep) {
+            $reportMap[$rep->kategori] = $rep;
+        }
+
+        $result = [];
+        foreach ($kategoriWajib as $kat) {
+            $existing = $reportMap[$kat] ?? null;
+            $result[$kat] = [
+                'kategori' => $kat,
+                'file_path' => $existing ? $existing->file_path : null,
+                'file_url' => $existing ? base_url($existing->file_path) : null,
+                'original_filename' => $existing ? $existing->original_filename : null,
+                'uploaded_at' => $existing ? format_indo($existing->created_at, true) : null,
+            ];
+        }
+
+        return $result;
+    }
+
+    private function prepareOutcomeData(int $proposalId): array
+    {
+        $outcomes = $this->outcomeModel->getByProposal($proposalId);
+        $result = [
+            'journals' => [],
+            'books' => []
+        ];
+
+        foreach ($outcomes as $out) {
+            $item = (array) $out;
+            if ($out->tipe === 'jurnal') {
+                $result['journals'][] = $item;
+            } else {
+                $result['books'][] = $item;
+            }
+        }
+
+        return $result;
+    }
+
+    private function formatJournalLink(?string $url, string $label): string
+    {
+        if (empty($url)) {
+            return '-';
+        }
+
+        $host = parse_url($url, PHP_URL_HOST) ?: $url;
+        $host = preg_replace('/^www\./', '', (string) $host);
+
+        return '<div class="journal-link-item">'
+            . '<span class="journal-link-host">' . esc($host) . '</span>'
+            . '<a href="' . esc($url) . '" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary journal-link-btn">'
+            . '<i class="bi bi-box-arrow-up-right me-1"></i>' . esc($label)
+            . '</a>'
+            . '</div>';
     }
 }

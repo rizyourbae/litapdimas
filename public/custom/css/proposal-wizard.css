@@ -5,121 +5,96 @@
 
 /* Stepper Container */
 .stepper-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 /* Individual Step */
 .stepper-step {
+  position: relative;
+  text-align: center;
+  padding: 0.75rem 0.4rem;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
-  position: relative;
-  min-width: 100px;
+  justify-content: center;
 }
 
-.stepper-step:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  width: 100%;
-  height: 2px;
-  background-color: #dee2e6;
-  z-index: 0;
+.stepper-step.active {
+  background: #e7f1ff;
+  border-color: #7fb3ff;
+}
+
+.stepper-step.completed {
+  background: #e8fff2;
+  border-color: #77d8a8;
 }
 
 /* Step Badge */
 .stepper-badge {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #dee2e6;
-  color: #6c757d;
-  display: flex;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 0.4rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 16px;
-  z-index: 1;
-  position: relative;
-  transition: all 0.3s ease;
+  border-radius: 999px;
+  font-weight: 700;
+  background: #dbeafe;
+  color: #1e40af;
+  transition: all 0.2s ease;
+}
+
+.stepper-step.completed .stepper-badge {
+  background: #10b981;
+  color: #fff;
 }
 
 /* Step Label */
 .stepper-label {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  color: #6c757d;
+  font-size: 0.76rem;
+  color: #334155;
+  line-height: 1.25;
   text-align: center;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  word-break: break-word;
 }
 
-/* Active Step */
-.stepper-step.active .stepper-badge {
-  background-color: #0d6efd;
-  color: white;
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+/* Wizard Actions */
+.wizard-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  z-index: 10;
 }
 
-.stepper-step.active .stepper-label {
-  color: #0d6efd;
-  font-weight: 600;
-}
-
-/* Completed Step */
-.stepper-step.completed .stepper-badge {
-  background-color: #198754;
-  color: white;
-}
-
-.stepper-step.completed .stepper-badge::before {
-  content: "✓";
-  font-weight: bold;
-}
-
-.stepper-step.completed .stepper-label {
-  color: #198754;
-}
-
-/* Connector between steps */
-.stepper-step:not(:last-child)::after {
-  background-color: #dee2e6;
-}
-
-.stepper-step.completed ~ .stepper-step:not(:last-child)::after {
-  background-color: #198754;
+/* Cards */
+.wizard-progress-card,
+.wizard-main-card {
+  border: 0 !important;
+  border-radius: 0.9rem !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08) !important;
 }
 
 /* Responsive */
+@media (max-width: 991.98px) {
+  .stepper-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wizard-actions {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
   .stepper-container {
     gap: 0.5rem;
-  }
-
-  .stepper-step {
-    min-width: 60px;
-  }
-
-  .stepper-badge {
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .stepper-label {
-    font-size: 0.75rem;
-    margin-top: 0.5rem;
-  }
-
-  .stepper-step:not(:last-child)::after {
-    width: 80%;
   }
 }
 

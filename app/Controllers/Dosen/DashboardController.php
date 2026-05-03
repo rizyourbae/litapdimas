@@ -14,6 +14,7 @@ class DashboardController extends BaseController
         $data = [
             'title'         => 'Dashboard Dosen',
             'currentModule' => 'Dosen',
+            'user'          => $user,
         ];
 
         return $this->renderView('dosen/dashboard', $data);

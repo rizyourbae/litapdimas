@@ -39,6 +39,7 @@
         crossorigin="anonymous">
 
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?= base_url('custom/css/variables.css') ?>">
     <link rel="stylesheet" href="<?= base_url('custom/css/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('custom/css/dosen.css') ?>">
     <link rel="stylesheet" href="<?= base_url('custom/css/admin.css') ?>">

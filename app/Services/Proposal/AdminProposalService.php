@@ -55,6 +55,7 @@ class AdminProposalService
                 'status_label' => $this->mapProposalStatusLabel((string) ($proposal->status ?? 'submitted')),
                 'status_badge_class' => $this->mapProposalStatusBadgeClass((string) ($proposal->status ?? 'submitted')),
                 'reviewer_count' => (int) ($proposal->reviewer_count ?? 0),
+                'updated_at' => $proposal->updated_at ?? $proposal->created_at,
                 'updated_at_label' => $this->formatDateTime($proposal->updated_at ?? $proposal->created_at),
                 'show_url' => site_url('admin/proposals/show/' . $proposal->uuid),
             ];
@@ -102,9 +103,10 @@ class AdminProposalService
         $assignedReviewers = $this->getAssignedReviewerRows((int) $proposal->id, $proposal->uuid);
         $reviewerResultsPanel = $this->buildReviewerResultsPanel($proposal, $assignedReviewers);
         $candidateGroups = $this->buildReviewerCandidateGroups($proposal);
-        $decisionSummary = $this->buildDecisionSummary($assignedReviewers);
+        $decisionSummary = $this->buildDecisionSummary($proposal, $assignedReviewers);
 
         return [
+            'uuid' => $proposalUuid,
             'hero' => [
                 'title' => $this->valueOrFallback((string) ($detailPayload['judul'] ?? ''), 'Judul belum diisi'),
                 'subtitle' => $proposal->pengusul_nama . ' · ' . $this->mapProposalStatusLabel((string) ($proposal->status ?? 'submitted')),
@@ -271,6 +273,25 @@ class AdminProposalService
         if (!$this->db->transStatus()) {
             throw new Exception('Gagal membatalkan assignment reviewer.');
         }
+    }
+
+    public function finalizeDecision(string $proposalUuid, string $decision, ?string $notes = null): void
+    {
+        if (!in_array($decision, ['approved', 'rejected'])) {
+            throw new Exception('Keputusan tidak valid.');
+        }
+
+        $proposal = $this->getProposalByUuid($proposalUuid);
+        if ($proposal === null) {
+            throw new Exception('Proposal tidak ditemukan.');
+        }
+
+        $this->proposalModel->update((int) $proposal->id, [
+            'status' => $decision,
+            'admin_notes' => $notes ?: '',
+            'decided_at' => date('Y-m-d H:i:s'),
+            'decided_by' => user()['id'] ?? null,
+        ]);
     }
 
     private function getAdminVisibleProposals(): array
@@ -533,17 +554,21 @@ class AdminProposalService
         ];
     }
 
-    private function buildDecisionSummary(array $assignedReviewers): array
+    private function buildDecisionSummary(object $proposal, array $assignedReviewers): array
     {
         $reviewedCount = count(array_filter(
             $assignedReviewers,
             static fn(array $reviewer): bool => ($reviewer['status_label'] ?? '') === 'Sudah Direview'
         ));
         $pendingCount = max(count($assignedReviewers) - $reviewedCount, 0);
+        $isDecided = in_array($proposal->status, ['approved', 'rejected']);
+        $canDecide = $pendingCount === 0 && count($assignedReviewers) > 0 && !$isDecided;
 
         return [
             'reviewed_count' => $reviewedCount,
             'pending_count' => $pendingCount,
+            'is_decided' => $isDecided,
+            'can_decide' => $canDecide,
             'cards' => [
                 ['label' => 'Reviewer Aktif', 'value' => (string) count($assignedReviewers), 'tone_class' => 'text-primary'],
                 ['label' => 'Rekomendasi Masuk', 'value' => (string) $reviewedCount, 'tone_class' => 'text-success'],
@@ -553,7 +578,9 @@ class AdminProposalService
                 ? 'Belum ada reviewer yang ditugaskan. Admin belum bisa mengambil keputusan akhir sampai ada reviewer aktif.'
                 : ($pendingCount > 0
                     ? 'Sebagian reviewer masih belum mengirim rekomendasi. Keputusan akhir admin sebaiknya menunggu seluruh masukan masuk.'
-                    : 'Semua reviewer aktif sudah mengirim hasil review. Modul keputusan akhir admin siap dilanjutkan pada iterasi berikutnya.'),
+                    : ($isDecided 
+                        ? 'Keputusan akhir telah diambil untuk proposal ini. Silakan cek riwayat status untuk detailnya.'
+                        : 'Semua reviewer aktif sudah mengirim hasil review. Admin kini dapat memberikan keputusan akhir (Setujui/Tolak) untuk proposal ini.')),
         ];
     }
 

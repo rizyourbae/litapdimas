@@ -152,7 +152,7 @@ class ReviewerAssessmentService
                 'subtitle' => 'Kelola penilaian reviewer per kategori melalui tab yang terpisah agar alur kerja tetap fokus, konsisten, dan mudah dikembangkan bertahap.',
                 'badges' => [
                     ['label' => 'Reviewer Workspace', 'class' => 'text-bg-light border'],
-                    ['label' => '4 Kategori Penilaian', 'class' => 'text-bg-primary'],
+                    ['label' => '4 Tab Review', 'class' => 'text-bg-primary'],
                 ],
             ],
             'metrics' => [
@@ -182,6 +182,58 @@ class ReviewerAssessmentService
                 ],
             ],
             'tabs' => $tabs,
+        ];
+    }
+
+    public function buildDashboardPayload(): array
+    {
+        $queuePayload = $this->buildQueuePayload('proposal');
+        $tabs = $queuePayload['tabs'] ?? [];
+        $categoryCards = [];
+        $queuePreview = [];
+
+        foreach ($tabs as $tab) {
+            $tabKey = (string) ($tab['key'] ?? 'proposal');
+            $tabRows = (array) ($tab['rows'] ?? []);
+
+            $categoryCards[] = [
+                'key' => $tabKey,
+                'label' => (string) ($tab['label'] ?? ''),
+                'icon' => (string) ($tab['icon'] ?? 'bi bi-circle'),
+                'count' => count($tabRows),
+                'url' => site_url('reviewer/queue?tab=' . $tabKey),
+            ];
+
+            foreach (array_slice($tabRows, 0, 2) as $row) {
+                $queuePreview[] = [
+                    'category_label' => (string) ($tab['label'] ?? ''),
+                    'title' => (string) ($row['title'] ?? ''),
+                    'cluster' => (string) ($row['cluster'] ?? ''),
+                    'score_display' => (string) ($row['score_display'] ?? '-'),
+                    'review_status_label' => (string) ($row['review_status_label'] ?? 'Belum Dinilai'),
+                    'review_status_badge_class' => (string) ($row['review_status_badge_class'] ?? 'text-bg-warning'),
+                    'action_label' => (string) ($row['action_label'] ?? 'Lihat'),
+                    'action_url' => (string) ($row['action_url'] ?? '#'),
+                ];
+            }
+        }
+
+        return [
+            'title' => 'Dashboard Reviewer',
+            'currentModule' => 'Reviewer',
+            'hero' => [
+                'title' => 'Dashboard Reviewer',
+                'subtitle' => 'Pantau antrian penilaian, masuk ke kategori yang aktif, dan lompat cepat ke riwayat review tanpa keluar dari workspace reviewer.',
+                'badges' => [
+                    ['label' => 'Reviewer Workspace', 'class' => 'text-bg-light border'],
+                    ['label' => 'Live Queue', 'class' => 'text-bg-success'],
+                ],
+            ],
+            'metrics' => $queuePayload['metrics'] ?? [],
+            'categories' => $categoryCards,
+            'queuePreview' => array_slice($queuePreview, 0, 6),
+            'queueUrl' => site_url('reviewer/queue'),
+            'historyUrl' => site_url('reviewer/history'),
         ];
     }
 
@@ -472,38 +524,7 @@ class ReviewerAssessmentService
         $rows = match ($category) {
             'proposal' => $this->getProposalRows(),
             'presentasi' => $this->getPresentationRows(),
-            'luaran' => [
-                [
-                    'item_key' => 'luaran-jurnal-scopus',
-                    'title' => 'Luaran Jurnal Internasional Terindeks Scopus',
-                    'cluster' => 'Publikasi Ilmiah',
-                    'score_value' => null,
-                    'review_status' => 'pending',
-                ],
-                [
-                    'item_key' => 'luaran-buku-ajar',
-                    'title' => 'Luaran Buku Ajar Metodologi Penelitian Terapan',
-                    'cluster' => 'Produk Akademik',
-                    'score_value' => 88.00,
-                    'review_status' => 'completed',
-                ],
-            ],
-            'portofolio' => [
-                [
-                    'item_key' => 'portofolio-riset-komunitas',
-                    'title' => 'Portofolio Riset Komunitas dan Dampak Sosial',
-                    'cluster' => 'Rekam Jejak Peneliti',
-                    'score_value' => null,
-                    'review_status' => 'pending',
-                ],
-                [
-                    'item_key' => 'portofolio-hki-terapan',
-                    'title' => 'Portofolio HKI dan Inovasi Produk Terapan',
-                    'cluster' => 'Kinerja Inovasi',
-                    'score_value' => 80.75,
-                    'review_status' => 'draft',
-                ],
-            ],
+            'portofolio' => $this->getPortofolioRows(),
             default => [],
         };
 
@@ -1522,10 +1543,18 @@ class ReviewerAssessmentService
     {
         $rows = [];
 
-        foreach (array_keys(self::TAB_DEFINITIONS) as $category) {
+        foreach (['proposal', 'presentasi'] as $category) {
             $rows = array_merge($rows, $this->getRowsForCategory($category));
         }
 
         return $rows;
+    }
+
+    private function getPortofolioRows(): array
+    {
+        return array_values(array_filter(
+            $this->getProposalRows(),
+            static fn(array $row): bool => ($row['review_status'] ?? 'pending') === 'completed'
+        ));
     }
 }

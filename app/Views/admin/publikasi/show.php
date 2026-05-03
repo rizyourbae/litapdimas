@@ -9,90 +9,95 @@
 /** @var array<int,array<string,mixed>> $summaryItems */
 /** @var string $metadataTitle */
 /** @var array<int,array<string,mixed>> $metadataItems */
-
-$title = (string) ($title ?? '');
-$hero = (array) ($hero ?? []);
-$actions = (array) ($actions ?? []);
-$summaryItems = (array) ($summaryItems ?? []);
-$metadataTitle = (string) ($metadataTitle ?? '');
-$metadataItems = (array) ($metadataItems ?? []);
 ?>
 
-<div class="row g-3 admin-page">
-    <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Detail Publikasi</span>
-                            <span class="badge <?= esc((string) ($hero['jenis_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['jenis_label'] ?? '')) ?></span>
-                            <span class="badge <?= esc((string) ($hero['klaster_badge_class'] ?? '')) ?> px-3 py-2"><?= esc((string) ($hero['klaster_label'] ?? '')) ?></span>
-                            <span class="badge text-bg-light border px-3 py-2">Tahun <?= esc((string) ($hero['tahun'] ?? '')) ?></span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) ($hero['title'] ?? '')) ?></h2>
-                        <p class="admin-hero__subtitle mb-0">
-                            <i class="bi bi-person-badge me-1"></i><?= esc((string) ($hero['subtitle'] ?? '')) ?>
-                        </p>
-                    </div>
-
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= esc((string) ($actions['back_url'] ?? '')) ?>" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i>Kembali
-                        </a>
-                        <a href="<?= esc((string) ($actions['edit_url'] ?? '')) ?>" class="btn btn-warning">
-                            <i class="bi bi-pencil-square me-1"></i>Edit
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 admin-page">
+    <div class="col-12 mb-2">
+        <?= view('components/ui-hero', [
+            'type' => 'admin',
+            'title' => esc((string) ($hero['title'] ?? $title)),
+            'subtitle' => esc((string) ($hero['subtitle'] ?? '')),
+            'badges' => [
+                ['label' => 'Detail Publikasi', 'class' => 'text-bg-light border'],
+                ['label' => esc((string) ($hero['jenis_label'] ?? '')), 'class' => esc((string) ($hero['jenis_badge_class'] ?? 'text-bg-primary'))],
+                ['label' => 'Tahun ' . esc((string) ($hero['tahun'] ?? '')), 'class' => 'text-bg-light border']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Kembali',
+                    'class' => 'btn btn-outline-secondary rounded-pill px-4',
+                    'icon' => 'bi bi-arrow-left',
+                    'url' => esc((string) ($actions['back_url'] ?? ''))
+                ],
+                [
+                    'label' => 'Edit Data',
+                    'class' => 'btn btn-warning rounded-pill px-4',
+                    'icon' => 'bi bi-pencil-square',
+                    'url' => esc((string) ($actions['edit_url'] ?? ''))
+                ]
+            ]
+        ]) ?>
     </div>
 
     <div class="col-xl-4">
-        <div class="card admin-form-sidecard h-100">
-            <div class="card-body">
-                <div class="admin-form-sidecard__icon mb-3"><i class="bi bi-journal-check"></i></div>
-                <h3 class="h5 mb-2">Ringkasan Publikasi</h3>
-                <p class="text-muted mb-3">Gunakan panel ini untuk membaca konteks inti publikasi sebelum melakukan perubahan atau penghapusan data.</p>
-                <div class="list-group list-group-flush admin-summary-list">
-                    <?php foreach ($summaryItems as $item): $item = (array) $item; ?>
-                        <div class="list-group-item px-0 py-3">
-                            <div class="small text-muted mb-1"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                            <div class="fw-semibold"><?= esc((string) ($item['value'] ?? '')) ?></div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-2">
+                    <i class="bi bi-journal-check text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0 text-dark text-uppercase small ls-1">Ringkasan Publikasi</h6>
+                </div>
+                
+                <div class="d-flex flex-column gap-3">
+                    <?php foreach ($summaryItems as $item): ?>
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="small text-muted fw-bold text-uppercase ls-1 mb-1" style="font-size: 0.65rem;"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                            <div class="fw-bold text-dark small"><?= esc((string) ($item['value'] ?? '')) ?></div>
                         </div>
                     <?php endforeach; ?>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-grid gap-2">
+                    <button class="btn btn-outline-danger border-0 rounded-pill py-2 btn-delete" data-href="<?= esc((string) ($actions['delete_url'] ?? '')) ?>" data-delete-label="<?= esc((string) ($hero['title'] ?? 'publikasi ini')) ?>" data-delete-desc="Data yang dihapus tidak dapat dipulihkan kembali.">
+                        <i class="bi bi-trash me-2"></i>Hapus Publikasi
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-8">
-        <div class="card card-primary card-outline admin-table-card h-100">
-            <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0"><?= esc((string) $metadataTitle) ?></h3>
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-light border-0 py-3 px-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0 text-dark text-uppercase small ls-1"><?= esc((string) $metadataTitle) ?></h6>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <?php if (empty($metadataItems)): ?>
-                    <div class="admin-empty-state py-4">
-                        <i class="bi bi-info-circle"></i>
-                        <p class="mb-0 fw-semibold text-body-emphasis">Belum ada detail tambahan untuk publikasi ini.</p>
+                    <div class="text-center py-5 opacity-50">
+                        <i class="bi bi-info-circle display-4 mb-3"></i>
+                        <h5 class="fw-bold mb-0">Metadata tidak tersedia</h5>
+                        <p class="text-muted small">Belum ada rincian metadata tambahan untuk publikasi ini.</p>
                     </div>
                 <?php else: ?>
-                    <div class="row g-3">
+                    <div class="row g-4">
                         <?php foreach ($metadataItems as $item): $item = (array) $item; ?>
                             <?php if (!empty($item['url'])): ?>
                                 <div class="col-12">
-                                    <div class="admin-detail-item admin-detail-item--link">
-                                        <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                                        <a href="<?= esc((string) ($item['href'] ?? ''), 'attr') ?>" target="_blank" rel="noopener noreferrer" class="admin-detail-item__value text-break text-decoration-none"><?= esc((string) ($item['value'] ?? '')) ?></a>
+                                    <div class="p-3 border rounded-3 bg-white shadow-sm border-primary-hover transition-all">
+                                        <div class="small text-muted fw-bold text-uppercase ls-1 mb-2" style="font-size: 0.65rem;"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                        <a href="<?= esc((string) ($item['href'] ?? ''), 'attr') ?>" target="_blank" rel="noopener noreferrer" class="fw-bold text-primary text-decoration-none d-flex align-items-center gap-2">
+                                            <span class="text-break"><?= esc((string) ($item['value'] ?? '')) ?></span>
+                                            <i class="bi bi-box-arrow-up-right small"></i>
+                                        </a>
                                     </div>
                                 </div>
                             <?php else: ?>
                                 <div class="col-md-6">
-                                    <div class="admin-detail-item">
-                                        <div class="admin-detail-item__label"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                                        <div class="admin-detail-item__value"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                                    <div class="p-3 bg-white border rounded-3 h-100">
+                                        <div class="small text-muted mb-1"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                        <div class="fw-bold text-dark small"><?= esc((string) ($item['value'] ?? '')) ?></div>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -101,27 +106,22 @@ $metadataItems = (array) ($metadataItems ?? []);
                 <?php endif; ?>
             </div>
         </div>
-    </div>
 
-    <div class="col-12">
-        <div class="card admin-panel-card">
-            <div class="card-body d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                <div>
-                    <div class="small text-uppercase text-muted mb-1">Aksi Admin</div>
-                    <h3 class="h5 mb-2">Kelola data publikasi dari halaman detail</h3>
-                    <p class="text-muted mb-0">Gunakan edit untuk memperbarui metadata atau hapus jika entri ini memang tidak valid dan tidak perlu dipertahankan.</p>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="<?= esc((string) ($actions['edit_url'] ?? '')) ?>" class="btn btn-warning">
-                        <i class="bi bi-pencil-square me-1"></i>Edit Publikasi
-                    </a>
-                    <button class="btn btn-outline-danger btn-delete" data-href="<?= esc((string) ($actions['delete_url'] ?? '')) ?>" data-delete-label="Publikasi ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
-                        <i class="bi bi-trash me-1"></i>Hapus Publikasi
-                    </button>
+        <div class="card shadow-sm border-0 rounded-4 bg-primary text-white overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-4">
+                    <div class="bg-white bg-opacity-25 p-3 rounded-circle d-none d-md-flex">
+                        <i class="bi bi-shield-check fs-2"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Verifikasi & Pengelolaan</h6>
+                        <p class="small mb-0 opacity-75">Gunakan tombol edit di atas jika Anda perlu melakukan koreksi metadata publikasi untuk validasi pelaporan.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <?= $this->endSection() ?>

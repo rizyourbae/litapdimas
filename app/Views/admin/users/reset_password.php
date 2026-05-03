@@ -1,6 +1,13 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
+<?php
+/** @var string $title */
+/** @var array<string,mixed> $user */
+/** @var string $action */
+/** @var array<string,mixed> $viewState */
+?>
+
 <div class="row justify-content-center admin-page">
     <div class="col-md-6">
         <div class="card card-warning card-outline admin-form-card shadow-sm">
@@ -9,12 +16,12 @@
                     <i class="bi bi-lock me-2"></i>Reset Password
                 </h3>
             </div>
-            <form action="<?= esc($action) ?>" method="post" data-submit-state-form>
+            <form action="<?= esc((string) $action) ?>" method="post" data-submit-state-form>
                 <?= csrf_field() ?>
                 <div class="card-body">
                     <div class="alert alert-info admin-soft-banner" role="alert">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong>User:</strong> <?= esc($viewState['displayName']) ?>
+                        <strong>User:</strong> <?= esc((string) ($viewState['displayName'] ?? '')) ?>
                     </div>
 
                     <?php if (!empty($viewState['errors'])): ?>

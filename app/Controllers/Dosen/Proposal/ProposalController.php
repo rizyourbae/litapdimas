@@ -237,6 +237,7 @@ class ProposalController extends BaseController
 
         return $this->renderView('dosen/proposals/show', [
             'title' => 'Detail Proposal',
+            'hide_header' => true,
             'proposal' => $this->detailService->buildDetailPayload($proposal),
         ]);
     }
@@ -281,7 +282,7 @@ class ProposalController extends BaseController
             $currentStep = (int) ($proposal->current_step ?? 1);
 
             $primaryActionLabel = $status === 'draft' ? 'Lanjutkan' : 'Detail';
-            $primaryActionIcon = $status === 'draft' ? 'fas fa-pen' : 'fas fa-eye';
+            $primaryActionIcon = $status === 'draft' ? 'bi bi-pencil' : 'bi bi-eye';
             $primaryActionUrl = $status === 'draft'
                 ? site_url("dosen/proposals/step/{$currentStep}/{$proposal->uuid}")
                 : site_url("dosen/proposals/show/{$proposal->uuid}");

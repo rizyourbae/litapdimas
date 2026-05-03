@@ -8,137 +8,132 @@
 /** @var array<string,array<int,array<string,mixed>>> $parentGroups */
 ?>
 
-<div class="row g-3 admin-page">
-    <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Master Data</span>
-                            <span class="badge text-bg-info px-3 py-2">Struktur Organisasi</span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title) ?></h2>
-                    </div>
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modal-tambah">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah Unit Kerja
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 admin-page">
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'admin',
+            'title' => esc($title),
+            'subtitle' => 'Kelola hierarki dan struktur unit kerja di lingkungan universitas.',
+            'badges' => [
+                ['label' => 'Master Data', 'class' => 'text-bg-light border'],
+                ['label' => 'Unit Kerja', 'class' => 'text-bg-info shadow-sm text-white']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Tambah Unit Kerja',
+                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                    'icon' => 'bi bi-plus-lg',
+                    'attr' => 'data-bs-toggle="modal" data-bs-target="#modal-tambah"'
+                ]
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 animate-fade-up delay-1">
         <div class="d-none" <?= !empty($viewState['openModal'] ?? '') ? ' data-admin-auto-open-modal="modal-' . esc((string) ($viewState['openModal'] ?? '')) . '"' : '' ?>></div>
-        <div class="card card-info card-outline admin-table-card">
-            <div class="card-body">
-                <div class="alert alert-light border-start border-4 border-info mb-3 admin-soft-banner">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Struktur Hierarki:</strong> Pilih induk dari grup Lembaga atau Unit, lalu isi sub-unit di bawahnya.
-                </div>
-
-                <?php if (empty($items)): ?>
-                    <div class="dosen-empty-state">
-                        <i class="bi bi-diagram-3"></i>
-                        <p class="mb-1">Belum ada data Unit Kerja</p>
-                        <small>Klik tombol tambah untuk memulai struktur unit kerja.</small>
-                    </div>
-                <?php else: ?>
-                    <div class="dt-skeleton-wrap">
-                        <div class="dt-skeleton-overlay" id="sk-unit-kerja">
-                            <table class="table table-bordered mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th style="width:60px"></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th style="width:110px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ([70, 50, 65, 80, 45] as $width): ?>
-                                        <tr>
-                                            <td><span class="skeleton-line mx-auto" style="width:24px"></span></td>
-                                            <td><span class="skeleton-line" style="width:<?= esc((string) $width) ?>%"></span></td>
-                                            <td><span class="skeleton-line" style="width:60%"></span></td>
-                                            <td class="text-center"><span class="skeleton-btn me-1"></span><span class="skeleton-btn"></span></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="dt-real-wrap" id="rw-unit-kerja">
-                            <table id="dt-unit-kerja" class="table table-hover table-bordered align-middle w-100" data-admin-datatable data-admin-datatable-options='{"columnDefs":[{"orderable":false,"targets":[0,3]}]}' data-skeleton-id="sk-unit-kerja" data-real-wrap-id="rw-unit-kerja">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th style="width:60px" class="text-center">#</th>
-                                        <th>Nama Unit Kerja</th>
-                                        <th>Unit Induk</th>
-                                        <th style="width:110px" class="text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($items as $index => $item): ?>
-                                        <tr>
-                                            <td class="text-center"><?= esc((string) ($index + 1)) ?></td>
-                                            <td>
-                                                <?php if (empty($item['parent_id'])): ?>
-                                                    <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong>
-                                                <?php else: ?>
-                                                    <span class="ms-3 me-1">└</span><?= esc((string) ($item['nama'] ?? '')) ?>
-                                                <?php endif; ?>
-                                                <?php if (!empty($item['deleted_at'])): ?>
-                                                    <span class="badge bg-secondary ms-1">Nonaktif</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?php if (!empty($item['nama_induk'])): ?>
-                                                    <span class="badge bg-light text-dark border"><i class="bi bi-diagram-2 me-1"></i><?= esc((string) ($item['nama_induk'] ?? '')) ?></span>
-                                                <?php else: ?>
-                                                    <span class="text-muted small"><i>— Tidak ada —</i></span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="text-center btn-action-group admin-action-group">
-                                                <?php if (!empty($item['deleted_at'])): ?>
-                                                    <a href="#" class="btn btn-success btn-sm btn-admin-restore"
-                                                        data-href="<?= site_url('admin/master/unit-kerja/restore/' . $item['id']) ?>"
-                                                        data-confirm-title="Pulihkan data ini?"
-                                                        data-confirm-html="Data <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong> akan diaktifkan kembali."
-                                                        data-confirm-button="Ya, pulihkan"
-                                                        title="Pulihkan">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </a>
-                                                <?php else: ?>
-                                                    <button type="button" class="btn btn-warning btn-sm"
-                                                        data-admin-modal-target="#modal-edit"
-                                                        data-admin-form-action="<?= site_url('admin/master/unit-kerja/update/' . $item['id']) ?>"
-                                                        data-admin-modal-title-text="<i class='bi bi-pencil-square me-2'></i>Edit Unit Kerja"
-                                                        data-admin-value-nama="<?= esc((string) ($item['nama'] ?? '')) ?>"
-                                                        data-admin-value-parent-id="<?= esc((string) ($item['parent_id'] ?? '')) ?>"
-                                                        title="Edit">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </button>
-                                                    <a href="#" class="btn btn-danger btn-sm btn-delete"
-                                                        data-href="<?= site_url('admin/master/unit-kerja/delete/' . $item['id']) ?>"
-                                                        data-delete-label="<?= esc((string) ($item['nama'] ?? '')) ?>"
-                                                        data-delete-desc="Unit kerja akan dinonaktifkan dan bisa dipulihkan kembali."
-                                                        title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                <?php endif; ?>
+        
+        <div class="alert alert-primary bg-primary-soft border-0 rounded-4 p-4 mb-4 d-flex align-items-start gap-3">
+            <div class="bg-primary text-white rounded-circle p-2 shadow-sm"><i class="bi bi-info-circle fs-5"></i></div>
+            <div>
+                <h6 class="fw-bold text-primary mb-1">Panduan Struktur Hierarki</h6>
+                <p class="text-primary opacity-75 small mb-0">Pilih induk dari grup Lembaga atau Unit, lalu isi sub-unit di bawahnya untuk membangun hierarki yang tepat.</p>
             </div>
         </div>
+
+        <?php if (empty($items)): ?>
+            <?= view('components/ui-empty-state', [
+                'icon' => 'bi bi-diagram-3-fill',
+                'title' => 'Belum ada data Unit Kerja',
+                'desc' => 'Klik tombol tambah untuk mulai menyusun struktur unit kerja organisasi Anda.',
+                'action_label' => 'Tambah Unit Pertama',
+                'action_url' => '#',
+                'action_attr' => 'data-bs-toggle="modal" data-bs-target="#modal-tambah"'
+            ]) ?>
+        <?php else: ?>
+            <?php ob_start(); ?>
+            <thead class="table-light">
+                <tr>
+                    <th style="width:60px" class="text-center py-3">#</th>
+                    <th class="py-3">Nama Unit Kerja</th>
+                    <th class="py-3">Unit Induk</th>
+                    <th style="width:140px" class="text-center py-3">Aksi</th>
+                </tr>
+            </thead>
+            <?php $header = ob_get_clean(); ?>
+
+            <?php ob_start(); ?>
+            <?php foreach ($items as $index => $item): ?>
+                <tr>
+                    <td class="text-center text-muted small"><?= esc((string) ($index + 1)) ?></td>
+                    <td>
+                        <?php if (empty($item['parent_id'])): ?>
+                            <div class="fw-bold text-dark d-flex align-items-center gap-2">
+                                <i class="bi bi-building text-primary opacity-50"></i>
+                                <?= esc((string) ($item['nama'] ?? '')) ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="ps-4 d-flex align-items-center gap-2">
+                                <span class="text-muted opacity-50">└</span>
+                                <span class="text-dark"><?= esc((string) ($item['nama'] ?? '')) ?></span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (!empty($item['deleted_at'])): ?>
+                            <span class="badge bg-secondary-soft text-secondary rounded-pill ms-2 small">Nonaktif</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if (!empty($item['nama_induk'])): ?>
+                            <span class="badge bg-light text-dark border fw-normal rounded-pill px-3 py-2">
+                                <i class="bi bi-diagram-2-fill me-1 text-primary"></i><?= esc((string) ($item['nama_induk'] ?? '')) ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="text-muted small italic opacity-50">— Unit Utama —</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <?php if (!empty($item['deleted_at'])): ?>
+                                <button type="button" class="btn-action-sm bg-success-soft text-success shadow-sm btn-admin-restore"
+                                    data-href="<?= site_url('admin/master/unit-kerja/restore/' . $item['id']) ?>"
+                                    data-confirm-title="Pulihkan data ini?"
+                                    data-confirm-html="Data <strong><?= esc((string) ($item['nama'] ?? '')) ?></strong> akan diaktifkan kembali."
+                                    data-confirm-button="Ya, pulihkan"
+                                    title="Pulihkan">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            <?php else: ?>
+                                <button type="button" class="btn-action-sm bg-warning-soft text-warning shadow-sm"
+                                    data-admin-modal-target="#modal-edit"
+                                    data-admin-form-action="<?= site_url('admin/master/unit-kerja/update/' . $item['id']) ?>"
+                                    data-admin-modal-title-text="Edit Unit Kerja"
+                                    data-admin-value-nama="<?= esc((string) ($item['nama'] ?? '')) ?>"
+                                    data-admin-value-parent-id="<?= esc((string) ($item['parent_id'] ?? '')) ?>"
+                                    title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button type="button" class="btn-action-sm bg-danger-soft text-danger shadow-sm btn-delete"
+                                    data-href="<?= site_url('admin/master/unit-kerja/delete/' . $item['id']) ?>"
+                                    data-delete-label="<?= esc((string) ($item['nama'] ?? '')) ?>"
+                                    data-delete-desc="Unit kerja akan dinonaktifkan."
+                                    title="Hapus">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php $body = ob_get_clean(); ?>
+
+            <?= view('components/ui-table-card', [
+                'tableId' => 'dt-unit-kerja',
+                'header' => $header,
+                'body' => $body,
+                'type' => 'admin',
+                'title' => 'Struktur Unit Kerja',
+                'icon' => 'bi bi-diagram-3-fill'
+            ]) ?>
+        <?php endif; ?>
     </div>
 </div>
 

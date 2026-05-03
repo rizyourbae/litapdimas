@@ -10,7 +10,7 @@ $stepData = !empty($proposal['step_5_data']) ? json_decode($proposal['step_5_dat
 
 <div class="card border-0 bg-light mb-4" style="border-radius:0.8rem;">
     <div class="card-body py-3">
-        <h6 class="mb-1"><i class="fas fa-book-open text-info me-1"></i> Data Jurnal Tujuan Publikasi</h6>
+        <h6 class="mb-1"><i class="bi bi-journal-text text-info me-1"></i> Data Jurnal Tujuan Publikasi</h6>
         <p class="text-muted small mb-0">Lengkapi identitas jurnal, tautan pendukung, dan total pengajuan dana.</p>
     </div>
 </div>

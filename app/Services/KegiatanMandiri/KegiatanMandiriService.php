@@ -92,6 +92,7 @@ class KegiatanMandiriService
             'resumeHtml' => $this->formatMultilineHtml($kegiatan->resume_kegiatan ?? ''),
             'evidence' => [
                 'url'   => $kegiatan->tautan_bukti_dukung,
+                'href'  => $this->prepareHref($kegiatan->tautan_bukti_dukung ?? ''),
                 'label' => $this->shortenUrl($kegiatan->tautan_bukti_dukung ?? ''),
             ],
             'actions' => [
@@ -434,6 +435,7 @@ class KegiatanMandiriService
             'resumeHtml' => $this->formatMultilineHtml($kegiatan->resume_kegiatan ?? ''),
             'evidence' => [
                 'url'   => $kegiatan->tautan_bukti_dukung,
+                'href'  => $this->prepareHref($kegiatan->tautan_bukti_dukung ?? ''),
                 'label' => $this->shortenUrl($kegiatan->tautan_bukti_dukung ?? ''),
             ],
             'actions' => [
@@ -452,6 +454,15 @@ class KegiatanMandiriService
     public function getEditFormPayloadForDosen(object $kegiatan): array
     {
         return $this->buildFormPayload($kegiatan);
+    }
+
+    private function prepareHref(string $url): string
+    {
+        $href = trim($url);
+        if ($href !== '' && !preg_match('~^[a-z][a-z0-9+.-]*:~i', $href)) {
+            $href = 'https://' . ltrim($href, '/');
+        }
+        return $href;
     }
 
     // ================================================================

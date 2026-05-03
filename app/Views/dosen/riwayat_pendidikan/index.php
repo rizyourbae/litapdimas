@@ -1,120 +1,110 @@
-<?= $this->extend('layouts/main') ?>
+<?php
+/** @var string $title */
+/** @var array<int,array<string,mixed>> $tableRows */
 
-<?= $this->section('content') ?>
+$this->extend('layouts/main');
 
-<div class="row g-3">
-    <div class="col-12">
-        <div class="card dosen-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Data Akademik</span>
-                            <span class="badge text-bg-primary px-3 py-2">Riwayat Pendidikan</span>
-                        </div>
-                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($title ?? 'Riwayat Pendidikan Saya') ?></h2>
-                        <p class="dosen-hero__subtitle mb-0">Kelola jenjang pendidikan, program studi, dan dokumen ijazah dengan tampilan yang lebih rapi.</p>
-                    </div>
+$this->section('content');
+?>
 
-                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= site_url('dosen/riwayat-pendidikan/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah Riwayat
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 admin-page">
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'dosen',
+            'title' => $title ?? 'Riwayat Pendidikan Saya',
+            'subtitle' => 'Kelola jenjang pendidikan, program studi, dan dokumen ijazah dengan tampilan yang lebih rapi.',
+            'badges' => [
+                ['label' => 'Riwayat Pendidikan', 'class' => 'text-bg-light border shadow-sm'],
+                ['label' => 'Akademik', 'class' => 'text-bg-primary shadow-sm']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Tambah Riwayat',
+                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                    'icon' => 'bi bi-plus-lg',
+                    'url' => site_url('dosen/riwayat-pendidikan/create')
+                ]
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-12">
-        <div class="card card-primary card-outline shadow-sm dosen-table-card">
-            <div class="card-header">
-                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center">
-                    <div>
-                        <h3 class="card-title mb-1">Daftar Riwayat Pendidikan</h3>
-                    </div>
-                    <span class="badge text-bg-light border">Total data: <?= esc(count($tableRows ?? [])) ?></span>
-                </div>
-            </div>
-            <div class="card-body">
-                <?php if (session()->getFlashdata('success')): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-                <?php if (session()->getFlashdata('error')): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+    <div class="col-12 animate-fade-up delay-1">
+        <?php if (empty($tableRows)): ?>
+            <?= view('components/ui-empty-state', [
+                'icon' => 'bi bi-mortarboard-fill',
+                'title' => 'Belum Ada Riwayat Pendidikan',
+                'desc' => 'Daftar riwayat pendidikan Anda masih kosong. Silakan tambahkan data pendidikan Anda.',
+                'action_label' => 'Tambah Riwayat Pertama',
+                'action_url' => site_url('dosen/riwayat-pendidikan/create'),
+                'action_icon' => 'bi bi-plus-lg'
+            ]) ?>
+        <?php else: ?>
+            <?php ob_start(); ?>
+            <thead>
+                <tr>
+                    <th style="width: 60px" class="text-center py-3">#</th>
+                    <th class="py-3">Jenjang</th>
+                    <th class="py-3">Program Studi</th>
+                    <th class="py-3">Institusi</th>
+                    <th style="width: 90px" class="text-center py-3">Masuk</th>
+                    <th style="width: 90px" class="text-center py-3">Lulus</th>
+                    <th style="width: 70px" class="text-center py-3">IPK</th>
+                    <th style="width: 140px" class="text-center py-3">Dokumen</th>
+                    <th style="width: 120px" class="text-center py-3">Aksi</th>
+                </tr>
+            </thead>
+            <?php $header = ob_get_clean(); ?>
 
-                <?php if (empty($tableRows)): ?>
-                    <div class="dosen-empty-state">
-                        <i class="bi bi-mortarboard"></i>
-                        <h4 class="h5 text-body mb-2">Belum ada data riwayat pendidikan</h4>
-                        <p class="mb-0">Klik tombol Tambah Riwayat untuk mulai melengkapi data akademik Anda.</p>
-                    </div>
-                <?php else: ?>
-                    <div class="table-responsive dosen-table-wrap">
-                        <table class="table table-striped table-hover table-bordered align-middle mb-0" id="dt-riwayat" data-dosen-datatable>
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 60px" class="text-center">#</th>
-                                    <th>Jenjang</th>
-                                    <th>Program Studi</th>
-                                    <th>Institusi</th>
-                                    <th style="width: 90px" class="text-center">Tahun Masuk</th>
-                                    <th style="width: 90px" class="text-center">Tahun Lulus</th>
-                                    <th style="width: 70px" class="text-center">IPK</th>
-                                    <th style="width: 140px" class="text-center">Dokumen</th>
-                                    <th style="width: 110px" class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($tableRows as $index => $row): ?>
-                                    <tr>
-                                        <td class="text-center"><?= $index + 1 ?></td>
-                                        <td><?= esc($row['jenjang']) ?></td>
-                                        <td><?= esc($row['program_studi']) ?></td>
-                                        <td><?= esc($row['institusi']) ?></td>
-                                        <td class="text-center"><?= esc($row['tahun_masuk']) ?></td>
-                                        <td class="text-center"><?= esc($row['tahun_lulus']) ?></td>
-                                        <td class="text-center"><?= esc($row['ipk']) ?></td>
-                                        <td class="text-center">
-                                            <?php if ($row['dokumen_url']): ?>
-                                                <a href="<?= esc($row['dokumen_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-file-earmark-pdf me-1"></i>Lihat Dokumen
-                                                </a>
-                                            <?php else: ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="dosen-action-group">
-                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning dosen-icon-btn" title="Edit">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <button class="btn btn-danger dosen-icon-btn btn-delete" title="Hapus"
-                                                    data-href="<?= esc($row['delete_url']) ?>"
-                                                    data-delete-label="riwayat pendidikan ini"
-                                                    data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
+            <?php ob_start(); ?>
+            <?php foreach ($tableRows as $index => $row): ?>
+                <tr>
+                    <td class="text-center text-muted small"><?= $index + 1 ?></td>
+                    <td>
+                        <span class="badge bg-info-soft text-info rounded-pill px-3 py-2 small fw-bold">
+                            <?= esc((string) $row['jenjang']) ?>
+                        </span>
+                    </td>
+                    <td><div class="fw-bold text-primary lh-base"><?= esc((string) $row['program_studi']) ?></div></td>
+                    <td><div class="text-dark fw-medium"><?= esc((string) $row['institusi']) ?></div></td>
+                    <td class="text-center text-muted"><?= esc((string) $row['tahun_masuk']) ?></td>
+                    <td class="text-center fw-bold text-dark"><?= esc((string) $row['tahun_lulus']) ?></td>
+                    <td class="text-center fw-bold text-success"><?= esc((string) $row['ipk']) ?></td>
+                    <td class="text-center">
+                        <?php if ($row['dokumen_url']): ?>
+                            <a href="<?= esc((string) $row['dokumen_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 small">
+                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Ijazah
+                            </a>
+                        <?php else: ?>
+                            <span class="badge bg-light text-muted border fw-normal">Tidak ada file</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="<?= esc((string) $row['edit_url']) ?>" class="btn-action-sm bg-warning-soft text-warning shadow-sm" title="Edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <button class="btn-action-sm bg-danger-soft text-danger shadow-sm btn-delete" title="Hapus"
+                                data-href="<?= esc((string) $row['delete_url']) ?>"
+                                data-delete-label="riwayat pendidikan ini"
+                                data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php $body = ob_get_clean(); ?>
+
+            <?= view('components/ui-table-card', [
+                'title' => 'Daftar Riwayat Pendidikan',
+                'badge' => count($tableRows) . ' Data',
+                'tableId' => 'dt-riwayat-pendidikan',
+                'header' => $header,
+                'body' => $body,
+                'icon' => 'bi bi-mortarboard-fill'
+            ]) ?>
+        <?php endif; ?>
     </div>
 </div>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

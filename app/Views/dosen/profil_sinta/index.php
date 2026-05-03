@@ -1,61 +1,53 @@
-<?= $this->extend('layouts/main') ?>
+<?php
+/** @var string $title */
+/** @var array<string,mixed> $syncInfo */
+/** @var array<string,mixed> $formValues */
+/** @var object|null $profile */
 
-<?= $this->section('content') ?>
+$this->extend('layouts/main');
 
-<div class="row g-3">
-    <div class="col-12">
-        <div class="card dosen-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Sinkronisasi Data</span>
-                            <span class="badge text-bg-<?= esc($syncInfo['status_badge']) ?> px-3 py-2"><?= esc($syncInfo['status_label']) ?></span>
-                        </div>
-                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($title) ?></h2>
-                        <p class="dosen-hero__subtitle mb-0">Sinkronisasi profil SINTA dilakukan berdasarkan ID SINTA untuk menjaga data tetap konsisten.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+$this->section('content');
+?>
+
+<div class="row g-4 admin-page">
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'dosen',
+            'title' => $title ?? 'Sinkronisasi Profil SINTA',
+            'subtitle' => 'Kelola ID SINTA Anda untuk memastikan sinkronisasi data publikasi dan skor akademik berjalan lancar.',
+            'badges' => [
+                ['label' => 'Integrasi Sistem', 'class' => 'text-bg-light border shadow-sm'],
+                ['label' => 'SINTA Kemenristek', 'class' => 'text-bg-info text-white shadow-sm']
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-lg-5">
-        <div class="card card-primary card-outline shadow-sm dosen-form-card h-100">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h3 class="card-title mb-0">Sinkron Profil</h3>
-                <span class="badge text-bg-light border">Update data SINTA</span>
+    <div class="col-lg-5 animate-fade-up delay-1">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <div class="card-header bg-primary py-3">
+                <h5 class="card-title mb-0 text-white"><i class="bi bi-arrow-repeat me-2"></i>Sinkronisasi Profil</h5>
             </div>
-            <div class="card-body">
-                <p class="dosen-section-note mb-3">
-                    Data yang ditarik: nama, skor SINTA semua tahun, skor 3 tahun, dan tautan profil.
-                </p>
+            <div class="card-body p-4">
+                <div class="bg-light p-3 rounded-3 mb-4">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                        Data yang ditarik meliputi nama lengkap, skor SINTA (semua tahun & 3 tahun), serta tautan profil publik.
+                    </p>
+                </div>
 
-                <?php if (session()->getFlashdata('success')): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (session()->getFlashdata('error')): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-
-                <form method="post" action="<?= site_url('dosen/profil-sinta/sync') ?>" class="row g-3 align-items-end"
+                <form method="post" action="<?= site_url('dosen/profil-sinta/sync') ?>" class="row g-3"
                     data-submit-state-form data-submit-loading-text="Sedang sinkronisasi ke SINTA...">
                     <?= csrf_field() ?>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">ID SINTA</label>
-                        <input type="text" name="id_sinta" class="form-control" value="<?= esc($formValues['id_sinta']) ?>" placeholder="Contoh: 6824588" required>
+                        <label class="form-label fw-bold text-dark">ID SINTA Peneliti</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                            <span class="input-group-text bg-white border-0"><i class="bi bi-person-badge text-muted"></i></span>
+                            <input type="text" name="id_sinta" class="form-control border-0" value="<?= esc($formValues['id_sinta']) ?>" placeholder="Contoh: 6824588" required>
+                        </div>
+                        <div class="form-text mt-2 small">Masukkan 7 digit ID SINTA Anda.</div>
                     </div>
-                    <div class="col-12 d-flex flex-wrap gap-2">
-                        <button type="submit" class="btn btn-primary" data-submit-trigger>
+                    <div class="col-12 mt-4 d-flex flex-column gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow" data-submit-trigger>
                             <span class="d-inline-flex align-items-center gap-2" data-submit-default-content>
                                 <i class="bi bi-arrow-repeat"></i>
                                 <span>Sinkronkan Sekarang</span>
@@ -65,67 +57,64 @@
                                 <span>Sedang Memproses...</span>
                             </span>
                         </button>
-                        <span class="d-none dosen-processing-note align-self-center small" data-submit-feedback aria-live="polite">
-                            Sinkronisasi sedang berjalan. Mohon tunggu.
-                        </span>
-                        <span class="text-muted align-self-center small">Sinkron terakhir: <?= esc($syncInfo['last_synced_at']) ?></span>
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-light border">
+                            <span class="text-muted small">Update terakhir:</span>
+                            <span class="fw-bold text-dark small"><?= esc($syncInfo['last_synced_at']) ?></span>
+                        </div>
+                        <div class="d-none mt-2 alert alert-info py-2" data-submit-feedback aria-live="polite">
+                            <i class="bi bi-info-circle-fill me-2"></i>Koneksi ke SINTA sedang dibangun...
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-7">
-        <div class="card card-outline card-secondary shadow-sm dosen-show-card h-100">
-            <div class="card-header">
-                <h3 class="card-title mb-0">Data Profil SINTA</h3>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <span class="badge text-bg-light border">
-                        <i class="bi bi-info-circle me-1"></i>Berikut data profil SINTA hasil sinkronisasi
-                    </span>
+    <div class="col-lg-7 animate-fade-up delay-2">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <div class="card-header bg-white py-3 border-bottom">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h5 class="card-title mb-0 text-dark fw-bold">Data Hasil Sinkronisasi</h5>
+                    <span class="badge bg-success-soft text-success rounded-pill px-3 py-2"><?= esc($syncInfo['status_label']) ?></span>
                 </div>
-
-                <div class="table-responsive dosen-table-wrap">
-                    <table class="table table-striped table-hover table-bordered align-middle mb-0">
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
                         <tbody>
-                            <tr>
-                                <th style="width: 280px;" class="bg-light">Nama</th>
-                                <td><?= esc($profile->nama_sinta ?? '-') ?></td>
+                            <tr class="border-bottom">
+                                <th style="width: 240px;" class="bg-light px-4 py-3 text-muted fw-semibold">Nama di SINTA</th>
+                                <td class="px-4 py-3 fw-bold text-dark"><?= esc((string) ($profile->nama_sinta ?? '-')) ?></td>
                             </tr>
-                            <tr>
-                                <th class="bg-light">ID SINTA</th>
-                                <td><?= esc($profile->id_sinta ?? '-') ?></td>
+                            <tr class="border-bottom">
+                                <th class="bg-light px-4 py-3 text-muted fw-semibold">Identitas (ID SINTA)</th>
+                                <td class="px-4 py-3 font-monospace text-primary fw-bold"><?= esc((string) ($profile->id_sinta ?? '-')) ?></td>
                             </tr>
-                            <tr>
-                                <th class="bg-light">SINTA Score (All Years)</th>
-                                <td><?= esc($profile->sinta_score_all_years ?? '-') ?></td>
+                            <tr class="border-bottom">
+                                <th class="bg-light px-4 py-3 text-muted fw-semibold">SINTA Score (All Years)</th>
+                                <td class="px-4 py-3">
+                                    <span class="badge bg-primary-soft text-primary rounded-pill px-3 py-2 fw-bold fs-6">
+                                        <?= esc((string) ($profile->sinta_score_all_years ?? '-')) ?>
+                                    </span>
+                                </td>
                             </tr>
-                            <tr>
-                                <th class="bg-light">SINTA Score (3 Years)</th>
-                                <td><?= esc($profile->sinta_score_3_years ?? '-') ?></td>
-                            </tr>
-                            <tr>
-                                <th class="bg-light">Profil SINTA</th>
-                                <td>
-                                    <?php if (!empty($profile->sinta_profile_url)): ?>
-                                        <a href="<?= esc($profile->sinta_profile_url) ?>" target="_blank" rel="noopener noreferrer">
-                                            Lihat Profil
-                                        </a>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
+                            <tr class="border-bottom">
+                                <th class="bg-light px-4 py-3 text-muted fw-semibold">SINTA Score (3 Years)</th>
+                                <td class="px-4 py-3">
+                                    <span class="badge bg-info-soft text-info rounded-pill px-3 py-2 fw-bold fs-6">
+                                        <?= esc((string) ($profile->sinta_score_3_years ?? '-')) ?>
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
-                                <th class="bg-light">Status Sinkronisasi</th>
-                                <td>
-                                    <span class="badge text-bg-<?= esc($syncInfo['status_badge']) ?>">
-                                        <?= esc($syncInfo['status_label']) ?>
-                                    </span>
-                                    <?php if (!empty($profile->sync_error_message)): ?>
-                                        <div class="text-danger small mt-1"><?= esc($profile->sync_error_message) ?></div>
+                                <th class="bg-light px-4 py-3 text-muted fw-semibold">Tautan Profil SINTA</th>
+                                <td class="px-4 py-3">
+                                    <?php if (!empty($profile->sinta_profile_url)): ?>
+                                        <a href="<?= esc((string) $profile->sinta_profile_url) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2">
+                                            <i class="bi bi-box-arrow-up-right me-2"></i>Buka Profil Eksternal
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small italic">Tautan belum tersedia. Silakan sinkronkan.</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -133,8 +122,11 @@
                     </table>
                 </div>
             </div>
+            <div class="card-footer bg-light border-0 py-3 text-center">
+                <small class="text-muted italic">Data di atas disinkronkan langsung dari server SINTA Kemenristek/BRIN.</small>
+            </div>
         </div>
     </div>
 </div>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

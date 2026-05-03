@@ -21,108 +21,120 @@ $form = isset($presentation['form']) && is_array($presentation['form']) ? $prese
 
 <div class="row g-3 admin-page reviewer-proposal-page">
     <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <?php foreach (($hero['badges'] ?? []) as $badge): ?>
-                                <span class="badge <?= esc((string) ($badge['class'] ?? 'text-bg-light border')) ?> px-3 py-2"><?= esc((string) ($badge['label'] ?? '')) ?></span>
-                            <?php endforeach; ?>
-                            <span class="badge <?= esc((string) ($detail['review_status_badge_class'] ?? 'text-bg-light border')) ?> px-3 py-2"><?= esc((string) ($detail['review_status_label'] ?? 'Belum Dinilai')) ?></span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) ($hero['title'] ?? 'Penilaian Presentasi')) ?></h2>
-                        <p class="admin-hero__subtitle mb-0"><?= esc((string) ($hero['subtitle'] ?? '')) ?></p>
-                    </div>
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= esc((string) ($detail['back_url'] ?? '#')) ?>" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i>Kembali
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?= view('components/ui-hero', [
+            'type' => 'reviewer',
+            'title' => esc((string) ($hero['title'] ?? 'Penilaian Presentasi')),
+            'subtitle' => esc((string) ($hero['subtitle'] ?? 'Berikan skor penilaian presentasi dan rekomendasi anggaran.')),
+            'badges' => array_merge(
+                [['label' => 'Detail Presentasi', 'class' => 'text-bg-light border']],
+                $hero['badges'] ?? [],
+                [['label' => esc((string) ($detail['review_status_label'] ?? 'Belum Dinilai')), 'class' => esc((string) ($detail['review_status_badge_class'] ?? 'text-bg-light border'))]]
+            ),
+            'actions' => '
+                <a href="' . esc((string) ($detail['back_url'] ?? '#')) . '" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Kembali ke Antrian
+                </a>
+            '
+        ]) ?>
     </div>
 
     <div class="col-12">
-        <div class="card card-primary card-outline admin-table-card reviewer-proposal-form-card">
-            <div class="card-header border-0 pb-0">
-                <h3 class="card-title mb-1"><?= esc((string) ($presentation['card_title'] ?? 'Formulir Penilaian Presentasi')) ?></h3>
-            </div>
-            <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post">
-                <?= csrf_field() ?>
-                <div class="card-body">
-                    <div class="reviewer-proposal-stack">
-                        <div class="reviewer-proposal-section-card">
-                            <div class="row g-4 reviewer-presentation-form-grid">
+        <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post" id="presentationForm">
+            <?= csrf_field() ?>
+            
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0 overflow-hidden mb-4">
+                        <div class="card-header bg-light py-3 px-4">
+                            <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1">
+                                <i class="bi bi-check2-square me-2 text-primary"></i>Parameter Penilaian Presentasi
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-4 mb-4">
                                 <?php foreach ($scoringSections as $section): ?>
-                                    <div class="col-md-6 reviewer-presentation-score-field">
-                                        <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($section['title'] ?? 'Aspek Presentasi')) ?><span class="text-danger">*</span></label>
-                                        <select name="<?= esc((string) ($section['score_field_name'] ?? 'scores[]')) ?>" class="form-select" required>
-                                            <option value=""><?= esc((string) ($section['placeholder'] ?? 'Pilih salah satu opsi')) ?></option>
-                                            <?php foreach (($section['options'] ?? []) as $option): ?>
-                                                <option value="<?= esc((string) ($option['value'] ?? '')) ?>" <?= ((string) ($section['score_value'] ?? '') === (string) ($option['value'] ?? '')) ? 'selected' : '' ?>>
-                                                    <?= esc((string) ($option['label'] ?? '')) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <input type="hidden" name="<?= esc((string) ($section['comment_field_name'] ?? 'comments[]')) ?>" value="<?= esc((string) ($section['comment_value'] ?? '')) ?>">
+                                    <div class="col-md-6">
+                                        <div class="reviewer-proposal-field">
+                                            <label class="form-label fw-bold text-dark small mb-1"><?= esc((string) ($section['title'] ?? 'Aspek Presentasi')) ?><span class="text-danger ms-1">*</span></label>
+                                            <select name="<?= esc((string) ($section['score_field_name'] ?? 'scores[]')) ?>" class="form-select form-select-lg shadow-none" required>
+                                                <option value=""><?= esc((string) ($section['placeholder'] ?? 'Pilih salah satu opsi')) ?></option>
+                                                <?php foreach (($section['options'] ?? []) as $option): ?>
+                                                    <option value="<?= esc((string) ($option['value'] ?? '')) ?>" <?= ((string) ($section['score_value'] ?? '') === (string) ($option['value'] ?? '')) ? 'selected' : '' ?>>
+                                                        <?= esc((string) ($option['label'] ?? '')) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <input type="hidden" name="<?= esc((string) ($section['comment_field_name'] ?? 'comments[]')) ?>" value="<?= esc((string) ($section['comment_value'] ?? '')) ?>">
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
+                            </div>
 
-                                <div class="col-md-6 reviewer-presentation-budget-display">
-                                    <div class="reviewer-proposal-field__label mb-2"><?= esc((string) ($initialBudget['label'] ?? 'Usulan Anggaran Awal')) ?></div>
-                                    <div class="reviewer-presentation-budget-value"><?= esc((string) ($initialBudget['value'] ?? '-')) ?></div>
+                            <div class="reviewer-proposal-field">
+                                <label class="form-label fw-bold text-dark small mb-2"><?= esc((string) ($generalComment['label'] ?? 'Komentar Umum Presentasi')) ?></label>
+                                <div
+                                    id="<?= esc((string) ($generalComment['editor_id'] ?? 'reviewer-presentation-general-comment')) ?>"
+                                    class="reviewer-proposal-editor bg-white border rounded"
+                                    style="min-height: 200px;"
+                                    data-reviewer-quill
+                                    data-reviewer-hidden-input="#<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-presentation-general-comment-input')) ?>"
+                                    data-reviewer-placeholder="Tuliskan masukan atau catatan akhir untuk presentasi ini..."><?= $generalComment['value'] ?? '' ?></div>
+                                <input type="hidden" id="<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-presentation-general-comment-input')) ?>" name="<?= esc((string) ($generalComment['field_name'] ?? 'general_comment')) ?>" value="<?= esc((string) ($generalComment['value'] ?? '')) ?>">
+                                <input type="hidden" name="<?= esc((string) ($validatorNote['field_name'] ?? 'validator_note')) ?>" value="<?= esc((string) ($validatorNote['value'] ?? '')) ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="sticky-top" style="top: 2rem;">
+                        <div class="card border-0 bg-primary text-white shadow-sm mb-4">
+                            <div class="card-body p-4">
+                                <div class="small text-uppercase opacity-75 fw-bold mb-3 ls-1">Rekomendasi Anggaran</div>
+                                
+                                <div class="mb-4">
+                                    <div class="small opacity-75 mb-1"><?= esc((string) ($initialBudget['label'] ?? 'Usulan Dosen')) ?></div>
+                                    <div class="h4 fw-bold mb-0 text-white"><?= esc((string) ($initialBudget['value'] ?? '-')) ?></div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label for="recommendedBudget" class="form-label reviewer-proposal-field__label"><?= esc((string) ($recommendedBudget['label'] ?? 'Rekomendasi Anggaran yang Disetujui')) ?><span class="text-danger">*</span></label>
-                                    <div class="input-group reviewer-presentation-budget-input">
-                                        <span class="input-group-text">Rp</span>
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-25 mb-3">
+                                    <label for="recommendedBudget" class="small opacity-75 mb-2 d-block"><?= esc((string) ($recommendedBudget['label'] ?? 'Disetujui Reviewer')) ?></label>
+                                    <div class="input-group input-group-lg border-0 bg-white rounded shadow-sm">
+                                        <span class="input-group-text bg-transparent border-0 text-dark fw-bold">Rp</span>
                                         <input
                                             type="text"
                                             id="recommendedBudget"
                                             name="<?= esc((string) ($recommendedBudget['field_name'] ?? 'recommended_budget')) ?>"
-                                            class="form-control"
+                                            class="form-control border-0 text-dark fw-bold"
                                             inputmode="numeric"
                                             placeholder="0"
                                             value="<?= esc((string) ($recommendedBudget['value'] ?? '')) ?>"
                                             required>
                                     </div>
-                                    <small class="text-muted d-block mt-2"><?= esc((string) ($recommendedBudget['hint'] ?? '')) ?></small>
+                                </div>
+                                <small class="opacity-75 d-block" style="font-size: 0.75rem;"><?= esc((string) ($recommendedBudget['hint'] ?? '')) ?></small>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 bg-light shadow-none">
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold">
+                                        <i class="bi bi-check-all me-2"></i><?= esc((string) ($form['submit_label'] ?? 'Simpan Penilaian')) ?>
+                                    </button>
+                                    <p class="text-muted small text-center mb-0 mt-2">
+                                        <?= esc((string) ($form['helper_text'] ?? ($totals['hint'] ?? ''))) ?>
+                                    </p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="reviewer-proposal-section-card">
-                            <div class="reviewer-proposal-field">
-                                <label class="form-label reviewer-proposal-field__label"><?= esc((string) ($generalComment['label'] ?? 'Komentar Umum Presentasi')) ?></label>
-                                <div
-                                    id="<?= esc((string) ($generalComment['editor_id'] ?? 'reviewer-presentation-general-comment')) ?>"
-                                    class="reviewer-proposal-editor reviewer-proposal-editor--large reviewer-presentation-editor"
-                                    data-reviewer-quill
-                                    data-reviewer-hidden-input="#<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-presentation-general-comment-input')) ?>"
-                                    data-reviewer-placeholder="Tuliskan komentar umum presentasi..."><?= $generalComment['value'] ?? '' ?></div>
-                                <input type="hidden" id="<?= esc((string) ($generalComment['input_id'] ?? 'reviewer-presentation-general-comment-input')) ?>" name="<?= esc((string) ($generalComment['field_name'] ?? 'general_comment')) ?>" value="<?= esc((string) ($generalComment['value'] ?? '')) ?>">
-                            </div>
-
-                            <input type="hidden" name="<?= esc((string) ($validatorNote['field_name'] ?? 'validator_note')) ?>" value="<?= esc((string) ($validatorNote['value'] ?? '')) ?>">
-                        </div>
                     </div>
                 </div>
-
-                <div class="card-footer admin-form-footer reviewer-proposal-form-footer d-flex flex-column gap-3">
-                    <div class="text-muted small"><?= esc((string) ($form['helper_text'] ?? ($totals['hint'] ?? ''))) ?></div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-danger px-4">
-                            <i class="bi bi-save me-1"></i><?= esc((string) ($form['submit_label'] ?? 'Simpan Penilaian Presentasi')) ?>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
 
 <?= $this->endSection() ?>
 

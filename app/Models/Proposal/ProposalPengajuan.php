@@ -24,6 +24,11 @@ class ProposalPengajuan extends Model
         'jenis_penelitian_id',
         'kontribusi_prodi_id',
         'status',
+        'approved_amount',
+        'outcome_admin_notes',
+        'admin_notes',
+        'decided_at',
+        'decided_by',
         'current_step',
         'step_1_data',
         'step_2_data',
@@ -64,8 +69,10 @@ class ProposalPengajuan extends Model
      */
     public function findByUserAndUuid(int $userId, string $uuid)
     {
-        return $this->where('user_id', $userId)
-            ->where('uuid', $uuid)
+        return $this->select('proposal_pengajuan.*, proposal_jurnal.total_pengajuan_dana')
+            ->join('proposal_jurnal', 'proposal_jurnal.proposal_id = proposal_pengajuan.id', 'left')
+            ->where('proposal_pengajuan.user_id', $userId)
+            ->where('proposal_pengajuan.uuid', $uuid)
             ->first();
     }
 

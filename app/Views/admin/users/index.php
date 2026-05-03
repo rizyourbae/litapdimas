@@ -1,83 +1,90 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
-<div class="row g-3 admin-page">
-    <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Operasional Admin</span>
-                            <span class="badge text-bg-primary px-3 py-2">User Directory</span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc($title) ?></h2>
-                        <p class="admin-hero__subtitle mb-0">Kelola akun, peran, dan status pengguna</p>
-                    </div>
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= site_url('admin/users/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah User
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<?php
+/** @var string $title */
+/** @var array{baseUrl:string,totalUsers:int,activeUsers:int,inactiveUsers:int,archivedUsers:int,hasFilters:bool,filterCount:int,searchValue:string,selectedRoleId:int|string,selectedStatus:int|string} $viewState */
+/** @var array<int,array{number:int,uuid:string,name:string,username:string,email:string,roles:array<int,string>,isActive:bool,isArchived:bool}> $tableRows */
+/** @var array<int,array{id:int,name:string}> $roles */
+?>
+
+<div class="row g-4 admin-page">
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'admin',
+            'title' => esc((string) $title),
+            'subtitle' => 'Kelola akun, peran, dan status akses pengguna sistem.',
+            'badges' => [
+                ['label' => 'Operasional Admin', 'class' => 'text-bg-light border'],
+                ['label' => 'User Directory', 'class' => 'text-bg-primary shadow-sm']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Tambah User',
+                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                    'icon' => 'bi bi-plus-lg',
+                    'url' => site_url('admin/users/create')
+                ]
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-md-4 col-xl-3">
-        <div class="card admin-metric-card h-100">
-            <div class="card-body">
-                <div class="small text-uppercase text-muted mb-2">Total User</div>
-                <div class="admin-metric-card__value"><?= esc((string) $viewState['totalUsers']) ?></div>
-                <div class="text-muted small">Semua akun terdaftar saat ini.</div>
-            </div>
-        </div>
+    <div class="col-md-6 col-xl-3 animate-fade-up delay-1">
+        <?= view('components/ui-stat-card', [
+            'label' => 'Total User',
+            'value' => $viewState['totalUsers'],
+            'desc' => 'Akun terdaftar',
+            'icon' => 'bi bi-people',
+            'colorClass' => 'text-primary'
+        ]) ?>
     </div>
-    <div class="col-md-4 col-xl-3">
-        <div class="card admin-metric-card h-100">
-            <div class="card-body">
-                <div class="small text-uppercase text-muted mb-2">Aktif</div>
-                <div class="admin-metric-card__value text-success"><?= esc((string) $viewState['activeUsers']) ?></div>
-                <div class="text-muted small">User aktif yang bisa masuk sistem.</div>
-            </div>
-        </div>
+    <div class="col-md-6 col-xl-3 animate-fade-up delay-2">
+        <?= view('components/ui-stat-card', [
+            'label' => 'User Aktif',
+            'value' => $viewState['activeUsers'],
+            'desc' => 'Memiliki akses login',
+            'icon' => 'bi bi-check-circle',
+            'colorClass' => 'text-success'
+        ]) ?>
     </div>
-    <div class="col-md-4 col-xl-3">
-        <div class="card admin-metric-card h-100">
-            <div class="card-body">
-                <div class="small text-uppercase text-muted mb-2">Nonaktif</div>
-                <div class="admin-metric-card__value text-secondary"><?= esc((string) $viewState['inactiveUsers']) ?></div>
-                <div class="text-muted small">Akun dinonaktifkan sementara.</div>
-            </div>
-        </div>
+    <div class="col-md-6 col-xl-3 animate-fade-up delay-3">
+        <?= view('components/ui-stat-card', [
+            'label' => 'Nonaktif',
+            'value' => $viewState['inactiveUsers'],
+            'desc' => 'Akses ditangguhkan',
+            'icon' => 'bi bi-dash-circle',
+            'colorClass' => 'text-secondary'
+        ]) ?>
     </div>
-    <div class="col-md-4 col-xl-3">
-        <div class="card admin-metric-card h-100">
-            <div class="card-body">
-                <div class="small text-uppercase text-muted mb-2">Diarsipkan</div>
-                <div class="admin-metric-card__value text-danger"><?= esc((string) $viewState['archivedUsers']) ?></div>
-                <div class="text-muted small">Soft deleted dan bisa dipulihkan.</div>
-            </div>
-        </div>
+    <div class="col-md-6 col-xl-3 animate-fade-up delay-3">
+        <?= view('components/ui-stat-card', [
+            'label' => 'Arsip',
+            'value' => $viewState['archivedUsers'],
+            'desc' => 'Akun terhapus',
+            'icon' => 'bi bi-archive',
+            'colorClass' => 'text-danger'
+        ]) ?>
     </div>
 
-    <div class="col-12">
-        <div class="card card-primary card-outline admin-table-card">
-            <div class="card-header border-0 pb-0">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-people me-2"></i><?= esc($title) ?>
-                    </h3>
+    <div class="col-12 mt-4 animate-fade-up" style="animation-delay: 0.4s;">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-light py-3 px-4 border-bottom">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-funnel-fill me-2 text-primary"></i>Filter Pengguna
+                    </h5>
                     <?php if ($viewState['hasFilters']): ?>
-                        <span class="badge text-bg-light border">Filter aktif: <?= esc((string) $viewState['filterCount']) ?></span>
+                        <span class="badge text-bg-warning-soft text-warning px-3 py-2 rounded-pill border border-warning border-opacity-25">
+                            <i class="bi bi-filter-circle-fill me-1"></i><?= esc((string) $viewState['filterCount']) ?> Filter Aktif
+                        </span>
                     <?php endif; ?>
                 </div>
             </div>
-
-            <div class="card-body">
-                <form class="admin-filter-bar row g-2 mb-4" data-admin-filter-form data-filter-base-url="<?= esc($viewState['baseUrl']) ?>">
-                    <div class="col-sm-6 col-lg-3">
-                        <label class="form-label small text-muted fw-semibold mb-1">Filter Role</label>
-                        <select id="filterRole" class="form-select form-select-sm" data-filter-param="role_id">
+            <div class="card-body p-4">
+                <form class="row g-3 align-items-end" data-admin-filter-form data-filter-base-url="<?= esc($viewState['baseUrl']) ?>">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold text-muted mb-1 ls-1">PERAN PENGGUNA</label>
+                        <select id="filterRole" class="form-select shadow-none bg-light border-0 py-2 rounded-3" data-filter-param="role_id">
                             <option value="">-- Semua Role --</option>
                             <?php foreach ($roles as $role): ?>
                                 <option value="<?= esc((string) $role['id']) ?>" <?= ($viewState['selectedRoleId'] ?? '') == $role['id'] ? 'selected' : '' ?>>
@@ -86,146 +93,127 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
-                        <label class="form-label small text-muted fw-semibold mb-1">Status</label>
-                        <select class="form-select form-select-sm" data-filter-param="aktif">
-                            <option value="">-- Semua Status --</option>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold text-muted mb-1 ls-1">STATUS AKUN</label>
+                        <select class="form-select shadow-none bg-light border-0 py-2 rounded-3" data-filter-param="aktif">
+                            <option value="">-- Semua --</option>
                             <option value="1" <?= ($viewState['selectedStatus'] ?? '') === '1' ? 'selected' : '' ?>>Aktif</option>
                             <option value="0" <?= ($viewState['selectedStatus'] ?? '') === '0' ? 'selected' : '' ?>>Nonaktif</option>
                         </select>
                     </div>
-                    <div class="col-lg-4">
-                        <label class="form-label small text-muted fw-semibold mb-1">Pencarian</label>
-                        <input type="text" id="filterSearch" class="form-control form-control-sm" data-filter-param="search" placeholder="Cari nama, username, email..."
-                            value="<?= esc($viewState['searchValue']) ?>">
+                    <div class="col-md-5">
+                        <label class="form-label small fw-bold text-muted mb-1 ls-1">KATA KUNCI</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="filterSearch" class="form-control bg-light border-0 shadow-none py-2" data-filter-param="search" placeholder="Cari nama, username, email..." value="<?= esc($viewState['searchValue']) ?>">
+                        </div>
                     </div>
-                    <div class="col-lg-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-outline-secondary btn-sm flex-grow-1" data-filter-submit>
-                            <i class="bi bi-funnel me-1"></i>Filter
-                        </button>
-                        <a href="<?= site_url('admin/users') ?>" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-x-lg me-1"></i>Reset
-                        </a>
+                    <div class="col-md-2">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-primary rounded-pill flex-grow-1 fw-bold shadow-sm" data-filter-submit>
+                                Terapkan
+                            </button>
+                            <a href="<?= site_url('admin/users') ?>" class="btn btn-light rounded-pill px-3" title="Reset Filter">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        </div>
                     </div>
                 </form>
-
-                <div class="dt-skeleton-wrap">
-                    <div class="dt-skeleton-overlay" id="sk-users">
-                        <table class="table table-bordered mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width:60px"></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th style="width:110px"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ([70, 55, 65, 50, 80, 45] as $w): ?>
-                                    <tr>
-                                        <td><span class="skeleton-line mx-auto" style="width:24px"></span></td>
-                                        <td><span class="skeleton-line" style="width:<?= $w ?>%"></span></td>
-                                        <td><span class="skeleton-line" style="width:60%"></span></td>
-                                        <td><span class="skeleton-line" style="width:55%;border-radius:20px;height:20px"></span></td>
-                                        <td class="text-center"><span class="skeleton-line mx-auto" style="width:50px;border-radius:20px;height:20px"></span></td>
-                                        <td class="text-center"><span class="skeleton-btn me-1"></span><span class="skeleton-btn"></span></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="dt-real-wrap" id="rw-users">
-                        <table id="dt-users" class="table table-hover table-bordered align-middle w-100" data-admin-datatable
-                            data-admin-datatable-options='{"columnDefs":[{"orderable":false,"targets":[0,5]}]}'
-                            data-skeleton-id="sk-users" data-real-wrap-id="rw-users">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width:60px" class="text-center">#</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>Username / Email</th>
-                                    <th>Role</th>
-                                    <th style="width:100px" class="text-center">Status</th>
-                                    <th style="width:110px" class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($tableRows as $row): ?>
-                                    <tr>
-                                        <td class="text-center"><?= esc((string) $row['number']) ?></td>
-                                        <td><strong><?= esc($row['name']) ?></strong></td>
-                                        <td>
-                                            <small class="text-muted">
-                                                <div><?= esc($row['username']) ?></div>
-                                                <div><?= esc($row['email']) ?></div>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <?php if (!empty($row['roles'])): ?>
-                                                <div>
-                                                    <?php foreach ($row['roles'] as $roleName): ?>
-                                                        <span class="badge bg-light text-dark border me-1"><?= esc($roleName) ?></span>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            <?php else: ?>
-                                                <span class="text-muted small">—</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <?php if ($row['isActive']): ?>
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle me-1"></i>Aktif
-                                                </span>
-                                            <?php else: ?>
-                                                <span class="badge bg-secondary">
-                                                    <i class="bi bi-dash-circle me-1"></i>Nonaktif
-                                                </span>
-                                            <?php endif; ?>
-                                            <?php if ($row['isArchived']): ?>
-                                                <br>
-                                                <span class="badge bg-danger">
-                                                    <i class="bi bi-archive me-1"></i>Dihapus
-                                                </span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center btn-action-group admin-action-group">
-                                            <a href="<?= site_url('admin/users/edit/' . $row['uuid']) ?>" class="btn btn-warning btn-sm" title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="<?= site_url('admin/users/resetPassword/' . $row['uuid']) ?>" class="btn btn-outline-secondary btn-sm" title="Reset Password">
-                                                <i class="bi bi-key"></i>
-                                            </a>
-                                            <?php if (!$row['isArchived']): ?>
-                                                <a href="#" class="btn btn-danger btn-sm btn-delete"
-                                                    data-href="<?= site_url('admin/users/delete/' . $row['uuid']) ?>"
-                                                    data-delete-label="<?= esc($row['name']) ?>"
-                                                    data-delete-desc="User akan dinonaktifkan dan dapat dipulihkan kembali."
-                                                    title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            <?php else: ?>
-                                                <a href="#" class="btn btn-success btn-sm btn-admin-restore"
-                                                    data-href="<?= site_url('admin/users/restore/' . $row['uuid']) ?>"
-                                                    data-confirm-title="Pulihkan user ini?"
-                                                    data-confirm-html="User <strong><?= esc($row['name']) ?></strong> akan diaktifkan kembali."
-                                                    data-confirm-button="Ya, pulihkan"
-                                                    title="Pulihkan">
-                                                    <i class="bi bi-arrow-counterclockwise"></i>
-                                                </a>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
+
+    <div class="col-12">
+        <?php ob_start(); ?>
+        <thead class="table-light">
+            <tr>
+                <th style="width:50px" class="text-center">#</th>
+                <th>Informasi Pengguna</th>
+                <th style="width:250px">Peran & Akses</th>
+                <th style="width:120px" class="text-center">Status</th>
+                <th style="width:140px" class="text-center">Aksi</th>
+            </tr>
+        </thead>
+        <?php $header = ob_get_clean(); ?>
+
+        <?php ob_start(); ?>
+        <?php foreach ($tableRows as $row): ?>
+            <tr>
+                <td class="text-center text-muted small"><?= esc((string) $row['number']) ?></td>
+                <td>
+                    <div class="fw-bold text-dark mb-1"><?= esc($row['name']) ?></div>
+                    <div class="small text-muted d-flex align-items-center gap-2">
+                        <span class="d-flex align-items-center gap-1"><i class="bi bi-person small"></i><?= esc($row['username']) ?></span>
+                        <span class="text-muted opacity-50">|</span>
+                        <span class="d-flex align-items-center gap-1"><i class="bi bi-envelope small"></i><?= esc($row['email']) ?></span>
+                    </div>
+                </td>
+                <td>
+                    <?php if (!empty($row['roles'])): ?>
+                        <div class="d-flex flex-wrap gap-1">
+                            <?php foreach ($row['roles'] as $roleName): ?>
+                                <span class="badge text-bg-light border px-2 py-1 rounded-pill small fw-normal"><?= esc($roleName) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <span class="text-muted small italic">— No roles assigned —</span>
+                    <?php endif; ?>
+                </td>
+                <td class="text-center">
+                    <?php if ($row['isArchived']): ?>
+                        <span class="badge text-bg-danger px-2 py-1 rounded-pill small">
+                            <i class="bi bi-archive me-1"></i>Arsip
+                        </span>
+                    <?php elseif ($row['isActive']): ?>
+                        <span class="badge text-bg-success px-2 py-1 rounded-pill small">
+                            <i class="bi bi-check-circle me-1"></i>Aktif
+                        </span>
+                    <?php else: ?>
+                        <span class="badge text-bg-secondary px-2 py-1 rounded-pill small">
+                            <i class="bi bi-dash-circle me-1"></i>Nonaktif
+                        </span>
+                    <?php endif; ?>
+                </td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="<?= site_url('admin/users/edit/' . $row['uuid']) ?>" class="btn-action-sm bg-warning-soft text-warning shadow-sm" title="Edit Profil">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="<?= site_url('admin/users/resetPassword/' . $row['uuid']) ?>" class="btn-action-sm bg-info-soft text-info shadow-sm" title="Reset Password">
+                            <i class="bi bi-key-fill"></i>
+                        </a>
+                        <?php if (!$row['isArchived']): ?>
+                            <button type="button" class="btn-action-sm bg-danger-soft text-danger shadow-sm btn-delete"
+                                data-href="<?= site_url('admin/users/delete/' . $row['uuid']) ?>"
+                                data-delete-label="<?= esc($row['name']) ?>"
+                                data-delete-desc="Akses pengguna akan ditangguhkan."
+                                title="Hapus">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        <?php else: ?>
+                            <button type="button" class="btn-action-sm bg-success-soft text-success shadow-sm btn-admin-restore"
+                                data-href="<?= site_url('admin/users/restore/' . $row['uuid']) ?>"
+                                data-confirm-title="Pulihkan user ini?"
+                                data-confirm-html="User <strong><?= esc($row['name']) ?></strong> akan diaktifkan kembali."
+                                data-confirm-button="Ya, pulihkan"
+                                title="Pulihkan">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <?php $body = ob_get_clean(); ?>
+
+        <?= view('components/ui-table-card', [
+            'tableId' => 'dt-users',
+            'header' => $header,
+            'body' => $body,
+            'type' => 'admin'
+        ]) ?>
 </div>
 
 <?= $this->endSection() ?>

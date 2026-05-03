@@ -21,7 +21,15 @@
         return;
       }
 
-      window.DtManager.init(table.id, {});
+      var skeletonId = table.getAttribute("data-skeleton-id");
+      var realWrapId = table.getAttribute("data-real-wrap-id");
+
+      if (skeletonId && realWrapId) {
+        window.DtManager.initLazy(table.id, {}, skeletonId, realWrapId);
+      } else {
+        window.DtManager.init(table.id, {});
+      }
+
       table.dataset.dosenDatatableReady = "1";
     });
   }

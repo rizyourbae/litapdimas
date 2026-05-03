@@ -158,6 +158,20 @@ $routes->group('dosen/proposals', ['filter' => 'auth:dosen.access'], function ($
     $routes->get('review/(:any)',               'Dosen\Proposal\ProposalController::review/$1', ['as' => 'dosen.proposal.review']);
     $routes->post('submit/(:any)',              'Dosen\Proposal\ProposalController::submit/$1', ['as' => 'dosen.proposal.submit']);
     $routes->get('show/(:any)',                 'Dosen\Proposal\ProposalController::show/$1',   ['as' => 'dosen.proposal.show']);
+    
+    // Logbook
+    $routes->post('logbook/store/(:any)',       'Dosen\Proposal\LogbookController::store/$1',   ['as' => 'dosen.proposal.logbook.store']);
+    $routes->get('logbook/delete/(:any)',        'Dosen\Proposal\LogbookController::delete/$1',  ['as' => 'dosen.proposal.logbook.delete']);
+
+    // Outputs
+    $routes->post('outputs/upload/(:any)',      'Dosen\Proposal\OutputController::upload/$1',    ['as' => 'dosen.proposal.outputs.upload']);
+
+    // Reports
+    $routes->post('reports/upload/(:any)',      'Dosen\Proposal\ReportController::upload/$1',    ['as' => 'dosen.proposal.reports.upload']);
+
+    // Outcomes
+    $routes->post('outcomes/store/(:any)',       'Dosen\Proposal\OutcomeController::store/$1',    ['as' => 'dosen.proposal.outcomes.store']);
+    $routes->get('outcomes/delete/(:any)',      'Dosen\Proposal\OutcomeController::delete/$1',   ['as' => 'dosen.proposal.outcomes.delete']);
 });
 
 // ============================================================
@@ -243,6 +257,7 @@ $routes->group('admin/proposals', ['filter' => 'auth:admin.access'], function ($
     $routes->get('show/(:any)', 'Admin\Proposal\ProposalController::show/$1', ['as' => 'admin.proposals.show']);
     $routes->post('assign-reviewers/(:any)', 'Admin\Proposal\ProposalController::assignReviewers/$1', ['as' => 'admin.proposals.assign_reviewers']);
     $routes->post('remove-reviewer/(:any)/(:any)', 'Admin\Proposal\ProposalController::removeReviewer/$1/$2', ['as' => 'admin.proposals.remove_reviewer']);
+    $routes->post('decide/(:any)', 'Admin\Proposal\ProposalController::decide/$1', ['as' => 'admin.proposals.decide']);
 });
 
 // ============================================================

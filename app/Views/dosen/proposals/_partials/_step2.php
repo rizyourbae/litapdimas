@@ -13,7 +13,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
 
 <div class="card border-0 bg-light mb-4" style="border-radius:0.8rem;">
     <div class="card-body py-3">
-        <h6 class="mb-1"><i class="fas fa-users text-primary me-1"></i> Komposisi Tim Peneliti</h6>
+        <h6 class="mb-1"><i class="bi bi-people text-primary me-1"></i> Komposisi Tim Peneliti</h6>
         <p class="text-muted small mb-0">Isi data peneliti internal terlebih dahulu. Data mahasiswa dan anggota eksternal bersifat opsional.</p>
     </div>
 </div>
@@ -22,7 +22,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
     <div class="card-header d-flex align-items-center gap-2">
         <h6 class="mb-0">Peneliti Internal <span class="text-danger">*</span></h6>
         <button type="button" class="btn btn-sm btn-success ms-auto" data-repeatable-action="add-peneliti">
-            <i class="fas fa-plus me-1"></i> Tambah Peneliti
+            <i class="bi bi-plus-lg me-1"></i> Tambah Peneliti
         </button>
     </div>
     <div class="card-body">
@@ -48,7 +48,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
                             <td><input type="text" class="form-control form-control-sm" name="peneliti_internal[<?= $index ?>][posisi]" value="<?= esc($p['posisi'] ?? '') ?>" placeholder="Ketua/Anggota"></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-outline-danger" data-repeatable-action="remove-peneliti" title="Hapus baris">
-                                    <i class="fas fa-trash me-1"></i>Hapus
+                                    <i class="bi bi-trash me-1"></i>Hapus
                                 </button>
                             </td>
                         </tr>
@@ -63,7 +63,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
     <div class="card-header d-flex align-items-center gap-2">
         <h6 class="mb-0">Mahasiswa Terlibat <span class="text-muted small">(Opsional)</span></h6>
         <button type="button" class="btn btn-sm btn-success ms-auto" data-repeatable-action="add-mahasiswa">
-            <i class="fas fa-plus me-1"></i> Tambah Mahasiswa
+            <i class="bi bi-plus-lg me-1"></i> Tambah Mahasiswa
         </button>
     </div>
     <div class="card-body">
@@ -87,7 +87,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
                             <td><input type="email" class="form-control form-control-sm" name="mahasiswa[<?= $index ?>][email]" value="<?= esc($m['email'] ?? '') ?>" placeholder="email@domain"></td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-outline-danger" data-repeatable-action="remove-mahasiswa" title="Hapus baris">
-                                    <i class="fas fa-trash me-1"></i>Hapus
+                                    <i class="bi bi-trash me-1"></i>Hapus
                                 </button>
                             </td>
                         </tr>
@@ -102,7 +102,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
     <div class="card-header d-flex align-items-center gap-2">
         <h6 class="mb-0">Anggota Eksternal <span class="text-muted small">(Opsional)</span></h6>
         <button type="button" class="btn btn-sm btn-success ms-auto" data-repeatable-action="add-eksternal">
-            <i class="fas fa-plus me-1"></i> Tambah Anggota Eksternal
+            <i class="bi bi-plus-lg me-1"></i> Tambah Anggota Eksternal
         </button>
     </div>
     <div class="card-body">
@@ -134,7 +134,7 @@ $eksternal = $stepData['anggota_eksternal'] ?? [];
                             </td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-outline-danger" data-repeatable-action="remove-eksternal" title="Hapus baris">
-                                    <i class="fas fa-trash me-1"></i>Hapus
+                                    <i class="bi bi-trash me-1"></i>Hapus
                                 </button>
                             </td>
                         </tr>

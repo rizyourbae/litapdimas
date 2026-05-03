@@ -9,18 +9,20 @@
 
         <main class="app-main">
             <!-- App Content Header (Breadcrumb area) -->
-            <div class="app-content-header">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h3 class="mb-0"><?= esc($title ?? 'Halaman') ?></h3>
-                        </div>
-                        <div class="col-sm-6">
-                            <?= $this->include('layouts/partials/_breadcrumb') ?>
+            <?php if (!isset($hide_header) || $hide_header !== true): ?>
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h3 class="mb-0"><?= esc($title ?? 'Halaman') ?></h3>
+                            </div>
+                            <div class="col-sm-6">
+                                <?= $this->include('layouts/partials/_breadcrumb') ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <!-- App Content -->
             <div class="app-content">

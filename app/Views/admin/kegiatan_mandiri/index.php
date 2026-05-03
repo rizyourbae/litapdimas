@@ -7,106 +7,106 @@
 /** @var array<int,array<string,mixed>> $tableRows */
 ?>
 
-<div class="row g-3 admin-page">
-    <div class="col-12">
-        <div class="card admin-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-4 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Operasional Admin</span>
-                            <span class="badge text-bg-primary px-3 py-2">Kegiatan Mandiri</span>
-                        </div>
-                        <h2 class="h3 admin-hero__title mb-2"><?= esc((string) $title) ?></h2>
-                        <p class="admin-hero__subtitle mb-0">Pantau kegiatan mandiri dosen</p>
-                    </div>
-                    <div class="admin-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= site_url('admin/kegiatan-mandiri/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah Kegiatan
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 admin-page">
+    <div class="col-12 mb-2 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'admin',
+            'title' => esc((string) ($hero['title'] ?? $title)),
+            'subtitle' => esc((string) ($hero['subtitle'] ?? 'Pantau kegiatan mandiri yang dilakukan oleh para dosen')),
+            'badges' => [
+                ['label' => 'Direktori', 'class' => 'text-bg-light border'],
+                ['label' => 'Kegiatan Mandiri', 'class' => 'text-bg-primary shadow-sm']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Tambah Kegiatan',
+                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                    'icon' => 'bi bi-plus-lg',
+                    'url' => site_url('admin/kegiatan-mandiri/create')
+                ]
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-12">
-        <div class="card card-primary card-outline admin-table-card">
-            <div class="card-header border-0 pb-0">
-                <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-list-check me-2"></i>Direktori Kegiatan Mandiri
-                    </h3>
-                    <span class="badge text-bg-light border">Data aktivitas mandiri dosen</span>
-                </div>
+    <div class="col-12 animate-fade-up delay-1">
+        <?php ob_start(); ?>
+        <?php if (empty($tableRows)): ?>
+            <?= view('components/ui-empty-state', [
+                'icon' => 'bi bi-journal-text',
+                'title' => 'Belum Ada Kegiatan Mandiri',
+                'description' => 'Data kegiatan mandiri dosen akan muncul di sini setelah ditambahkan oleh admin atau diimpor.',
+                'action_label' => 'Mulai Tambah Data',
+                'action_url' => site_url('admin/kegiatan-mandiri/create'),
+                'action_icon' => 'bi bi-plus-lg'
+            ]) ?>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="dt-kegiatan-mandiri" 
+                    data-admin-datatable 
+                    data-skeleton-id="sk-dt-kegiatan-mandiri" 
+                    data-real-wrap-id="rw-dt-kegiatan-mandiri"
+                    data-admin-datatable-options='{"columnDefs":[{"orderable":false,"targets":[0,-1]}]}'>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px" class="text-center py-3">#</th>
+                            <th class="py-3">Dosen & Judul</th>
+                            <th class="py-3">Klasifikasi</th>
+                            <th class="py-3">Klaster/Skala</th>
+                            <th style="width: 80px" class="text-center py-3">Tahun</th>
+                            <th style="width: 140px" class="text-center py-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ((array) $tableRows as $index => $row): $row = (array) $row; ?>
+                            <tr>
+                                <td class="text-center text-muted small"><?= $index + 1 ?></td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-0 lh-sm"><?= esc((string) ($row['judul_kegiatan'] ?? '')) ?></div>
+                                    <div class="text-muted small mt-1"><i class="bi bi-person-circle me-1 opacity-75"></i><?= esc((string) ($row['display_name'] ?? '')) ?></div>
+                                </td>
+                                <td>
+                                    <span class="badge <?= esc((string) ($row['jenis_badge_class'] ?? 'text-bg-light border')) ?>-soft <?= str_replace('text-bg-', 'text-', (string) ($row['jenis_badge_class'] ?? 'text-primary')) ?> rounded-pill px-3 py-2">
+                                        <?= esc((string) ($row['jenis_kegiatan'] ?? '')) ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge <?= esc((string) ($row['klaster_badge_class'] ?? 'text-bg-light border')) ?> rounded-pill px-3 py-2">
+                                        <?= esc((string) ($row['klaster_label'] ?? '')) ?>
+                                    </span>
+                                </td>
+                                <td class="text-center fw-bold text-dark"><?= esc((string) ($row['tahun'] ?? '')) ?></td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="<?= esc((string) ($row['show_url'] ?? '')) ?>" class="btn-action-sm bg-primary-soft text-primary shadow-sm" title="Lihat Detail">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                        <a href="<?= esc((string) ($row['edit_url'] ?? '')) ?>" class="btn-action-sm bg-warning-soft text-warning shadow-sm" title="Edit Data">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button class="btn-action-sm bg-danger-soft text-danger shadow-sm btn-delete" title="Hapus Data" data-href="<?= esc((string) ($row['delete_url'] ?? '')) ?>" data-delete-label="<?= esc((string) ($row['judul_kegiatan'] ?? 'kegiatan ini')) ?>" data-delete-desc="Data yang dihapus tidak dapat dipulihkan kembali.">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-            <div class="card-body">
-                <?php if (empty($tableRows)): ?>
-                    <div class="admin-empty-state">
-                        <i class="bi bi-journal-check"></i>
-                        <p class="mb-1 fw-semibold text-body-emphasis">Belum ada data kegiatan mandiri</p>
-                        <small class="d-block mb-3">Tambahkan kegiatan pertama agar riwayat aktivitas dosen bisa dipantau dari panel admin.</small>
-                        <a href="<?= site_url('admin/kegiatan-mandiri/create') ?>" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah Kegiatan
-                        </a>
-                    </div>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle" id="dt-kegiatan-mandiri" data-admin-datatable data-admin-datatable-options='{"columnDefs":[{"orderable":false,"targets":[0,6]}]}'>
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 60px" class="text-center">#</th>
-                                    <th>Dosen</th>
-                                    <th>Judul Kegiatan</th>
-                                    <th>Jenis</th>
-                                    <th>Klaster/Skala</th>
-                                    <th style="width: 90px" class="text-center">Tahun</th>
-                                    <th style="width: 110px" class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ((array) $tableRows as $index => $row): $row = (array) $row; ?>
-                                    <tr>
-                                        <td class="text-center"><?= $index + 1 ?></td>
-                                        <td><?= esc((string) ($row['display_name'] ?? '')) ?></td>
-                                        <td>
-                                            <a href="<?= esc((string) ($row['show_url'] ?? '')) ?>" class="text-decoration-none fw-semibold text-body-emphasis">
-                                                <?= esc((string) ($row['judul_kegiatan'] ?? '')) ?>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <span class="badge <?= esc((string) ($row['jenis_badge_class'] ?? '')) ?>">
-                                                <?= esc((string) ($row['jenis_kegiatan'] ?? '')) ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge <?= esc((string) ($row['klaster_badge_class'] ?? '')) ?>">
-                                                <?= esc((string) ($row['klaster_label'] ?? '')) ?>
-                                            </span>
-                                        </td>
-                                        <td class="text-center"><?= esc((string) ($row['tahun'] ?? '')) ?></td>
-                                        <td class="text-center">
-                                            <div class="admin-action-inline">
-                                                <a href="<?= esc((string) ($row['show_url'] ?? '')) ?>" class="btn btn-info btn-sm admin-icon-btn" title="Detail">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="<?= esc((string) ($row['edit_url'] ?? '')) ?>" class="btn btn-warning btn-sm admin-icon-btn" title="Edit">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <button class="btn btn-danger btn-sm btn-delete admin-icon-btn" title="Hapus" data-href="<?= esc((string) ($row['delete_url'] ?? '')) ?>" data-delete-label="Kegiatan mandiri ini" data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
+        <?php endif; ?>
+        <?php $tableContent = ob_get_clean(); ?>
+
+        <?= view('components/ui-table-card', [
+            'type' => 'admin',
+            'tableId' => 'dt-kegiatan-mandiri',
+            'title' => 'Daftar Kegiatan Mandiri',
+            'icon' => 'bi bi-grid-3x3-gap',
+            'content' => $tableContent,
+            'footer' => count($tableRows) > 0 ? 'Menampilkan total ' . count($tableRows) . ' entri data' : null
+        ]) ?>
+
     </div>
 </div>
+
 
 <?= $this->endSection() ?>

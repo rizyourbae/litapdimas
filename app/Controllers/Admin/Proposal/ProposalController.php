@@ -40,7 +40,10 @@ class ProposalController extends BaseController
         }
 
         return $this->renderView('admin/proposal/show', array_merge(
-            ['title' => 'Detail Ajuan Proposal'],
+            [
+                'title' => 'Detail Ajuan Proposal',
+                'hide_header' => true
+            ],
             $payload
         ));
     }
@@ -75,6 +78,23 @@ class ProposalController extends BaseController
                 ->with('success', 'Assignment reviewer berhasil dibatalkan.');
         } catch (\Throwable $throwable) {
             return redirect()->to(site_url('admin/proposals/show/' . $proposalUuid))
+                ->with('error', $throwable->getMessage());
+        }
+    }
+
+    public function decide(string $uuid)
+    {
+        try {
+            $decision = (string) $this->request->getPost('decision');
+            $notes = trim((string) $this->request->getPost('decision_notes'));
+
+            $this->adminProposalService->finalizeDecision($uuid, $decision, $notes !== '' ? $notes : null);
+
+            $statusLabel = $decision === 'approved' ? 'DISETUJUI' : 'DITOLAK';
+            return redirect()->to(site_url('admin/proposals/show/' . $uuid))
+                ->with('success', "Status proposal berhasil diperbarui menjadi {$statusLabel}.");
+        } catch (\Throwable $throwable) {
+            return redirect()->to(site_url('admin/proposals/show/' . $uuid))
                 ->with('error', $throwable->getMessage());
         }
     }

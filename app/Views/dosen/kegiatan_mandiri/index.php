@@ -1,121 +1,109 @@
-<?= $this->extend('layouts/main') ?>
+<?php
+/** @var string $title */
+/** @var array<int,array<string,mixed>> $tableRows */
 
-<?= $this->section('content') ?>
+$this->extend('layouts/main');
 
-<div class="row g-3">
-    <div class="col-12">
-        <div class="card dosen-hero">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
-                    <div>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge text-bg-light border px-3 py-2">Aktivitas Dosen</span>
-                            <span class="badge text-bg-primary px-3 py-2">Kegiatan Mandiri</span>
-                        </div>
-                        <h2 class="h3 dosen-hero__title mb-2"><?= esc($title ?? 'Kegiatan Mandiri Saya') ?></h2>
-                        <p class="dosen-hero__subtitle mb-0">Kelola semua kegiatan mandiri Anda dengan tampilan tabel yang konsisten dan mudah dipindai.</p>
-                    </div>
+$this->section('content');
+?>
 
-                    <div class="dosen-hero__actions d-flex flex-wrap gap-2">
-                        <a href="<?= site_url('dosen/kegiatan-mandiri/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i>Tambah Kegiatan
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row g-4 admin-page">
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', [
+            'type' => 'dosen',
+            'title' => $title ?? 'Kegiatan Mandiri Saya',
+            'subtitle' => 'Pantau dan kelola seluruh catatan kegiatan mandiri Anda dengan tampilan yang modern dan terorganisir.',
+            'badges' => [
+                ['label' => 'Kegiatan Mandiri', 'class' => 'text-bg-light border shadow-sm'],
+                ['label' => 'Litapdimas', 'class' => 'text-bg-primary shadow-sm']
+            ],
+            'actions' => [
+                [
+                    'label' => 'Tambah Kegiatan Baru',
+                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                    'icon' => 'bi bi-plus-lg',
+                    'url' => site_url('dosen/kegiatan-mandiri/create')
+                ]
+            ]
+        ]) ?>
     </div>
 
-    <div class="col-12">
-        <div class="card card-primary card-outline shadow-sm dosen-table-card">
-            <div class="card-header">
-                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center">
-                    <div>
-                        <h3 class="card-title mb-1">Daftar Kegiatan Mandiri</h3>
-                    </div>
-                    <span class="badge text-bg-light border">Total data: <?= esc(count($tableRows ?? [])) ?></span>
-                </div>
-            </div>
-            <div class="card-body">
-                <?php if (session()->getFlashdata('success')): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-                <?php if (session()->getFlashdata('error')): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+    <div class="col-12 animate-fade-up delay-1">
+        <?php if (empty($tableRows)): ?>
+            <?= view('components/ui-empty-state', [
+                'icon' => 'bi bi-clipboard-check-fill',
+                'title' => 'Belum Ada Kegiatan',
+                'desc' => 'Daftar kegiatan mandiri Anda masih kosong. Mulai catat kegiatan Anda sekarang.',
+                'action_label' => 'Tambah Kegiatan Pertama',
+                'action_url' => site_url('dosen/kegiatan-mandiri/create'),
+                'action_icon' => 'bi bi-plus-lg'
+            ]) ?>
+        <?php else: ?>
+            <?php ob_start(); ?>
+            <thead>
+                <tr>
+                    <th style="width: 60px" class="text-center py-3">#</th>
+                    <th class="py-3">Informasi Kegiatan</th>
+                    <th style="width: 150px" class="text-center py-3">Jenis</th>
+                    <th style="width: 140px" class="text-center py-3">Klaster/Skala</th>
+                    <th style="width: 90px" class="text-center py-3">Tahun</th>
+                    <th style="width: 140px" class="text-center py-3">Aksi</th>
+                </tr>
+            </thead>
+            <?php $header = ob_get_clean(); ?>
 
-                <?php if (empty($tableRows)): ?>
-                    <div class="dosen-empty-state">
-                        <i class="bi bi-journal-check"></i>
-                        <h4 class="h5 text-body mb-2">Belum ada data kegiatan mandiri</h4>
-                        <p class="mb-0">Klik tombol Tambah Kegiatan untuk menambahkan data pertama Anda.</p>
-                    </div>
-                <?php else: ?>
-                    <div class="table-responsive dosen-table-wrap">
-                        <table class="table table-striped table-hover table-bordered align-middle mb-0" id="dt-kegiatan-dosen" data-dosen-datatable>
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 60px" class="text-center">#</th>
-                                    <th>Judul Kegiatan</th>
-                                    <th style="width: 150px">Jenis</th>
-                                    <th style="width: 140px">Klaster/Skala</th>
-                                    <th style="width: 90px" class="text-center">Tahun</th>
-                                    <th style="width: 110px" class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($tableRows as $index => $row): ?>
-                                    <tr>
-                                        <td class="text-center"><?= $index + 1 ?></td>
-                                        <td>
-                                            <a href="<?= esc($row['show_url']) ?>" class="text-decoration-none fw-semibold text-body-emphasis">
-                                                <?= esc($row['judul_kegiatan']) ?>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <span class="badge <?= esc($row['jenis_badge_class']) ?>">
-                                                <?= esc($row['jenis_kegiatan']) ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge <?= esc($row['klaster_badge_class']) ?>">
-                                                <?= esc($row['klaster_label']) ?>
-                                            </span>
-                                        </td>
-                                        <td class="text-center"><?= esc($row['tahun']) ?></td>
-                                        <td class="text-center">
-                                            <div class="dosen-action-group">
-                                                <a href="<?= esc($row['show_url']) ?>" class="btn btn-info dosen-icon-btn" title="Detail">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="<?= esc($row['edit_url']) ?>" class="btn btn-warning dosen-icon-btn" title="Edit">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <button class="btn btn-danger dosen-icon-btn btn-delete" title="Hapus"
-                                                    data-href="<?= esc($row['delete_url']) ?>"
-                                                    data-delete-label="kegiatan mandiri ini"
-                                                    data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
+            <?php ob_start(); ?>
+            <?php foreach ($tableRows as $index => $row): ?>
+                <tr>
+                    <td class="text-center text-muted small"><?= $index + 1 ?></td>
+                    <td>
+                        <div class="fw-bold text-dark lh-base"><?= esc((string) $row['judul_kegiatan']) ?></div>
+                        <div class="text-muted small mt-1 d-flex align-items-center gap-1">
+                            <i class="bi bi-clock-fill opacity-50 me-1"></i>
+                            <span>Diperbarui baru-baru ini</span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge rounded-pill px-3 py-2 <?= esc((string) $row['jenis_badge_class']) ?>-soft <?= str_replace('text-bg-', 'text-', (string) $row['jenis_badge_class']) ?> small">
+                            <i class="bi bi-tag-fill me-1 small"></i><?= esc((string) $row['jenis_kegiatan']) ?>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-2 small fw-normal">
+                            <i class="bi bi-layers-fill me-1 text-primary opacity-75"></i><?= esc((string) $row['klaster_label']) ?>
+                        </span>
+                    </td>
+                    <td class="text-center fw-bold text-dark"><?= esc((string) $row['tahun']) ?></td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="<?= esc((string) $row['show_url']) ?>" class="btn-action-sm bg-primary-soft text-primary shadow-sm" title="Detail">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                            <a href="<?= esc((string) $row['edit_url']) ?>" class="btn-action-sm bg-warning-soft text-warning shadow-sm" title="Edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <button class="btn-action-sm bg-danger-soft text-danger shadow-sm btn-delete" title="Hapus"
+                                data-href="<?= esc((string) $row['delete_url']) ?>"
+                                data-delete-label="kegiatan mandiri ini"
+                                data-delete-desc="Data yang dihapus tidak dapat dikembalikan.">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php $body = ob_get_clean(); ?>
+
+            <?= view('components/ui-table-card', [
+                'title' => 'Daftar Kegiatan Mandiri',
+                'badge' => count($tableRows) . ' Catatan',
+                'tableId' => 'dt-kegiatan-mandiri',
+                'header' => $header,
+                'body' => $body,
+                'icon' => 'bi bi-clipboard-check-fill'
+            ]) ?>
+        <?php endif; ?>
     </div>
 </div>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

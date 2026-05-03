@@ -87,6 +87,20 @@ class Menu extends BaseConfig
         ],
 
         // ============================================================
+        // REVIEWER: Antrian & Riwayat Review
+        // ============================================================
+        [
+            'label'      => 'Antrian Review',
+            'icon'       => 'bi-clipboard2-check',
+            'url'        => '#',
+            'permission' => 'reviewer.access',
+            'children'   => [
+                ['label' => 'Menunggu Review', 'url' => 'reviewer/queue',   'icon' => 'bi-circle'],
+                ['label' => 'Riwayat Review',  'url' => 'reviewer/history', 'icon' => 'bi-circle'],
+            ],
+        ],
+
+        // ============================================================
         // DOSEN: Proposal & Profil
         // ============================================================
         [
@@ -116,20 +130,6 @@ class Menu extends BaseConfig
             'icon'       => 'bi-person-circle',
             'url'        => 'profile',
             'permission' => 'profile.manage',
-        ],
-
-        // ============================================================
-        // REVIEWER: Antrian & Riwayat Review
-        // ============================================================
-        [
-            'label'      => 'Antrian Review',
-            'icon'       => 'bi-clipboard2-check',
-            'url'        => 'reviewer/queue',
-            'permission' => 'reviewer.access',
-            'children'   => [
-                ['label' => 'Menunggu Review', 'url' => 'reviewer/queue',   'icon' => 'bi-circle'],
-                ['label' => 'Riwayat Review',  'url' => 'reviewer/history', 'icon' => 'bi-circle'],
-            ],
         ],
     ];
 }

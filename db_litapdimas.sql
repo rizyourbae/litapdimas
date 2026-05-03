@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 28, 2026 at 10:01 PM
+-- Generation Time: May 03, 2026 at 03:22 PM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -79,7 +79,8 @@ CREATE TABLE `kegiatan_mandiri` (
 --
 
 INSERT INTO `kegiatan_mandiri` (`id`, `uuid`, `user_id`, `tahun`, `jenis_kegiatan`, `klaster_skala_kegiatan`, `judul_kegiatan`, `anggota_terlibat`, `resume_kegiatan`, `unit_pelaksana_kegiatan`, `mitra_kolaborasi`, `sumber_dana`, `besaran_dana`, `tautan_bukti_dukung`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '8997472d-29e7-4562-b055-607efcf30a85', 9, '2025', 'Penelitian Mandiri', 'Regional', 'Kegiatan', 'Oke', 'oke', 'UPT', 'Mitra', 'Sumber', 7387383, 'drive.google.com', '2026-04-25 05:16:36', '2026-04-25 05:16:36', NULL);
+(1, '8997472d-29e7-4562-b055-607efcf30a85', 9, '2025', 'Penelitian Mandiri', 'Regional', 'Kegiatan', 'Oke', 'oke', 'UPT', 'Mitra', 'Sumber', 7387383, 'drive.google.com', '2026-04-25 05:16:36', '2026-04-25 05:16:36', NULL),
+(2, '6b937f55-4aa2-4b0e-8b65-db85459d9b21', 9, '2021', 'Pengabdian Mandiri', 'Nasional', 'Pelatihan Pemanfaatan Pembelajaran Berbasis Web', 'Basrie, Sugiyono, Siti Qomariah, Nurul Huda', 'Kegiatan Pelatihan Pemanfaatan Pembelajaran Berbasis Web adalah bentuk pengabdian kepada masyarakat yang dilaksanakan oleh Dosen Program Studi Sistem Informasi, UINSI Samarinda', 'Mandiri', 'Mandiri', 'Mandiri', 100000, 'drive.google.com', '2026-05-03 10:51:23', '2026-05-03 10:51:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -105,7 +106,10 @@ CREATE TABLE `kelengkapan_dokumen` (
 INSERT INTO `kelengkapan_dokumen` (`id`, `uuid`, `user_id`, `jenis_dokumen`, `dokumen_file`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 'b6c4300e-a516-4941-b512-6c1c5e8737a5', 9, 'Sertifikat Dosen', 'uploads/kelengkapan_dokumen/1777102063_a1db932a98b789ac13d6.pdf', '2026-04-25 07:06:01', '2026-04-25 07:27:43', NULL),
 (2, 'bdba5dc9-c8d1-41c4-8f1f-5c9a20eebd3b', 9, 'SK Jabatan Fungsional', NULL, '2026-04-25 07:06:01', '2026-04-25 07:06:01', NULL),
-(3, '1dea311a-ecbe-4b9f-aa4d-04791490f0bf', 9, 'Kartu NIDN', NULL, '2026-04-25 07:06:01', '2026-04-25 07:06:01', NULL);
+(3, '1dea311a-ecbe-4b9f-aa4d-04791490f0bf', 9, 'Kartu NIDN', NULL, '2026-04-25 07:06:01', '2026-04-25 07:06:01', NULL),
+(4, 'c4fb17da-39c7-47e5-98ae-ebcb976e6473', 17, 'Sertifikat Dosen', NULL, '2026-05-03 07:34:25', '2026-05-03 07:34:25', NULL),
+(5, 'de2cbe78-cf6d-4358-a7df-e64877e5006f', 17, 'SK Jabatan Fungsional', NULL, '2026-05-03 07:34:25', '2026-05-03 07:34:25', NULL),
+(6, 'aec642cf-e16c-49b0-8ed3-ca51f976ecf6', 17, 'Kartu NIDN', NULL, '2026-05-03 07:34:25', '2026-05-03 07:34:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -400,7 +404,14 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (29, '2026-04-27-095000', 'App\\Database\\Migrations\\AddMissingProposalMasterTables', 'default', 'App', 1777249548, 16),
 (30, '2026-04-27-130000', 'App\\Database\\Migrations\\CreateProposalReviewerAssignmentsTable', 'default', 'App', 1777301195, 17),
 (31, '2026-04-28-090000', 'App\\Database\\Migrations\\AddReviewScoreToProposalReviewerAssignmentsTable', 'default', 'App', 1777359289, 18),
-(32, '2026-04-29-090000', 'App\\Database\\Migrations\\AddPresentationColumnsToProposalReviewerAssignmentsTable', 'default', 'App', 1777409478, 19);
+(32, '2026-04-29-090000', 'App\\Database\\Migrations\\AddPresentationColumnsToProposalReviewerAssignmentsTable', 'default', 'App', 1777409478, 19),
+(33, '2026-05-03-121647', 'App\\Database\\Migrations\\AddAdminNotesToProposals', 'default', 'App', 1777810618, 20),
+(34, '2026-05-03-133414', 'App\\Database\\Migrations\\CreateProposalLogbooksTable', 'default', 'App', 1777815270, 21),
+(35, '2026-05-03-140803', 'App\\Database\\Migrations\\CreateProposalOutputsTable', 'default', 'App', 1777817304, 22),
+(36, '2026-05-03-143340', 'App\\Database\\Migrations\\AddApprovedAmountToProposals', 'default', 'App', 1777818841, 23),
+(37, '2026-05-03-143340', 'App\\Database\\Migrations\\CreateProposalReportsTable', 'default', 'App', 1777818842, 23),
+(38, '2026-05-03-145654', 'App\\Database\\Migrations\\AddOutcomeNotesToProposals', 'default', 'App', 1777820240, 24),
+(39, '2026-05-03-145654', 'App\\Database\\Migrations\\CreateProposalOutcomesTable', 'default', 'App', 1777820240, 24);
 
 -- --------------------------------------------------------
 
@@ -510,7 +521,11 @@ INSERT INTO `proposal_dokumen` (`id`, `uuid`, `proposal_id`, `tipe_dokumen`, `na
 (1, '19c18602-e3ce-4e7e-a198-d6593a0b59b0', 6, 'proposal', 'proposal_1777260897_a098a7661303c39f.pdf', 'writable/uploads/proposal/b4f90cc9-63e5-4e3a-bda2-327fe5caecff/proposal_1777260897_a098a7661303c39f.pdf', 138764, 'application/pdf', NULL, 0, '2026-04-27 03:34:57', '2026-04-27 03:34:57', NULL),
 (2, '2f3b86ca-638b-4e63-b67d-fa1e2d4f72a4', 6, 'rab', 'rab_1777260897_2ffa982f22a2fee0.pdf', 'writable/uploads/proposal/b4f90cc9-63e5-4e3a-bda2-327fe5caecff/rab_1777260897_2ffa982f22a2fee0.pdf', 138764, 'application/pdf', NULL, 0, '2026-04-27 03:34:57', '2026-04-27 03:34:57', NULL),
 (3, 'b3412036-5468-4ef8-a3b1-40a57bee81c3', 6, 'similarity', 'similarity_1777260897_a26ee540eee252be.pdf', 'writable/uploads/proposal/b4f90cc9-63e5-4e3a-bda2-327fe5caecff/similarity_1777260897_a26ee540eee252be.pdf', 138764, 'application/pdf', NULL, 0, '2026-04-27 03:34:57', '2026-04-27 03:34:57', NULL),
-(4, 'bccb25b5-b1cc-498d-b1e3-847141f18794', 6, 'pendukung', 'pendukung_0_1777260897_ab6dbb37d5018356.pdf', 'writable/uploads/proposal/b4f90cc9-63e5-4e3a-bda2-327fe5caecff/pendukung_0_1777260897_ab6dbb37d5018356.pdf', 138764, 'application/pdf', NULL, 0, '2026-04-27 03:34:57', '2026-04-27 03:34:57', NULL);
+(4, 'bccb25b5-b1cc-498d-b1e3-847141f18794', 6, 'pendukung', 'pendukung_0_1777260897_ab6dbb37d5018356.pdf', 'writable/uploads/proposal/b4f90cc9-63e5-4e3a-bda2-327fe5caecff/pendukung_0_1777260897_ab6dbb37d5018356.pdf', 138764, 'application/pdf', NULL, 0, '2026-04-27 03:34:57', '2026-04-27 03:34:57', NULL),
+(5, '15e5def0-c240-42e0-b3a7-d83d07d07bf7', 9, 'proposal', 'proposal_1777619789_bf7f49f80f331a78.pdf', 'writable/uploads/proposal/42a46a60-1a73-4cb5-acac-7f1f8d40385a/proposal_1777619789_bf7f49f80f331a78.pdf', 49672, 'application/pdf', NULL, 0, '2026-05-01 07:16:29', '2026-05-01 07:16:29', NULL),
+(6, 'd87f8a15-e2f9-4b44-a10d-8feec63f821f', 9, 'rab', 'rab_1777619789_fd4da214f0fd88c8.pdf', 'writable/uploads/proposal/42a46a60-1a73-4cb5-acac-7f1f8d40385a/rab_1777619789_fd4da214f0fd88c8.pdf', 49672, 'application/pdf', NULL, 0, '2026-05-01 07:16:29', '2026-05-01 07:16:29', NULL),
+(7, '8523868d-80ff-4702-9ead-2476c40519fd', 9, 'similarity', 'similarity_1777619789_c4530f1e0f6ce05a.pdf', 'writable/uploads/proposal/42a46a60-1a73-4cb5-acac-7f1f8d40385a/similarity_1777619789_c4530f1e0f6ce05a.pdf', 49672, 'application/pdf', NULL, 0, '2026-05-01 07:16:29', '2026-05-01 07:16:29', NULL),
+(8, '8790da65-cc96-4225-a785-868abaa75a8b', 9, 'pendukung', 'pendukung_0_1777619789_a21b4af0eeed0743.pdf', 'writable/uploads/proposal/42a46a60-1a73-4cb5-acac-7f1f8d40385a/pendukung_0_1777619789_a21b4af0eeed0743.pdf', 49672, 'application/pdf', NULL, 0, '2026-05-01 07:16:29', '2026-05-01 07:16:29', NULL);
 
 -- --------------------------------------------------------
 
@@ -566,7 +581,8 @@ CREATE TABLE `proposal_jurnal` (
 --
 
 INSERT INTO `proposal_jurnal` (`id`, `uuid`, `proposal_id`, `issn`, `nama_jurnal`, `profil_jurnal`, `url_website`, `url_scopus_wos`, `url_surat_rekomendasi`, `total_pengajuan_dana`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '824feaa4-22ae-4316-82f4-82a886e049d0', 6, '2087-1221', 'PDF', '<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.</p><p><br></p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;</p><p><br></p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!</p>', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 1000000, '2026-04-27 02:13:19', '2026-04-27 14:14:10', NULL);
+(1, '824feaa4-22ae-4316-82f4-82a886e049d0', 6, '2087-1221', 'PDF', '<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.</p><p><br></p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;</p><p><br></p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!</p>', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 'https://www.kompasiana.com/hildarahmah9638/62c2dd0302c50e06d70c7e22/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter', 1000000, '2026-04-27 02:13:19', '2026-04-27 14:14:10', NULL),
+(2, 'd3856e27-c626-410a-add2-3c1161982c0b', 9, '2087-1222', 'DETIK', '<p><span style=\"color: rgb(0, 0, 0);\">\"Gubernur DKI Saudara Pramono Anung Wibowo. Bowonya sama, partainya lain nggak apa-apa,\" kata Prabowo di Monas, Jakarta Pusat, Jumat (1/5/2026).</span></p>', 'https://news.detik.com/jabodetabek', 'https://news.detik.com/jabodetabek', 'https://news.detik.com/jabodetabek', 1000000, '2026-05-01 07:17:09', '2026-05-01 07:18:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -625,6 +641,35 @@ INSERT INTO `proposal_kontribusi_prodi` (`id`, `uuid`, `nama`, `keterangan`, `is
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `proposal_logbooks`
+--
+
+CREATE TABLE `proposal_logbooks` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `proposal_id` int UNSIGNED NOT NULL,
+  `tanggal` date NOT NULL,
+  `tempat` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_kegiatan` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `teknik` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `deskripsi_kegiatan` text COLLATE utf8mb4_general_ci NOT NULL,
+  `berkas_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `proposal_logbooks`
+--
+
+INSERT INTO `proposal_logbooks` (`id`, `uuid`, `proposal_id`, `tanggal`, `tempat`, `nama_kegiatan`, `teknik`, `deskripsi_kegiatan`, `berkas_path`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '59d8090a8359a3a3a20d621a551cfaa1', 6, '2026-05-05', 'balikpapan', 'Meramu Jamu', 'FGD', 'Iya SIh', 'uploads/proposals/logbooks/1777816116_59fe380da0f19a2c923b.pdf', '2026-05-03 13:48:36', '2026-05-03 13:48:36', NULL),
+(2, '3e7fbf717f65cf5b7f516915178b3625', 6, '2026-05-03', 'Makassar', 'Meramu Ayam', 'Analisis Dokumen', 'Iya', 'uploads/proposals/logbooks/1777816206_6ea269890d0ceda395cb.pdf', '2026-05-03 13:50:06', '2026-05-03 13:50:06', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `proposal_mahasiswa`
 --
 
@@ -641,6 +686,60 @@ CREATE TABLE `proposal_mahasiswa` (
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `proposal_outcomes`
+--
+
+CREATE TABLE `proposal_outcomes` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `proposal_id` int UNSIGNED NOT NULL,
+  `tipe` enum('jurnal','buku') COLLATE utf8mb4_general_ci NOT NULL,
+  `judul` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_penerbit_jurnal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `volume_nomor` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `isbn` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tahun_terbit` varchar(4) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `proposal_outcomes`
+--
+
+INSERT INTO `proposal_outcomes` (`id`, `uuid`, `proposal_id`, `tipe`, `judul`, `nama_penerbit_jurnal`, `volume_nomor`, `url`, `isbn`, `tahun_terbit`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'ebbbc5b8d16b479bc7c573b15fbafb8e', 6, 'buku', 'Kocak', 'iya', NULL, NULL, 'iya', '2026', '2026-05-03 15:04:12', '2026-05-03 15:04:12', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `proposal_outputs`
+--
+
+CREATE TABLE `proposal_outputs` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `proposal_id` int UNSIGNED NOT NULL,
+  `kategori` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `original_filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `proposal_outputs`
+--
+
+INSERT INTO `proposal_outputs` (`id`, `uuid`, `proposal_id`, `kategori`, `file_path`, `original_filename`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '6c529f9b94f66134495c18911daea98f', 6, 'HKI', 'uploads/proposals/outputs/1777817655_9149921164b33f87f0bc.pdf', 'sample-local-pdf.pdf', '2026-05-03 14:14:15', '2026-05-03 14:14:15', NULL);
 
 -- --------------------------------------------------------
 
@@ -675,7 +774,9 @@ INSERT INTO `proposal_peneliti` (`id`, `uuid`, `proposal_id`, `nama`, `nip`, `em
 (3, 'd7105ded-c76b-44f6-afa1-8ac190a8a965', 6, 'Udin', '123456', 'udin@gmail.com', 'UINSI', 'Ketua', 1, 1, 0, '2026-04-27 01:43:54', '2026-04-27 01:54:35', '2026-04-27 01:54:35'),
 (4, 'c6995c78-b40c-42d8-aa8f-2099cb405e1f', 6, 'Udin', '123456', 'udin@gmail.com', 'UINSI', 'Ketua', 1, 1, 0, '2026-04-27 01:54:35', '2026-04-27 02:13:58', '2026-04-27 02:13:58'),
 (5, 'b7b50778-7725-4ca6-98b6-73a1ebdf5855', 6, 'Udin', '123456', 'udin@gmail.com', 'UINSI', 'Ketua', 1, 1, 0, '2026-04-27 02:13:58', '2026-04-27 02:56:05', '2026-04-27 02:56:05'),
-(6, 'b2128281-0fcd-4dfd-9910-6a8788817dad', 6, 'Udin', '123456', 'udin@gmail.com', 'UINSI', 'Ketua', 1, 1, 0, '2026-04-27 02:56:05', '2026-04-27 02:56:05', NULL);
+(6, 'b2128281-0fcd-4dfd-9910-6a8788817dad', 6, 'Udin', '123456', 'udin@gmail.com', 'UINSI', 'Ketua', 1, 1, 0, '2026-04-27 02:56:05', '2026-04-27 02:56:05', NULL),
+(7, 'b5506f8e-d716-4062-9fb0-36cbf38dd0b3', 9, 'Rizqi Saputra', '123456789', 'rizqi@uinsi.ac.id', 'UINSI', 'Ketua', 1, 1, 0, '2026-05-01 03:43:23', '2026-05-01 07:15:18', '2026-05-01 07:15:18'),
+(8, '87c59387-53c1-4987-99fb-0a4c3d5011b4', 9, 'Rizqi Saputra', '123456789', 'rizqi@uinsi.ac.id', 'UINSI', 'Ketua', 1, 1, 0, '2026-05-01 07:15:18', '2026-05-01 07:15:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -696,6 +797,11 @@ CREATE TABLE `proposal_pengajuan` (
   `jenis_penelitian_id` int UNSIGNED DEFAULT NULL,
   `kontribusi_prodi_id` int UNSIGNED DEFAULT NULL,
   `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'draft' COMMENT 'draft, submitted, reviewed, approved, rejected',
+  `approved_amount` bigint UNSIGNED DEFAULT NULL COMMENT 'Biaya yang disetujui oleh admin',
+  `outcome_admin_notes` text COLLATE utf8mb4_general_ci COMMENT 'Catatan dari validator terkait luaran/outcome penelitian',
+  `admin_notes` text COLLATE utf8mb4_general_ci,
+  `decided_at` datetime DEFAULT NULL,
+  `decided_by` int UNSIGNED DEFAULT NULL,
   `current_step` int NOT NULL DEFAULT '1' COMMENT '1-5 for wizard steps',
   `step_1_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 1 draft data',
   `step_2_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON: Step 2 draft data',
@@ -713,8 +819,9 @@ CREATE TABLE `proposal_pengajuan` (
 -- Dumping data for table `proposal_pengajuan`
 --
 
-INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`, `pengelola_bantuan_id`, `klaster_bantuan_id`, `bidang_ilmu_id`, `tema_penelitian_id`, `jenis_penelitian_id`, `kontribusi_prodi_id`, `status`, `current_step`, `step_1_data`, `step_2_data`, `step_3_data`, `step_4_data`, `step_5_data`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'reviewed', 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-04-28 06:58:28', NULL, NULL, NULL);
+INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`, `pengelola_bantuan_id`, `klaster_bantuan_id`, `bidang_ilmu_id`, `tema_penelitian_id`, `jenis_penelitian_id`, `kontribusi_prodi_id`, `status`, `approved_amount`, `outcome_admin_notes`, `admin_notes`, `decided_at`, `decided_by`, `current_step`, `step_1_data`, `step_2_data`, `step_3_data`, `step_4_data`, `step_5_data`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
+(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'approved', NULL, NULL, 'Oke', '2026-05-03 12:38:05', 6, 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-05-03 12:38:05', NULL, NULL, NULL),
+(9, '42a46a60-1a73-4cb5-acac-7f1f8d40385a', 9, 'Kocak', 'pendidikan, inovasi, pembelajaran', 1, 1, 1, 1, 2, 2, 'draft', NULL, NULL, NULL, NULL, NULL, 5, '{\"csrf_test_name\":\"67467b71596c757c11f708434e6ac20c\",\"judul\":\"Kocak\",\"kata_kunci\":\"pendidikan, inovasi, pembelajaran\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"1\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"2\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"peneliti_internal\":[{\"nama\":\"Rizqi Saputra\",\"nip\":\"123456789\",\"email\":\"rizqi@uinsi.ac.id\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"abstrak\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">Baju kaus yang dipakai kaum buruh itu memuat gambar siluet sejumlah orang berdiri dengan tangan mengepal berwarna biru. Di bawahnya bertulisan \'Bagimu Negeri Jiwa Raga Kami\' dengan aksen warna merah.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">Massa buruh juga terlihat menggunakan payung dengan gambar serupa. Di sisi lain, mereka juga tampak mengenakan berbagai aksesori organisasi maupun tempat kerja sebagai identitas.<\\/span><\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">Dimintai konfirmasi terpisah, Presiden Konfederasi Serikat Buruh Seluruh Indonesia (KSBSI) Elly Rosita Silaban membenarkan bahwa semua kaus yang dipakai buruh hari ini merupakan desain langsung dari Prabowo.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Semua kaus buruh yang tidak ada logo serikat buruhnya adalah desain Pak Presiden,\\\" ucap Elly.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Yang bertuliskan May Day 2026 tanpa ada logo serikat buruh adalah desain Pak Presiden,\\\" tambahnya.<\\/span><\\/p>\"}]}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\"}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"issn\":\"2087-1222\",\"nama_jurnal\":\"DETIK\",\"profil_jurnal\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Gubernur DKI Saudara Pramono Anung Wibowo. Bowonya sama, partainya lain nggak apa-apa,\\\" kata Prabowo di Monas, Jakarta Pusat, Jumat (1\\/5\\/2026).<\\/span><\\/p>\",\"url_website\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"url_scopus_wos\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"url_surat_rekomendasi\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"total_pengajuan_dana\":\"1000000\"}', '2026-05-01 03:42:53', '2026-05-01 07:18:01', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -742,6 +849,31 @@ CREATE TABLE `proposal_pengelola_bantuan` (
 INSERT INTO `proposal_pengelola_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `is_active`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
 (1, '550e8400-e29b-41d4-a716-446655440001', 'Ditjen Dikti', 'Direktorat Jenderal Pendidikan Tinggi', 1, NULL, NULL, NULL, 1, 1),
 (2, '550e8400-e29b-41d4-a716-446655440002', 'LPPM Universitas', 'Lembaga Penelitian dan Pengabdian kepada Masyarakat', 1, NULL, NULL, NULL, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `proposal_reports`
+--
+
+CREATE TABLE `proposal_reports` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `proposal_id` int UNSIGNED NOT NULL,
+  `kategori` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Laporan Antara, Laporan Keuangan Sementara, Laporan Akademik, Laporan Keuangan',
+  `file_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `original_filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `proposal_reports`
+--
+
+INSERT INTO `proposal_reports` (`id`, `uuid`, `proposal_id`, `kategori`, `file_path`, `original_filename`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '7164f8f44957d24cea501204f8b24592', 6, 'Laporan Antara', 'uploads/proposals/reports/1777819014_ee6f08e04880853a336d.pdf', 'sample-local-pdf.pdf', '2026-05-03 14:36:54', '2026-05-03 14:36:54', NULL);
 
 -- --------------------------------------------------------
 
@@ -806,7 +938,8 @@ INSERT INTO `proposal_substansi_bagian` (`id`, `uuid`, `proposal_id`, `abstrak`,
 (1, '76e6492b-1ca3-4a16-bbc9-1991fc80c8bc', 6, '', 'Latar Belakang', '<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.</p>', 1, '2026-04-27 02:00:00', '2026-04-27 02:04:14', '2026-04-27 02:04:14'),
 (2, 'c6f3513f-4a62-43b5-a1e7-e868c9cdb77d', 6, '', 'Latar Belakang', '<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.</p>', 1, '2026-04-27 02:04:14', '2026-04-27 02:14:01', '2026-04-27 02:14:01'),
 (3, '7428ed40-2aff-406a-8ffa-d36208c0dea1', 6, '', 'Latar Belakang', '<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.</p>', 1, '2026-04-27 02:14:01', '2026-04-27 02:56:07', '2026-04-27 02:56:07'),
-(4, '45dce494-9b63-4dea-a752-defaca8fb572', 6, '', 'Latar Belakang', '<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.</p>', 1, '2026-04-27 02:56:07', '2026-04-27 02:56:07', NULL);
+(4, '45dce494-9b63-4dea-a752-defaca8fb572', 6, '', 'Latar Belakang', '<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.</p>', 1, '2026-04-27 02:56:07', '2026-04-27 02:56:07', NULL),
+(5, '19524ce0-12cf-4f15-a5d2-23320997fee0', 9, '', 'Latar Belakang', '<p><span style=\"color: rgb(0, 0, 0);\">Dimintai konfirmasi terpisah, Presiden Konfederasi Serikat Buruh Seluruh Indonesia (KSBSI) Elly Rosita Silaban membenarkan bahwa semua kaus yang dipakai buruh hari ini merupakan desain langsung dari Prabowo.</span></p><p><br></p><p><span style=\"color: rgb(0, 0, 0);\">\"Semua kaus buruh yang tidak ada logo serikat buruhnya adalah desain Pak Presiden,\" ucap Elly.</span></p><p><br></p><p><span style=\"color: rgb(0, 0, 0);\">\"Yang bertuliskan May Day 2026 tanpa ada logo serikat buruh adalah desain Pak Presiden,\" tambahnya.</span></p>', 1, '2026-05-01 07:16:17', '2026-05-01 07:16:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -862,7 +995,8 @@ CREATE TABLE `publikasi` (
 --
 
 INSERT INTO `publikasi` (`id`, `uuid`, `user_id`, `judul`, `penulis`, `jenis_publikasi`, `tahun`, `klaster`, `sumber_pembiayaan`, `metadata`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '97fc65ba-489f-4494-8b98-8de7c093035c', 9, 'Kocak', 'Udin', 'HKI', '2025', 'Nasional', 'Mandiri', '{\"url\": \"www.google.com\", \"no_hki\": \"HKI\"}', '2026-04-25 02:35:09', '2026-04-25 02:35:09', NULL);
+(1, '97fc65ba-489f-4494-8b98-8de7c093035c', 9, 'Kocak', 'Udin', 'HKI', '2025', 'Nasional', 'Mandiri', '{\"url\": \"www.google.com\", \"no_hki\": \"HKI\"}', '2026-04-25 02:35:09', '2026-04-25 02:35:09', NULL),
+(2, '1cc80f61-0931-425c-8aec-981ac5aaa3a9', 9, 'ADAPTASI SEKOLAH DALAM MENGIMPLEMENTASIKAN PEMBELAJARAN JARAK JAUH PADA MASA PANDEMI COVID-19 (STUDI KASUS SMP MUHAMMADIYAH KARANGGENENG KABUPATEN LAMONGAN)', 'Udin', 'Jurnal', '2023', 'Nasional', 'Mandiri', '{\"url\": \"https://scholar.google.com/citations?user=0Q0Xr0MAAAAJ&hl=id\", \"issn\": \"12\", \"nomor\": \"12\", \"volume\": \"12\", \"nama_jurnal\": \"PDF\"}', '2026-04-30 13:01:17', '2026-05-03 10:45:22', NULL);
 
 -- --------------------------------------------------------
 
@@ -979,7 +1113,7 @@ CREATE TABLE `sinta_profiles` (
 --
 
 INSERT INTO `sinta_profiles` (`id`, `uuid`, `user_id`, `id_sinta`, `nama_sinta`, `sinta_score_all_years`, `sinta_score_3_years`, `sinta_profile_url`, `status_validasi_sinta`, `sync_status`, `sync_error_message`, `raw_payload_json`, `last_synced_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '0136d0d1-0028-4ae6-a821-7e2b80be1a57', 9, '6824588', 'SUMARNO', 43.00, 13.00, 'https://sinta.kemdiktisaintek.go.id/authors/profile/6824588', 'Tersinkronisasi', 'success', NULL, '{\"nama_sinta\":\"SUMARNO\",\"id_sinta\":\"6824588\",\"sinta_score_all_years\":43,\"sinta_score_3_years\":13,\"status_validasi_sinta\":\"Tersinkronisasi\",\"sinta_profile_url\":\"https:\\/\\/sinta.kemdiktisaintek.go.id\\/authors\\/profile\\/6824588\"}', '2026-04-26 03:45:05', '2026-04-26 01:29:51', '2026-04-26 03:45:05', NULL);
+(1, '0136d0d1-0028-4ae6-a821-7e2b80be1a57', 9, '6936552', 'MOH NASRUN', 26.00, 3.00, 'https://sinta.kemdiktisaintek.go.id/authors/profile/6936552', 'Tersinkronisasi', 'success', NULL, '{\"nama_sinta\":\"MOH NASRUN\",\"id_sinta\":\"6936552\",\"sinta_score_all_years\":26,\"sinta_score_3_years\":3,\"status_validasi_sinta\":\"Tersinkronisasi\",\"sinta_profile_url\":\"https:\\/\\/sinta.kemdiktisaintek.go.id\\/authors\\/profile\\/6936552\"}', '2026-05-03 13:51:23', '2026-04-26 01:29:51', '2026-05-03 13:51:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -1254,12 +1388,36 @@ ALTER TABLE `proposal_kontribusi_prodi`
   ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
+-- Indexes for table `proposal_logbooks`
+--
+ALTER TABLE `proposal_logbooks`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `proposal_logbooks_proposal_id_foreign` (`proposal_id`);
+
+--
 -- Indexes for table `proposal_mahasiswa`
 --
 ALTER TABLE `proposal_mahasiswa`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uuid` (`uuid`),
   ADD KEY `proposal_id` (`proposal_id`);
+
+--
+-- Indexes for table `proposal_outcomes`
+--
+ALTER TABLE `proposal_outcomes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `proposal_outcomes_proposal_id_foreign` (`proposal_id`);
+
+--
+-- Indexes for table `proposal_outputs`
+--
+ALTER TABLE `proposal_outputs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `proposal_outputs_proposal_id_foreign` (`proposal_id`);
 
 --
 -- Indexes for table `proposal_peneliti`
@@ -1284,6 +1442,14 @@ ALTER TABLE `proposal_pengajuan`
 ALTER TABLE `proposal_pengelola_bantuan`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uuid` (`uuid`);
+
+--
+-- Indexes for table `proposal_reports`
+--
+ALTER TABLE `proposal_reports`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
+  ADD KEY `proposal_reports_proposal_id_foreign` (`proposal_id`);
 
 --
 -- Indexes for table `proposal_reviewer_assignments`
@@ -1400,13 +1566,13 @@ ALTER TABLE `bidang_ilmu`
 -- AUTO_INCREMENT for table `kegiatan_mandiri`
 --
 ALTER TABLE `kegiatan_mandiri`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `kelengkapan_dokumen`
 --
 ALTER TABLE `kelengkapan_dokumen`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `klaster_bantuan`
@@ -1454,7 +1620,7 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -1478,7 +1644,7 @@ ALTER TABLE `proposal_bidang_ilmu`
 -- AUTO_INCREMENT for table `proposal_dokumen`
 --
 ALTER TABLE `proposal_dokumen`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `proposal_jenis_penelitian`
@@ -1490,7 +1656,7 @@ ALTER TABLE `proposal_jenis_penelitian`
 -- AUTO_INCREMENT for table `proposal_jurnal`
 --
 ALTER TABLE `proposal_jurnal`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `proposal_klaster_bantuan`
@@ -1505,28 +1671,52 @@ ALTER TABLE `proposal_kontribusi_prodi`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `proposal_logbooks`
+--
+ALTER TABLE `proposal_logbooks`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `proposal_mahasiswa`
 --
 ALTER TABLE `proposal_mahasiswa`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `proposal_outcomes`
+--
+ALTER TABLE `proposal_outcomes`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `proposal_outputs`
+--
+ALTER TABLE `proposal_outputs`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `proposal_peneliti`
 --
 ALTER TABLE `proposal_peneliti`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `proposal_pengajuan`
 --
 ALTER TABLE `proposal_pengajuan`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `proposal_pengelola_bantuan`
 --
 ALTER TABLE `proposal_pengelola_bantuan`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `proposal_reports`
+--
+ALTER TABLE `proposal_reports`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `proposal_reviewer_assignments`
@@ -1538,7 +1728,7 @@ ALTER TABLE `proposal_reviewer_assignments`
 -- AUTO_INCREMENT for table `proposal_substansi_bagian`
 --
 ALTER TABLE `proposal_substansi_bagian`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `proposal_tema_penelitian`
@@ -1550,7 +1740,7 @@ ALTER TABLE `proposal_tema_penelitian`
 -- AUTO_INCREMENT for table `publikasi`
 --
 ALTER TABLE `publikasi`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `riwayat_pendidikan`
@@ -1615,6 +1805,30 @@ ALTER TABLE `master_program_studi`
 --
 ALTER TABLE `master_unit_kerja`
   ADD CONSTRAINT `master_unit_kerja_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `master_unit_kerja` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `proposal_logbooks`
+--
+ALTER TABLE `proposal_logbooks`
+  ADD CONSTRAINT `proposal_logbooks_proposal_id_foreign` FOREIGN KEY (`proposal_id`) REFERENCES `proposal_pengajuan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `proposal_outcomes`
+--
+ALTER TABLE `proposal_outcomes`
+  ADD CONSTRAINT `proposal_outcomes_proposal_id_foreign` FOREIGN KEY (`proposal_id`) REFERENCES `proposal_pengajuan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `proposal_outputs`
+--
+ALTER TABLE `proposal_outputs`
+  ADD CONSTRAINT `proposal_outputs_proposal_id_foreign` FOREIGN KEY (`proposal_id`) REFERENCES `proposal_pengajuan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `proposal_reports`
+--
+ALTER TABLE `proposal_reports`
+  ADD CONSTRAINT `proposal_reports_proposal_id_foreign` FOREIGN KEY (`proposal_id`) REFERENCES `proposal_pengajuan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `publikasi`

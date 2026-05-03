@@ -20,7 +20,7 @@ abstract class BaseController extends Controller
     /** @var \Psr\Log\LoggerInterface */
     protected $logger;
 
-    protected $helpers = ['menu'];
+    protected $helpers = ['menu', 'auth', 'date'];
     protected $menuBuilder;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
