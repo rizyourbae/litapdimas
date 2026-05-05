@@ -22,11 +22,13 @@ abstract class BaseController extends Controller
 
     protected $helpers = ['menu', 'auth', 'date'];
     protected $menuBuilder;
+    protected $auditLog;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
         $this->menuBuilder = new MenuBuilderService();
+        $this->auditLog    = new \App\Services\AuditLogService();
     }
 
     /**

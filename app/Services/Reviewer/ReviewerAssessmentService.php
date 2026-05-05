@@ -46,6 +46,10 @@ class ReviewerAssessmentService
             'label' => 'Penilaian Usulan',
             'icon' => 'bi bi-table',
         ],
+        'documents' => [
+            'label' => 'Berkas Lampiran',
+            'icon' => 'bi bi-files',
+        ],
     ];
 
     private const PROPOSAL_SCORE_ASPECTS = [
@@ -602,6 +606,11 @@ class ReviewerAssessmentService
                     'card_title' => 'Review Isian Substansi',
                     'sections' => $reviewSections,
                 ],
+                'documents' => [
+                    'card_title' => 'Daftar Berkas Lampiran',
+                    'rows' => $row['document_rows'] ?? [],
+                    'empty_message' => 'Tidak ada berkas yang diunggah oleh pengusul.',
+                ],
                 'scoring' => $scoring,
                 'form' => [
                     'action_url' => site_url('reviewer/queue/proposal/' . $row['item_key'] . '/save'),
@@ -1021,6 +1030,7 @@ class ReviewerAssessmentService
             'budget_label' => trim((string) ($summary['total_pengajuan_dana'] ?? '')) ?: '-',
             'attachment_label' => $attachmentCount > 0 ? $attachmentCount . ' berkas tersedia.' : 'Tidak ada berkas.',
             'proposal_sections' => $this->buildProposalSectionsFromDetailPayload($reviewStep3),
+            'document_rows' => $documentRows,
             'proposal_assessment' => [],
         ];
     }

@@ -85,6 +85,21 @@ class Menu extends BaseConfig
                 ['label' => 'Kegiatan Mandiri', 'url' => 'admin/kegiatan-mandiri',  'icon' => 'bi-circle'],
             ],
         ],
+        [
+            'label'      => 'Manajemen Landing',
+            'icon'       => 'bi-window-sidebar',
+            'url'        => 'admin/cms/landing',
+            'permission' => 'admin.access',
+        ],
+        [
+            'label'      => 'Keamanan',
+            'icon'       => 'bi-shield-lock',
+            'url'        => '#',
+            'permission' => 'admin.access',
+            'children'   => [
+                ['label' => 'Audit Logs', 'url' => 'admin/logs', 'icon' => 'bi-circle'],
+            ],
+        ],
 
         // ============================================================
         // REVIEWER: Antrian & Riwayat Review

@@ -8,24 +8,27 @@ $this->section('content');
 ?>
 
 <div class="row g-4 admin-page">
-    <div class="col-12 animate-fade-up">
-        <?= view('components/ui-hero', [
-            'type' => 'dosen',
-            'title' => $title ?? 'Publikasi Saya',
-            'subtitle' => 'Kelola seluruh karya ilmiah dan hasil publikasi Anda dalam satu panel terpadu.',
-            'badges' => [
-                ['label' => 'Publikasi', 'class' => 'text-bg-light border shadow-sm'],
-                ['label' => 'Litapdimas', 'class' => 'text-bg-primary shadow-sm']
-            ],
-            'actions' => [
-                [
-                    'label' => 'Tambah Publikasi Baru',
-                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
-                    'icon' => 'bi bi-plus-lg',
-                    'url' => site_url('dosen/publikasi/create')
-                ]
+    <?php
+    $heroConfig = [
+        'type' => 'dosen',
+        'title' => $title ?? 'Publikasi Saya',
+        'subtitle' => 'Kelola seluruh karya ilmiah dan hasil publikasi Anda dalam satu panel terpadu.',
+        'badges' => [
+            ['label' => 'Publikasi', 'class' => 'text-bg-light border shadow-sm'],
+            ['label' => 'Litapdimas', 'class' => 'text-bg-primary shadow-sm']
+        ],
+        'actions' => [
+            [
+                'label' => 'Tambah Publikasi Baru',
+                'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                'icon' => 'bi bi-plus-lg',
+                'url' => site_url('dosen/publikasi/create')
             ]
-        ]) ?>
+        ]
+    ];
+    ?>
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', $heroConfig) ?>
     </div>
 
     <div class="col-12 animate-fade-up delay-1">
@@ -59,7 +62,7 @@ $this->section('content');
                         <div class="fw-bold text-dark lh-base"><?= esc((string) $row['judul']) ?></div>
                         <div class="text-muted small mt-1 d-flex align-items-center gap-1">
                             <i class="bi bi-calendar3-event-fill opacity-50 me-1"></i>
-                            <span>Ditambahkan pada <?= date('d M Y') ?></span>
+                            <span>Ditambahkan pada <?= format_indo($row['created_at'] ?? '') ?></span>
                         </div>
                     </td>
                     <td class="text-center">

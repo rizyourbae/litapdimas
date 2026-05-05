@@ -83,7 +83,7 @@ class ProposalDetailService
             'current_step' => (int) ($proposal->current_step ?? 1),
             'created_at' => $proposal->created_at,
             'updated_at' => $proposal->updated_at,
-            'created_at_formatted' => date_format(date_create($proposal->created_at), 'd M Y H:i'),
+            'created_at_formatted' => format_indo($proposal->created_at, true),
             'overview_cards' => [
                 [
                     'label' => 'Status Proposal',
@@ -92,7 +92,7 @@ class ProposalDetailService
                 ],
                 [
                     'label' => 'Dibuat',
-                    'value' => date_format(date_create($proposal->created_at), 'd M Y H:i'),
+                    'value' => format_indo($proposal->created_at, true),
                     'icon' => 'fas fa-calendar-days',
                 ],
                 [
@@ -156,7 +156,7 @@ class ProposalDetailService
             'admin_decision' => [
                 'notes' => $proposal->admin_notes ?? '',
                 'outcome_notes' => $proposal->outcome_admin_notes ?? '',
-                'decided_at' => !empty($proposal->decided_at) ? date_format(date_create($proposal->decided_at), 'd M Y H:i') : null,
+                'decided_at' => !empty($proposal->decided_at) ? format_indo($proposal->decided_at, true) : null,
                 'is_decided' => !empty($proposal->decided_at),
             ],
         ];
@@ -467,7 +467,8 @@ class ProposalDetailService
                 'label' => $labels[$document->tipe_dokumen] ?? ucfirst($document->tipe_dokumen),
                 'nama_file' => $document->nama_file,
                 'path_file' => $document->path_file,
-                'view_url' => base_url($document->path_file),
+                'view_url' => site_url('files/view/proposal/' . $document->uuid),
+                'download_url' => site_url('files/proposal/' . $document->uuid),
                 'file_size' => $document->file_size,
                 'file_size_label' => $this->formatFileSize((int) ($document->file_size ?? 0)),
             ];
@@ -528,7 +529,7 @@ class ProposalDetailService
                 'recommendation_badge' => $recommendationBadge,
                 'notes' => $assignment->review_notes ?: 'Tidak ada catatan.',
                 'reviewed_at' => $assignment->reviewed_at,
-                'reviewed_at_formatted' => date_format(date_create($assignment->reviewed_at), 'd M Y'),
+                'reviewed_at_formatted' => format_indo($assignment->reviewed_at),
                 'score' => $assignment->review_score,
             ];
         }
@@ -539,16 +540,17 @@ class ProposalDetailService
     private function prepareLogbookData(int $proposalId): array
     {
         $logbooks = $this->logbookModel->getByProposal($proposalId);
-        
+
         return array_map(function ($log) {
             return [
                 'uuid' => $log->uuid,
-                'tanggal' => date_format(date_create($log->tanggal), 'd M Y'),
+                'tanggal' => format_indo($log->tanggal),
                 'tempat' => $log->tempat,
                 'nama_kegiatan' => $log->nama_kegiatan,
                 'teknik' => $log->teknik,
                 'deskripsi' => $log->deskripsi_kegiatan,
-                'berkas_url' => $log->berkas_path ? base_url($log->berkas_path) : null,
+                'berkas_url' => $log->berkas_path ? site_url('files/view/logbook/' . $log->uuid) : null,
+                'download_url' => $log->berkas_path ? site_url('files/logbook/' . $log->uuid) : null,
                 'delete_url' => site_url('dosen/proposals/logbook/delete/' . $log->uuid),
             ];
         }, $logbooks);
@@ -577,7 +579,8 @@ class ProposalDetailService
             $result[] = [
                 'kategori' => $kat,
                 'file_path' => $existing ? $existing->file_path : null,
-                'file_url' => $existing ? base_url($existing->file_path) : null,
+                'file_url' => ($existing && !empty($existing->uuid) && basename($existing->file_path) !== 'outputs') ? site_url('files/view/output/' . $existing->uuid) : null,
+                'download_url' => ($existing && !empty($existing->uuid) && basename($existing->file_path) !== 'outputs') ? site_url('files/output/' . $existing->uuid) : null,
                 'original_filename' => $existing ? $existing->original_filename : null,
                 'uploaded_at' => $existing ? format_indo($existing->created_at, true) : null,
             ];
@@ -607,7 +610,8 @@ class ProposalDetailService
             $result[$kat] = [
                 'kategori' => $kat,
                 'file_path' => $existing ? $existing->file_path : null,
-                'file_url' => $existing ? base_url($existing->file_path) : null,
+                'file_url' => ($existing && !empty($existing->uuid) && basename($existing->file_path) !== 'reports') ? site_url('files/view/report/' . $existing->uuid) : null,
+                'download_url' => ($existing && !empty($existing->uuid) && basename($existing->file_path) !== 'reports') ? site_url('files/report/' . $existing->uuid) : null,
                 'original_filename' => $existing ? $existing->original_filename : null,
                 'uploaded_at' => $existing ? format_indo($existing->created_at, true) : null,
             ];

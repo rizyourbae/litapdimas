@@ -35,8 +35,12 @@ class AuthController extends BaseController
                     $redirectTo = 'dashboard';
                 }
 
+                $this->auditLog->log('LOGIN', 'user', (string) $user['id'], 'User login berhasil');
                 return redirect()->to($redirectTo)->with('welcome', 'Selamat datang, ' . $displayName . '!');
             }
+            
+            // Optional: Log failed login attempts
+            $this->auditLog->log('LOGIN_FAILED', 'user', null, "Percobaan login gagal untuk username: {$username}");
 
             return redirect()->back()->withInput()->with('error', 'Login gagal. Periksa kembali username dan password.');
         }
@@ -47,6 +51,10 @@ class AuthController extends BaseController
 
     public function logout()
     {
+        $user = service('auth')->user();
+        if ($user) {
+            $this->auditLog->log('LOGOUT', 'user', (string) $user['id'], 'User logout');
+        }
         service('auth')->logout();
         return redirect()->to('login');
     }

@@ -83,6 +83,8 @@ class AssessmentController extends BaseController
                 ->with('error', 'Data proposal untuk penilaian tidak ditemukan.');
         }
 
+        $this->auditLog->log('ASSESS_PROPOSAL', 'assessment', $itemKey, 'Reviewer menyimpan penilaian proposal');
+
         return redirect()
             ->to(site_url('reviewer/queue/proposal/' . $itemKey . '?tab=scoring'))
             ->with('success', 'Penilaian proposal berhasil disimpan pada sesi reviewer ini.');
@@ -106,6 +108,8 @@ class AssessmentController extends BaseController
                 ->to(site_url('reviewer/queue?tab=presentasi'))
                 ->with('error', 'Data presentasi untuk penilaian tidak ditemukan.');
         }
+
+        $this->auditLog->log('ASSESS_PRESENTATION', 'assessment', $itemKey, 'Reviewer menyimpan penilaian presentasi');
 
         return redirect()
             ->to(site_url('reviewer/queue/presentasi/' . $itemKey))

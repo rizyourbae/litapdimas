@@ -2,17 +2,20 @@
 
 namespace App\Controllers;
 
+use App\Services\CMS\LandingPageService;
+
 class HomeController extends BaseController
 {
     public function index()
     {
-        // Data untuk landing page (nanti bisa dinamis dari database)
-        $data = [
-            'title'       => 'Litapdimas - Direktori Data',
-            'currentPage' => 'home',
-        ];
+        $cmsService = new LandingPageService();
+        $payload = $cmsService->getPublicLandingPayload();
 
-        // Gunakan layout khusus landing (tanpa sidebar)
+        $data = array_merge([
+            'title'       => 'Litapdimas - UINSI Samarinda',
+            'currentPage' => 'home',
+        ], $payload);
+
         return view('layouts/landing', $data);
     }
 

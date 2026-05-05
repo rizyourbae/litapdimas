@@ -1,0 +1,45 @@
+/**
+ * Audit Logs Custom Styles
+ */
+
+.custom-audit-table thead th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: #6c757d;
+    border-bottom: 1px solid #edf2f9;
+}
+
+.custom-audit-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.custom-audit-table tbody tr:hover {
+    background-color: #f8faff !important;
+}
+
+.custom-audit-table td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #edf2f9;
+}
+
+.bg-primary-subtle {
+    background-color: #e0eaff !important;
+}
+
+.badge {
+    font-weight: 600;
+}
+
+/* Tooltip style for description if truncated */
+.text-truncate {
+    cursor: default;
+}
+
+@media (max-width: 992px) {
+    .custom-audit-table {
+        min-width: 1000px;
+    }
+}

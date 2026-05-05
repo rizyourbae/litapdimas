@@ -7,52 +7,14 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // ============================================================
-// Static Assets Routes (Uploads)
+// Secure File Routes
 // ============================================================
-$routes->get('uploads/kelengkapan_dokumen/(:any)', function ($filename) {
-    $filename = (string) $filename;
-    $filepath = FCPATH . 'uploads/kelengkapan_dokumen/' . $filename;
-    if (!is_file($filepath)) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
-    }
-
-    $mime = mime_content_type($filepath);
-    return service('response')
-        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
-        ->setHeader('Content-Length', filesize($filepath))
-        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
-        ->setBody(file_get_contents($filepath));
-});
-
-$routes->get('uploads/riwayat_pendidikan/(:any)', function ($filename) {
-    $filename = (string) $filename;
-    $filepath = FCPATH . 'uploads/riwayat_pendidikan/' . $filename;
-    if (!is_file($filepath)) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
-    }
-
-    $mime = mime_content_type($filepath);
-    return service('response')
-        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
-        ->setHeader('Content-Length', filesize($filepath))
-        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
-        ->setBody(file_get_contents($filepath));
-});
-
-$routes->get('uploads/profile/(:any)', function ($filename) {
-    $filename = (string) $filename;
-    $filepath = FCPATH . 'uploads/profile/' . $filename;
-    if (!is_file($filepath)) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found: ' . $filename);
-    }
-
-    $mime = mime_content_type($filepath);
-    return service('response')
-        ->setHeader('Content-Type', $mime ?: 'application/octet-stream')
-        ->setHeader('Content-Length', filesize($filepath))
-        ->setHeader('Content-Disposition', 'inline; filename="' . basename($filepath) . '"')
-        ->setBody(file_get_contents($filepath));
-});
+$routes->get('files/proposal/(:segment)', 'SecureFileController::proposalDocument/$1');
+$routes->get('files/logbook/(:segment)',  'SecureFileController::logbookDocument/$1');
+$routes->get('files/output/(:segment)',   'SecureFileController::outputDocument/$1');
+$routes->get('files/report/(:segment)',   'SecureFileController::reportDocument/$1');
+$routes->get('files/view/(:segment)/(:segment)', 'SecureFileController::viewer/$1/$2');
+$routes->get('uploads/(:segment)/(:any)', 'SecureFileController::generalUpload/$1/$2');
 
 // ============================================================
 // Public Routes
@@ -81,6 +43,19 @@ $routes->group('profile', ['filter' => 'auth:profile.manage'], function ($routes
 // ============================================================
 $routes->group('admin', ['filter' => 'auth:admin.access'], function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
+    $routes->get('logs',      'Admin\AuditLogController::index', ['as' => 'admin.logs.index']);
+
+    // CMS Landing Page
+    $routes->group('cms/landing', function ($routes) {
+        $routes->get('/', 'Admin\CMS\LandingController::index', ['as' => 'admin.cms.landing.index']);
+        $routes->post('update-settings', 'Admin\CMS\LandingController::updateSettings', ['as' => 'admin.cms.landing.update_settings']);
+
+        // Tema Riset CRUD
+        $routes->post('themes/store', 'Admin\CMS\LandingController::storeTheme', ['as' => 'admin.cms.landing.themes.store']);
+        $routes->get('themes/json/(:any)', 'Admin\CMS\LandingController::jsonTheme/$1', ['as' => 'admin.cms.landing.themes.json']);
+        $routes->post('themes/update/(:any)', 'Admin\CMS\LandingController::updateTheme/$1', ['as' => 'admin.cms.landing.themes.update']);
+        $routes->get('themes/delete/(:any)', 'Admin\CMS\LandingController::deleteTheme/$1', ['as' => 'admin.cms.landing.themes.delete']);
+    });
 });
 
 // ============================================================
@@ -298,3 +273,4 @@ $routes->group('admin', ['filter' => 'auth:users.manage'], function ($routes) {
     $routes->get('users/restore/(:any)', 'Admin\User\UserController::restore/$1', ['as' => 'admin.users.restore']);
     $routes->match(['GET', 'POST'], 'users/resetPassword/(:any)', 'Admin\User\UserController::resetPassword/$1', ['as' => 'admin.users.resetPassword']);
 });
+

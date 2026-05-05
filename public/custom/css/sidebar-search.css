@@ -1,0 +1,61 @@
+/**
+ * Sidebar Search Premium Styling
+ */
+
+.sidebar-search-container {
+    position: relative;
+    z-index: 1;
+}
+
+.search-group {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-group:focus-within {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color, #0d6efd);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+#sidebar-menu-search {
+    color: #fff !important;
+    box-shadow: none !important;
+    padding-left: 0;
+    font-size: 0.875rem;
+}
+
+#sidebar-menu-search::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+}
+
+/* Animation for filtering results */
+.nav-item {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.nav-item.d-none {
+    opacity: 0;
+    transform: translateY(-5px);
+    display: none !important;
+}
+
+.nav-item.search-match {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-item.search-parent-match {
+    display: block !important;
+}
+
+/* Highlighting matched text (optional/manual JS) */
+.search-highlight {
+    color: #fff;
+    background-color: rgba(13, 110, 253, 0.5);
+    border-radius: 2px;
+}

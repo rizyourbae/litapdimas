@@ -16,6 +16,16 @@ $sidebarMenu = $sidebarMenu ?? [];
     </div>
 
     <div class="sidebar-wrapper">
+        <!-- Sidebar Search -->
+        <div class="sidebar-search-container px-3 mt-3 mb-2">
+            <div class="input-group search-group">
+                <span class="input-group-text border-0 bg-transparent text-muted">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="sidebar-menu-search" class="form-control border-0 bg-transparent text-light" placeholder="Cari menu..." aria-label="Search menu">
+            </div>
+        </div>
+
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
                 aria-label="Main navigation" data-accordion="false" id="navigation">
@@ -24,3 +34,5 @@ $sidebarMenu = $sidebarMenu ?? [];
         </nav>
     </div>
 </aside>
+
+<script src="<?= base_url('custom/js/sidebar-search.js?v=' . time()) ?>"></script>

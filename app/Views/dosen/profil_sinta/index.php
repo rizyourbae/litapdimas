@@ -59,7 +59,7 @@ $this->section('content');
                         </button>
                         <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-light border">
                             <span class="text-muted small">Update terakhir:</span>
-                            <span class="fw-bold text-dark small"><?= esc($syncInfo['last_synced_at']) ?></span>
+                            <span class="fw-bold text-dark small"><?= format_indo($syncInfo['last_synced_at'] ?? '') ?></span>
                         </div>
                         <div class="d-none mt-2 alert alert-info py-2" data-submit-feedback aria-live="polite">
                             <i class="bi bi-info-circle-fill me-2"></i>Koneksi ke SINTA sedang dibangun...

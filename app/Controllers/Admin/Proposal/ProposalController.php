@@ -25,9 +25,11 @@ class ProposalController extends BaseController
 
     public function index(): string
     {
+        $filters = $this->request->getGet(['status', 'bidang_ilmu', 'search']);
+        
         return $this->renderView('admin/proposal/index', array_merge(
             ['title' => 'Ajuan Proposal'],
-            $this->adminProposalService->getIndexPayload()
+            $this->adminProposalService->getIndexPayload($filters)
         ));
     }
 
@@ -61,6 +63,8 @@ class ProposalController extends BaseController
                 $assignmentNotes !== '' ? $assignmentNotes : null
             );
 
+            $this->auditLog->log('ASSIGN_REVIEWER', 'proposal', $uuid, 'Menugaskan reviewer ke proposal');
+
             return redirect()->to(site_url('admin/proposals/show/' . $uuid))
                 ->with('success', 'Reviewer berhasil ditugaskan.');
         } catch (\Throwable $throwable) {
@@ -91,6 +95,9 @@ class ProposalController extends BaseController
             $this->adminProposalService->finalizeDecision($uuid, $decision, $notes !== '' ? $notes : null);
 
             $statusLabel = $decision === 'approved' ? 'DISETUJUI' : 'DITOLAK';
+            $action = $decision === 'approved' ? 'APPROVE' : 'REJECT';
+            $this->auditLog->log($action, 'proposal', $uuid, "Merubah status proposal menjadi {$statusLabel}");
+
             return redirect()->to(site_url('admin/proposals/show/' . $uuid))
                 ->with('success', "Status proposal berhasil diperbarui menjadi {$statusLabel}.");
         } catch (\Throwable $throwable) {

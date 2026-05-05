@@ -205,6 +205,10 @@ class ProposalController extends BaseController
                     ->with('error', 'Gagal submit proposal: ' . $this->wizardService->getLastError());
             }
 
+            $proposal = $this->wizardService->getProposal($userId, $uuid);
+            $judul = $proposal ? $proposal->judul : "UUID: {$uuid}";
+            $this->auditLog->log('SUBMIT', 'proposal', $uuid, "Mensubmit proposal: {$judul}");
+
             return redirect()
                 ->to(self::REDIRECT_INDEX)
                 ->with('success', 'Proposal berhasil disubmit untuk review.');
@@ -245,12 +249,16 @@ class ProposalController extends BaseController
     public function delete(string $uuid)
     {
         $userId = $this->userId();
+        $proposal = $this->wizardService->getProposal($userId, $uuid);
+        $judul = $proposal ? $proposal->judul : "UUID: {$uuid}";
 
         if (!$this->wizardService->deleteProposal($userId, $uuid)) {
             return redirect()
                 ->to(self::REDIRECT_INDEX)
                 ->with('error', $this->wizardService->getLastError());
         }
+
+        $this->auditLog->log('DELETE', 'proposal', $uuid, "Menghapus proposal: {$judul}");
 
         return redirect()
             ->to(self::REDIRECT_INDEX)
@@ -294,6 +302,7 @@ class ProposalController extends BaseController
                 'status_badge_class' => $statusBadgeClass,
                 'status_label' => $statusLabel,
                 'current_step' => $currentStep,
+                'created_at' => $proposal->created_at,
                 'created_at_formatted' => date_format(
                     date_create($proposal->created_at),
                     'd M Y'

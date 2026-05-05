@@ -127,7 +127,7 @@ class KelengkapanDokumenService
 
         // Delete old file if exists
         if ($dokumen->dokumen_file) {
-            $oldFilePath = FCPATH . $dokumen->dokumen_file;
+            $oldFilePath = WRITEPATH . $dokumen->dokumen_file;
             if (is_file($oldFilePath)) {
                 unlink($oldFilePath);
             }
@@ -230,7 +230,7 @@ class KelengkapanDokumenService
         }
 
         // Create directory if not exists (in public folder)
-        $uploadPath = FCPATH . self::UPLOAD_DIR;
+        $uploadPath = WRITEPATH . self::UPLOAD_DIR;
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
@@ -280,6 +280,6 @@ class KelengkapanDokumenService
             return null;
         }
 
-        return base_url($dokumen->dokumen_file);
+        return site_url($dokumen->dokumen_file);
     }
 }

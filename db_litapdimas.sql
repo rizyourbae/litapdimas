@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb3
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: May 03, 2026 at 03:22 PM
+-- Host: localhost
+-- Generation Time: May 05, 2026 at 07:54 AM
 -- Server version: 8.0.45-0ubuntu0.24.04.1
 -- PHP Version: 8.3.6
 
@@ -20,6 +20,36 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_litapdimas`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_logs`
+--
+
+CREATE TABLE `audit_logs` (
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED DEFAULT NULL,
+  `action` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `resource_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `resource_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `ip_address` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_general_ci,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `audit_logs`
+--
+
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `resource_type`, `resource_id`, `description`, `ip_address`, `user_agent`, `created_at`) VALUES
+(1, 7, 'CREATE', 'user', '19', 'Menambahkan user baru: Murniadi', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-04 06:31:05'),
+(2, 7, 'LOGIN', 'user', '7', 'User login berhasil', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-05 00:33:42'),
+(3, 7, 'LOGOUT', 'user', '7', 'User logout', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-05 03:49:21'),
+(4, 7, 'LOGIN', 'user', '7', 'User login berhasil', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-05 03:49:26'),
+(5, 7, 'LOGOUT', 'user', '7', 'User logout', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-05 06:05:25'),
+(6, 7, 'LOGIN', 'user', '7', 'User login berhasil', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0', '2026-05-05 07:06:12');
 
 -- --------------------------------------------------------
 
@@ -136,7 +166,36 @@ CREATE TABLE `klaster_bantuan` (
 
 INSERT INTO `klaster_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `is_active`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
 (1, 'b61b1dff-17cf-4ff4-a8e8-4602b45573ba', 'BOPTN', NULL, 1, '2026-04-26 13:52:04', '2026-04-26 13:52:04', NULL, NULL, NULL),
-(2, 'b98217c6-5a75-4a02-b4c6-679cb9802c30', 'Dana Hibah ', NULL, 1, '2026-04-26 13:52:11', '2026-04-26 13:52:11', NULL, NULL, NULL);
+(2, 'b98217c6-5a75-4a02-b4c6-679cb9802c30', 'Dana Hibah ', NULL, 1, '2026-04-26 13:52:11', '2026-04-26 13:52:11', NULL, NULL, NULL),
+(3, '39cf46b0-17f2-4ea5-b227-721825be3256', 'Dana Klastering', NULL, 1, '2026-05-05 03:31:21', '2026-05-05 03:31:32', NULL, NULL, 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `landing_settings`
+--
+
+CREATE TABLE `landing_settings` (
+  `id` int UNSIGNED NOT NULL,
+  `key` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `value` text COLLATE utf8mb4_general_ci,
+  `group` varchar(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'general',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `landing_settings`
+--
+
+INSERT INTO `landing_settings` (`id`, `key`, `value`, `group`, `created_at`, `updated_at`) VALUES
+(1, 'hero_title', 'Sistem Informasi Penelitian & Pengabdian Masyarakat', 'hero', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(2, 'hero_subtitle', 'Platform terintegrasi untuk pengelolaan, review, dan publikasi hasil penelitian akademik di lingkungan UINSI Samarinda.', 'hero', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(3, 'hero_cta_primary', 'Mulai Pengajuan', 'hero', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(4, 'hero_cta_outline', 'Panduan Juknis', 'hero', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(5, 'stats_base_proposal', '1200', 'stats', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(6, 'stats_base_peneliti', '2900', 'stats', '2026-05-05 06:44:19', '2026-05-05 07:21:16'),
+(7, 'stats_base_publikasi', '80', 'stats', '2026-05-05 06:44:19', '2026-05-05 07:21:16');
 
 -- --------------------------------------------------------
 
@@ -267,7 +326,6 @@ CREATE TABLE `master_profesi` (
 --
 
 INSERT INTO `master_profesi` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(5, '1ae71369-976b-425f-9245-1cee3f52c7ac', 'Dosenn', '2026-04-24 01:46:01', '2026-04-24 08:27:08', NULL, NULL, NULL),
 (6, '403f0ed3-c95d-4beb-9979-f9f63a2b7280', 'Pranata Komputer', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
 (7, '3b7f5614-f7d5-4340-bb1c-3d2786e2dd4a', 'Pengembang TP', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
 (8, '46e0c464-76ac-423a-97a3-8666713bd18f', 'Pranata Keuangan', '2026-04-24 01:46:01', '2026-04-24 01:46:01', NULL, NULL, NULL),
@@ -277,7 +335,8 @@ INSERT INTO `master_profesi` (`id`, `uuid`, `nama`, `created_at`, `updated_at`, 
 (12, 'c4454c7b-edfd-480c-bdac-7315bc2be102', 'Pengembang TP', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
 (13, 'a5ef0227-0acb-49a3-8a13-ce37116a9493', 'Pranata Keuangan', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
 (14, 'f835a3bf-352f-4ba6-8d13-5b89f3aa8517', 'Perancang UU', '2026-04-24 01:50:41', '2026-04-24 01:50:41', NULL, NULL, NULL),
-(15, 'b85b06db-9363-441b-8301-8d3f25f7a446', 'Guru', '2026-04-24 07:50:18', '2026-04-24 07:50:18', NULL, NULL, NULL);
+(15, 'b85b06db-9363-441b-8301-8d3f25f7a446', 'Guru', '2026-04-24 07:50:18', '2026-04-24 07:50:18', NULL, NULL, NULL),
+(16, '6d212814-2482-42ff-bcb7-c03dd4f4b19e', 'Dosenn', '2026-05-04 03:49:34', '2026-05-04 03:49:34', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -411,7 +470,9 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (36, '2026-05-03-143340', 'App\\Database\\Migrations\\AddApprovedAmountToProposals', 'default', 'App', 1777818841, 23),
 (37, '2026-05-03-143340', 'App\\Database\\Migrations\\CreateProposalReportsTable', 'default', 'App', 1777818842, 23),
 (38, '2026-05-03-145654', 'App\\Database\\Migrations\\AddOutcomeNotesToProposals', 'default', 'App', 1777820240, 24),
-(39, '2026-05-03-145654', 'App\\Database\\Migrations\\CreateProposalOutcomesTable', 'default', 'App', 1777820240, 24);
+(39, '2026-05-03-145654', 'App\\Database\\Migrations\\CreateProposalOutcomesTable', 'default', 'App', 1777820240, 24),
+(40, '2026-05-04-142300', 'App\\Database\\Migrations\\CreateAuditLogsTable', 'default', 'App', 1777875815, 25),
+(41, '2026-05-05-062716', 'App\\Database\\Migrations\\CreateLandingPageTables', 'default', 'App', 1777962574, 26);
 
 -- --------------------------------------------------------
 
@@ -646,14 +707,14 @@ INSERT INTO `proposal_kontribusi_prodi` (`id`, `uuid`, `nama`, `keterangan`, `is
 
 CREATE TABLE `proposal_logbooks` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
   `tanggal` date NOT NULL,
-  `tempat` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_kegiatan` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `teknik` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `deskripsi_kegiatan` text COLLATE utf8mb4_general_ci NOT NULL,
-  `berkas_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tempat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_kegiatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `teknik` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `deskripsi_kegiatan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `berkas_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -664,8 +725,11 @@ CREATE TABLE `proposal_logbooks` (
 --
 
 INSERT INTO `proposal_logbooks` (`id`, `uuid`, `proposal_id`, `tanggal`, `tempat`, `nama_kegiatan`, `teknik`, `deskripsi_kegiatan`, `berkas_path`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '59d8090a8359a3a3a20d621a551cfaa1', 6, '2026-05-05', 'balikpapan', 'Meramu Jamu', 'FGD', 'Iya SIh', 'uploads/proposals/logbooks/1777816116_59fe380da0f19a2c923b.pdf', '2026-05-03 13:48:36', '2026-05-03 13:48:36', NULL),
-(2, '3e7fbf717f65cf5b7f516915178b3625', 6, '2026-05-03', 'Makassar', 'Meramu Ayam', 'Analisis Dokumen', 'Iya', 'uploads/proposals/logbooks/1777816206_6ea269890d0ceda395cb.pdf', '2026-05-03 13:50:06', '2026-05-03 13:50:06', NULL);
+(1, '59d8090a8359a3a3a20d621a551cfaa1', 6, '2026-05-05', 'balikpapan', 'Meramu Jamu', 'FGD', 'Iya SIh', 'uploads/proposals/logbooks/1777816116_59fe380da0f19a2c923b.pdf', '2026-05-03 13:48:36', '2026-05-04 05:39:51', '2026-05-04 05:39:51'),
+(2, '3e7fbf717f65cf5b7f516915178b3625', 6, '2026-05-03', 'Makassar', 'Meramu Ayam', 'Analisis Dokumen', 'Iya', 'uploads/proposals/logbooks/1777816206_6ea269890d0ceda395cb.pdf', '2026-05-03 13:50:06', '2026-05-04 05:39:55', '2026-05-04 05:39:55'),
+(3, 'a1c266955737fd958fd83654893d63a6', 6, '2026-05-04', 'Samarinda', 'Membuat Ayam', 'Analisis Dokumen', 'iya begitu', 'uploads/proposals/logbooks/1777873225_48799343fe5eb7407c5b.pdf', '2026-05-04 05:40:25', '2026-05-04 05:44:21', '2026-05-04 05:44:21'),
+(4, 'f61397825e6565bbb06c5af893c5633e', 6, '2026-05-04', 'Samarinda', 'Ayam', 'Diskusi', 'qwer', 'uploads/proposals/logbooks/1777874130_825805ceed4301d512e4.pdf', '2026-05-04 05:55:30', '2026-05-04 06:05:38', '2026-05-04 06:05:38'),
+(5, 'b0a53f3a1ee33a5401f5cf658fd79ace', 6, '2026-05-04', 'samarinda', 'memasak ayam', 'FGD', 'Oke', 'uploads/proposals/logbooks/1777874767_60e5eac5d4bbc89262b6.pdf', '2026-05-04 06:06:07', '2026-05-04 06:06:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -695,15 +759,15 @@ CREATE TABLE `proposal_mahasiswa` (
 
 CREATE TABLE `proposal_outcomes` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `tipe` enum('jurnal','buku') COLLATE utf8mb4_general_ci NOT NULL,
-  `judul` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_penerbit_jurnal` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `volume_nomor` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `isbn` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tahun_terbit` varchar(4) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipe` enum('jurnal','buku') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `judul` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_penerbit_jurnal` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `volume_nomor` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `isbn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tahun_terbit` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -724,11 +788,11 @@ INSERT INTO `proposal_outcomes` (`id`, `uuid`, `proposal_id`, `tipe`, `judul`, `
 
 CREATE TABLE `proposal_outputs` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `kategori` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `file_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `original_filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `kategori` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `original_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -739,7 +803,9 @@ CREATE TABLE `proposal_outputs` (
 --
 
 INSERT INTO `proposal_outputs` (`id`, `uuid`, `proposal_id`, `kategori`, `file_path`, `original_filename`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '6c529f9b94f66134495c18911daea98f', 6, 'HKI', 'uploads/proposals/outputs/1777817655_9149921164b33f87f0bc.pdf', 'sample-local-pdf.pdf', '2026-05-03 14:14:15', '2026-05-03 14:14:15', NULL);
+(1, 'c42d270985f7d8d5e666d80785a741d5', 6, 'HKI', 'uploads/proposals/outputs/1777874780_47c8ba00f7e6eb5666b2.pdf', 'sample-1.pdf', '2026-05-03 14:14:15', '2026-05-04 06:06:20', NULL),
+(2, '23b2d7a5496882f2e62a47cf8d654bc7', 6, 'Laporan Bantuan Lengkap', 'uploads/proposals/outputs/1777873769_2c33bacb4e33a7aad1aa.pdf', 'Bukti Lapor SPT.pdf', '2026-05-04 05:49:29', '2026-05-04 05:49:29', NULL),
+(3, 'de84cc1476ba7d57a3eea3a306b98b31', 6, 'Draft Artikel', 'uploads/proposals/outputs/1777879030_0b1d4b74d52f77b7e6c2.pdf', 'PAK 2025.pdf', '2026-05-04 07:17:10', '2026-05-04 07:17:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -798,8 +864,8 @@ CREATE TABLE `proposal_pengajuan` (
   `kontribusi_prodi_id` int UNSIGNED DEFAULT NULL,
   `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'draft' COMMENT 'draft, submitted, reviewed, approved, rejected',
   `approved_amount` bigint UNSIGNED DEFAULT NULL COMMENT 'Biaya yang disetujui oleh admin',
-  `outcome_admin_notes` text COLLATE utf8mb4_general_ci COMMENT 'Catatan dari validator terkait luaran/outcome penelitian',
-  `admin_notes` text COLLATE utf8mb4_general_ci,
+  `outcome_admin_notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Catatan dari validator terkait luaran/outcome penelitian',
+  `admin_notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `decided_at` datetime DEFAULT NULL,
   `decided_by` int UNSIGNED DEFAULT NULL,
   `current_step` int NOT NULL DEFAULT '1' COMMENT '1-5 for wizard steps',
@@ -820,7 +886,7 @@ CREATE TABLE `proposal_pengajuan` (
 --
 
 INSERT INTO `proposal_pengajuan` (`id`, `uuid`, `user_id`, `judul`, `kata_kunci`, `pengelola_bantuan_id`, `klaster_bantuan_id`, `bidang_ilmu_id`, `tema_penelitian_id`, `jenis_penelitian_id`, `kontribusi_prodi_id`, `status`, `approved_amount`, `outcome_admin_notes`, `admin_notes`, `decided_at`, `decided_by`, `current_step`, `step_1_data`, `step_2_data`, `step_3_data`, `step_4_data`, `step_5_data`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'approved', NULL, NULL, 'Oke', '2026-05-03 12:38:05', 6, 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-05-03 12:38:05', NULL, NULL, NULL),
+(6, 'b4f90cc9-63e5-4e3a-bda2-327fe5caecff', 9, 'Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin', 'pendidikan, agama, kunci', 1, 1, 2, 1, 2, 1, 'approved', NULL, NULL, '', '2026-05-04 05:38:58', 7, 5, '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"judul\":\"Eksplorasi Penggunaan Artificial intelligence dalam Membentuk integritas Akademik dan Praktik diskursus Akademik: Studi Mixed-methods di Program Studi Bahasa inggris Ptkin\",\"kata_kunci\":\"pendidikan, agama, kunci\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"2\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"1\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"peneliti_internal\":[{\"nama\":\"Udin\",\"nip\":\"123456\",\"email\":\"udin@gmail.com\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\",\"abstrak\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p>Potterhead adalah sebutan atau julukan bagi penggemar berat seri buku dan film Harry Potter karya J.K. Rowling. Mereka biasanya memiliki dedikasi tinggi, mengenali detail dunia sihir (Potterverse) secara mendalam, dan sering kali menganggap seri ini sebagai bagian penting dari masa kecil atau budaya populer.<\\/p>\"}]}', '{\"csrf_test_name\":\"e9efe0668e4d0f3b12f1e2fb6786fcce\"}', '{\"csrf_test_name\":\"4b8e6d7ffd73ecbb98cc896e240305fb\",\"issn\":\"2087-1221\",\"nama_jurnal\":\"PDF\",\"profil_jurnal\":\"<p>Mungkin bagi sebagian orang akan heran kenapa hallo Potterhead? Kenapa bukan hallo guys atau yang lainnya?. Karena sapaan tersebut hanya akan dimengerti oleh para penggemar film Harry Potter.<\\/p><p><br><\\/p><p>Yup Potterhead adalah sebutan bagi orang yang sangat menyukai film Harry Potter atau bisa dibilang fansnya Harry Potter. Film Harry Potter sendiri diadaptasi dari novel yang berjudul sama yaitu Harry Potter novel ini ditulis oleh J.K Rowling. Novel Harry Potter merupakan novel terpopuler yang ditulis oleh JK Rowling bahkan sudah diterjemahkan ke dalam 80 bahasa yang ada di dunia termasuk Indonesia. Novel Harry Potter sendiri terbagi menjadi 7 bagian yang masing-masing saling terhubung dan terkait satu sama lain.&nbsp;<\\/p><p><br><\\/p><p>Kali ini kita akan membahas hal-hal menarik seputar film Harry Potter Yang pastinya para Potterhead wajib tahu!!<\\/p>\",\"url_website\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_scopus_wos\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"url_surat_rekomendasi\":\"https:\\/\\/www.kompasiana.com\\/hildarahmah9638\\/62c2dd0302c50e06d70c7e22\\/potterhead-sejati-pasti-tahu-10-hal-hal-menarik-film-harry-potter\",\"total_pengajuan_dana\":\"1000000\"}', '2026-04-27 01:08:03', '2026-05-04 05:38:58', NULL, NULL, NULL),
 (9, '42a46a60-1a73-4cb5-acac-7f1f8d40385a', 9, 'Kocak', 'pendidikan, inovasi, pembelajaran', 1, 1, 1, 1, 2, 2, 'draft', NULL, NULL, NULL, NULL, NULL, 5, '{\"csrf_test_name\":\"67467b71596c757c11f708434e6ac20c\",\"judul\":\"Kocak\",\"kata_kunci\":\"pendidikan, inovasi, pembelajaran\",\"pengelola_bantuan_id\":\"1\",\"klaster_bantuan_id\":\"1\",\"bidang_ilmu_id\":\"1\",\"tema_penelitian_id\":\"1\",\"jenis_penelitian_id\":\"2\",\"kontribusi_prodi_id\":\"2\",\"statement_1\":\"1\",\"statement_2\":\"1\",\"statement_3\":\"1\"}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"peneliti_internal\":[{\"nama\":\"Rizqi Saputra\",\"nip\":\"123456789\",\"email\":\"rizqi@uinsi.ac.id\",\"asal_instansi\":\"UINSI\",\"posisi\":\"Ketua\"}]}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"abstrak\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">Baju kaus yang dipakai kaum buruh itu memuat gambar siluet sejumlah orang berdiri dengan tangan mengepal berwarna biru. Di bawahnya bertulisan \'Bagimu Negeri Jiwa Raga Kami\' dengan aksen warna merah.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">Massa buruh juga terlihat menggunakan payung dengan gambar serupa. Di sisi lain, mereka juga tampak mengenakan berbagai aksesori organisasi maupun tempat kerja sebagai identitas.<\\/span><\\/p>\",\"substansi_bagian\":[{\"judul_bagian\":\"Latar Belakang\",\"isi_bagian\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">Dimintai konfirmasi terpisah, Presiden Konfederasi Serikat Buruh Seluruh Indonesia (KSBSI) Elly Rosita Silaban membenarkan bahwa semua kaus yang dipakai buruh hari ini merupakan desain langsung dari Prabowo.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Semua kaus buruh yang tidak ada logo serikat buruhnya adalah desain Pak Presiden,\\\" ucap Elly.<\\/span><\\/p><p><br><\\/p><p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Yang bertuliskan May Day 2026 tanpa ada logo serikat buruh adalah desain Pak Presiden,\\\" tambahnya.<\\/span><\\/p>\"}]}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\"}', '{\"csrf_test_name\":\"e5cc3c30b3b24538ec9fbd2bedd6c514\",\"issn\":\"2087-1222\",\"nama_jurnal\":\"DETIK\",\"profil_jurnal\":\"<p><span style=\\\"color: rgb(0, 0, 0);\\\">\\\"Gubernur DKI Saudara Pramono Anung Wibowo. Bowonya sama, partainya lain nggak apa-apa,\\\" kata Prabowo di Monas, Jakarta Pusat, Jumat (1\\/5\\/2026).<\\/span><\\/p>\",\"url_website\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"url_scopus_wos\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"url_surat_rekomendasi\":\"https:\\/\\/news.detik.com\\/jabodetabek\",\"total_pengajuan_dana\":\"1000000\"}', '2026-05-01 03:42:53', '2026-05-01 07:18:01', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -858,11 +924,11 @@ INSERT INTO `proposal_pengelola_bantuan` (`id`, `uuid`, `nama`, `keterangan`, `i
 
 CREATE TABLE `proposal_reports` (
   `id` int UNSIGNED NOT NULL,
-  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proposal_id` int UNSIGNED NOT NULL,
-  `kategori` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Laporan Antara, Laporan Keuangan Sementara, Laporan Akademik, Laporan Keuangan',
-  `file_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `original_filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `kategori` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Laporan Antara, Laporan Keuangan Sementara, Laporan Akademik, Laporan Keuangan',
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `original_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -893,8 +959,8 @@ CREATE TABLE `proposal_reviewer_assignments` (
   `review_score` decimal(5,2) DEFAULT NULL,
   `presentation_score` decimal(5,2) DEFAULT NULL,
   `review_notes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `presentation_notes` longtext COLLATE utf8mb4_general_ci,
-  `presentation_assessment` longtext COLLATE utf8mb4_general_ci COMMENT 'JSON payload for presentation assessment state',
+  `presentation_notes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `presentation_assessment` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'JSON payload for presentation assessment state',
   `presentation_recommended_budget` bigint UNSIGNED DEFAULT NULL,
   `presentation_reviewed_at` datetime DEFAULT NULL,
   `reviewed_at` datetime DEFAULT NULL,
@@ -908,7 +974,7 @@ CREATE TABLE `proposal_reviewer_assignments` (
 --
 
 INSERT INTO `proposal_reviewer_assignments` (`id`, `uuid`, `proposal_id`, `reviewer_user_id`, `assigned_by`, `assignment_notes`, `status`, `recommendation`, `review_score`, `presentation_score`, `review_notes`, `presentation_notes`, `presentation_assessment`, `presentation_recommended_budget`, `presentation_reviewed_at`, `reviewed_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '429d8da8-7f1c-476b-bd41-2754fc2cbcf6', 6, 16, 6, NULL, 'reviewed', 'revision', 70.00, 76.00, 'Nilai: 70,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: Ya\n\nCatatan Validator: ya', 'Nilai Presentasi: 76,00\n\nKomentar Umum Presentasi: Oke\n\nRekomendasi Anggaran Disetujui: Rp 100.000', '{\"scores\":{\"keutuhan_gagasan\":4,\"kontribusi_akademik\":4,\"kelayakan_publikasi\":3,\"rasionalisasi_anggaran\":4},\"comments\":{\"keutuhan_gagasan\":\"\",\"kontribusi_akademik\":\"\",\"kelayakan_publikasi\":\"\",\"rasionalisasi_anggaran\":\"\"},\"general_comment\":\"<p>Oke<\\/p>\",\"validator_note\":\"\",\"recommended_budget_amount\":100000,\"total_score_raw\":380,\"score_value\":76,\"review_status\":\"completed\"}', 100000, '2026-04-28 20:51:26', '2026-04-28 06:58:28', '2026-04-28 02:19:00', '2026-04-28 20:51:26', NULL),
+(1, '429d8da8-7f1c-476b-bd41-2754fc2cbcf6', 6, 16, 6, NULL, 'reviewed', 'revision', 67.00, 76.00, 'Nilai: 67,00\n\nAbstrak: Bagus, Hanya perlu diperbaiki sedikit saja\n\nLatar Belakang: Bagus, kurang lengkap isi substansi nya\n\nKomentar Umum: ya boleh lah, oke\n\nCatatan Validator: iya siap mantap', 'Nilai Presentasi: 76,00\n\nKomentar Umum Presentasi: Oke\n\nRekomendasi Anggaran Disetujui: Rp 100.000', '{\"scores\":{\"keutuhan_gagasan\":4,\"kontribusi_akademik\":4,\"kelayakan_publikasi\":3,\"rasionalisasi_anggaran\":4},\"comments\":{\"keutuhan_gagasan\":\"\",\"kontribusi_akademik\":\"\",\"kelayakan_publikasi\":\"\",\"rasionalisasi_anggaran\":\"\"},\"general_comment\":\"<p>Oke<\\/p>\",\"validator_note\":\"\",\"recommended_budget_amount\":100000,\"total_score_raw\":380,\"score_value\":76,\"review_status\":\"completed\"}', 100000, '2026-04-28 20:51:26', '2026-05-03 23:46:50', '2026-04-28 02:19:00', '2026-05-03 23:46:50', NULL),
 (2, '3aa05506-55f5-4cfa-a04c-38fc76711e43', 6, 18, 6, NULL, 'reviewed', 'revision', 79.00, 50.00, 'Nilai: 79,00\n\nAbstrak: ya\n\nLatar Belakang: ya\n\nKomentar Umum: ya oke\n\nCatatan Validator: hmmm oke', 'Nilai Presentasi: 50,00\n\nKomentar Umum Presentasi: oke\n\nRekomendasi Anggaran Disetujui: Rp 10.000', '{\"scores\":{\"keutuhan_gagasan\":3,\"kontribusi_akademik\":2,\"kelayakan_publikasi\":1,\"rasionalisasi_anggaran\":5},\"comments\":{\"keutuhan_gagasan\":\"\",\"kontribusi_akademik\":\"\",\"kelayakan_publikasi\":\"\",\"rasionalisasi_anggaran\":\"\"},\"general_comment\":\"<p>oke<\\/p>\",\"validator_note\":\"\",\"recommended_budget_amount\":10000,\"total_score_raw\":250,\"score_value\":50,\"review_status\":\"completed\"}', 10000, '2026-04-28 21:02:06', '2026-04-28 06:55:02', '2026-04-28 02:19:00', '2026-04-28 21:02:06', NULL);
 
 -- --------------------------------------------------------
@@ -995,8 +1061,10 @@ CREATE TABLE `publikasi` (
 --
 
 INSERT INTO `publikasi` (`id`, `uuid`, `user_id`, `judul`, `penulis`, `jenis_publikasi`, `tahun`, `klaster`, `sumber_pembiayaan`, `metadata`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '97fc65ba-489f-4494-8b98-8de7c093035c', 9, 'Kocak', 'Udin', 'HKI', '2025', 'Nasional', 'Mandiri', '{\"url\": \"www.google.com\", \"no_hki\": \"HKI\"}', '2026-04-25 02:35:09', '2026-04-25 02:35:09', NULL),
-(2, '1cc80f61-0931-425c-8aec-981ac5aaa3a9', 9, 'ADAPTASI SEKOLAH DALAM MENGIMPLEMENTASIKAN PEMBELAJARAN JARAK JAUH PADA MASA PANDEMI COVID-19 (STUDI KASUS SMP MUHAMMADIYAH KARANGGENENG KABUPATEN LAMONGAN)', 'Udin', 'Jurnal', '2023', 'Nasional', 'Mandiri', '{\"url\": \"https://scholar.google.com/citations?user=0Q0Xr0MAAAAJ&hl=id\", \"issn\": \"12\", \"nomor\": \"12\", \"volume\": \"12\", \"nama_jurnal\": \"PDF\"}', '2026-04-30 13:01:17', '2026-05-03 10:45:22', NULL);
+(1, '97fc65ba-489f-4494-8b98-8de7c093035c', 9, 'Kocak', 'Udin', 'HKI', '2025', 'Nasional', 'Mandiri', '{\"url\": \"www.google.com\", \"no_hki\": \"HKI\"}', '2026-04-25 02:35:09', '2026-05-04 06:25:07', '2026-05-04 06:25:07'),
+(2, '1cc80f61-0931-425c-8aec-981ac5aaa3a9', 9, 'ADAPTASI SEKOLAH DALAM MENGIMPLEMENTASIKAN PEMBELAJARAN JARAK JAUH PADA MASA PANDEMI COVID-19 (STUDI KASUS SMP MUHAMMADIYAH KARANGGENENG KABUPATEN LAMONGAN)', 'Udin', 'Jurnal', '2023', 'Nasional', 'Mandiri', '{\"url\": \"https://scholar.google.com/citations?user=0Q0Xr0MAAAAJ&hl=id\", \"issn\": \"12\", \"nomor\": \"12\", \"volume\": \"12\", \"nama_jurnal\": \"PDF\"}', '2026-04-30 13:01:17', '2026-05-03 10:45:22', NULL),
+(3, '72e83fca-8c99-4184-a056-5f2828b2fb32', 9, 'Kentang', 'Ahmad Solihin', 'HKI', '2024', 'Nasional', 'DIPA UINSI', '{\"url\": \"drive.google.com\", \"no_hki\": \"2164544\"}', '2026-05-04 06:30:11', '2026-05-04 07:11:54', '2026-05-04 07:11:54'),
+(4, '9b540711-ec78-4550-b1ad-13a41dca2c9b', 19, 'Buku Jendela Dunia', 'Ahmad Solihin, Rudi Masud', 'Buku', '2024', 'Internasional', NULL, '{\"url\": \"google.com\", \"isbn\": \"123456789\", \"penerbit\": \"Pustaka Utama\", \"jumlah_halaman\": \"100\"}', '2026-05-05 05:29:31', '2026-05-05 05:30:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -1144,6 +1212,41 @@ INSERT INTO `tema_penelitian` (`id`, `uuid`, `nama`, `keterangan`, `is_active`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tema_riset`
+--
+
+CREATE TABLE `tema_riset` (
+  `id` int UNSIGNED NOT NULL,
+  `uuid` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `icon` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'bi bi-journal-text',
+  `keterangan` text COLLATE utf8mb4_general_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `sort_order` int NOT NULL DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tema_riset`
+--
+
+INSERT INTO `tema_riset` (`id`, `uuid`, `nama`, `icon`, `keterangan`, `is_active`, `sort_order`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, '701b81b7-446b-4b20-855b-a414c7078042', 'Ekoteologi Pangan', 'bi bi-droplets', NULL, 1, 1, '2026-05-05 06:44:19', '2026-05-05 07:49:58', '2026-05-05 07:49:58'),
+(2, 'e482dda3-9f73-4441-becf-7ddf059b357c', 'Moderasi Beragama', 'bi bi-heart-pulse', NULL, 1, 2, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(3, '11c0ee44-3cc8-4ce5-95be-b6f88ef55682', 'Digital Islam', 'bi bi-cpu', NULL, 1, 3, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(4, '38ee9246-9572-43f4-92e0-12d3df797dc2', 'Islam & Sains', 'bi bi-infinity', NULL, 1, 4, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(5, '4b28f940-19b1-4057-8b28-675d8210293c', 'Manuskrip Turats', 'bi bi-book', NULL, 1, 5, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(6, '8876a6cd-9ffb-4efc-b397-817d5ba687c7', 'Sekolah Rakyat', 'bi bi-people', NULL, 1, 6, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(7, 'b4c35bd0-9899-47e4-912d-fb788020c6c9', 'Kajian Global', 'bi bi-globe', NULL, 1, 7, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(8, '2413a061-aeca-4124-9a2e-59523dc546b8', 'Ketahanan Sosial', 'bi bi-shield-check', NULL, 1, 8, '2026-05-05 06:44:19', '2026-05-05 06:44:19', NULL),
+(9, '413ddb43-85c4-4861-ba48-a4749342b10b', 'Moderasi', 'bi-journal-text', NULL, 1, 5, '2026-05-05 07:20:12', '2026-05-05 07:20:12', NULL),
+(10, 'd8adac92-2d91-44e7-b76f-a54b7d7a078d', 'Radiologi Kopi', 'bi-cup-straw', NULL, 1, 1, '2026-05-05 07:26:49', '2026-05-05 07:26:49', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -1168,12 +1271,13 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `uuid`, `username`, `email`, `password`, `nama_lengkap`, `aktif`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
 (6, 'ab6c83dd-45b1-483a-9ffb-ee6bfec1cecd', 'admin', 'admin@litapdimas.ac.id', '$2y$10$UJwZjl9OWBEaHy98AxkJDOvcZX9Y2AhHxHvSwkYBPoaKEAUkJXmDO', 'Admin LP2M', 1, '2026-04-24 01:50:52', '2026-04-28 10:54:22', NULL, NULL, NULL),
-(7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-04-26 23:47:30', NULL, NULL, NULL),
+(7, 'df0fb90a-8922-4f0c-8eca-f282fce592aa', 'rizqi', 'rizqi@uinsi.ac.id', '$2y$10$kYYwrLGvQox5kifhY.KLu.fgUni.ULDeK3EzvyfT29dJ7juFIjpse', 'Admin LPPM 2', 1, '2026-04-24 03:00:57', '2026-05-05 03:43:37', NULL, NULL, NULL),
 (8, '95ae4ea2-83d7-4233-8002-93a9391a2ca1', 'amru', 'amru@uinsi.ac.id', '$2y$10$oDJUEFgmZNt8HmEEPAEzkO4bKbUOwx87spxSNY4LCYbCDCv3UB15m', 'Amirul Hadi', 1, '2026-04-24 06:46:37', '2026-04-24 06:46:37', NULL, NULL, NULL),
 (9, 'a892502a-e93b-46b9-a6d5-109425776c85', 'Hernan', 'hernan@uinsi.ac.id', '$2y$10$iEf73ZnIKiPe2YF9TXUCNeKq9n/a4rKkiouBtjqOdYN45.jl8u8kC', 'Hernansyah', 1, '2026-04-24 10:35:53', '2026-04-26 06:38:15', NULL, NULL, NULL),
 (16, '550e8400-e29b-41d4-a716-446655550001', 'dosen1', 'dosen1@example.com', '$2y$10$YtKzsBjpC0WP8Zf5Wz174e7oR2o9F6bfZA/62105Vz.G97LbSUnDK', 'Dr. Ahmad Wijaya', 1, NULL, '2026-04-28 01:34:14', NULL, 1, 1),
 (17, '550e8400-e29b-41d4-a716-446655550002', 'dosen2', 'dosen2@example.com', '$2y$10$W2bQEfcWSzQiQyZj7Vq1WuL6bNUBfcTGUqYWFpAQcBsgdTMtA9Tj6', 'Prof. Siti Nurhaliza', 1, NULL, NULL, NULL, 1, 1),
-(18, '34630b6f-c3d6-4c54-a44b-0b26f564ad95', 'yuda', 'yuda@gmail.com', '$2y$10$VNsf2.DsqOa/8AkQDfeoV./jw8qGmeLvFTSER8wW/5jDCRYDBx2py', 'Yuda Marhusin', 1, '2026-04-28 01:33:56', '2026-04-28 01:33:56', NULL, NULL, NULL);
+(18, '34630b6f-c3d6-4c54-a44b-0b26f564ad95', 'yuda', 'yuda@gmail.com', '$2y$10$VNsf2.DsqOa/8AkQDfeoV./jw8qGmeLvFTSER8wW/5jDCRYDBx2py', 'Yuda Marhusin', 1, '2026-04-28 01:33:56', '2026-04-28 01:33:56', NULL, NULL, NULL),
+(19, '906c404b-3986-4d02-9392-9b699197679d', 'dosen3', 'dosen3@example.com', '$2y$10$ZVBeEE7ctVlaiGxREP0ZdOFS26CtHThXtQ4cGCmmQJRF67RlO5iyq', 'Murniadi', 1, '2026-05-04 06:31:05', '2026-05-04 06:31:05', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1214,7 +1318,7 @@ CREATE TABLE `user_profiles` (
 --
 
 INSERT INTO `user_profiles` (`id`, `uuid`, `user_id`, `foto`, `gelar_depan`, `gelar_belakang`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `alamat`, `no_hp`, `nik`, `nidn`, `nip`, `profesi_id`, `bidang_ilmu_id`, `fakultas_id`, `program_studi_id`, `jabatan_fungsional_id`, `id_sinta`, `created_at`, `updated_at`, `deleted_at`, `created_by`, `updated_by`) VALUES
-(16, '92578a3f-5721-4d9d-a8f5-7c645620588e', 7, NULL, NULL, NULL, NULL, 'Samarinda', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 03:24:53', '2026-04-26 23:47:30', NULL, NULL, NULL),
+(16, '92578a3f-5721-4d9d-a8f5-7c645620588e', 7, 'profile/1777952617_a7df4ef26b451728ffae.png', NULL, NULL, NULL, 'Samarinda', NULL, NULL, NULL, NULL, NULL, '199902082025051005', NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-24 03:24:53', '2026-05-05 03:43:37', NULL, NULL, NULL),
 (17, 'd291e3e5-0c68-4f9c-aae0-24aad1f31806', 9, 'profile/1777168410_c334984727e874276299.png', 'Dr', 'S.Kom', 'L', 'Muara Muntai', '2026-04-24', NULL, NULL, NULL, NULL, NULL, NULL, 5, NULL, NULL, NULL, NULL, '2026-04-24 10:48:00', '2026-04-26 06:38:15', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -1241,11 +1345,20 @@ INSERT INTO `user_roles` (`user_id`, `role_id`, `created_at`) VALUES
 (9, 8, NULL),
 (16, 8, NULL),
 (17, 7, '2026-04-27 00:43:38'),
-(18, 8, NULL);
+(18, 8, NULL),
+(19, 7, NULL);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `action` (`action`);
 
 --
 -- Indexes for table `bidang_ilmu`
@@ -1276,6 +1389,13 @@ ALTER TABLE `kelengkapan_dokumen`
 ALTER TABLE `klaster_bantuan`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uuid` (`uuid`);
+
+--
+-- Indexes for table `landing_settings`
+--
+ALTER TABLE `landing_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `key` (`key`);
 
 --
 -- Indexes for table `master_bidang_ilmu`
@@ -1524,6 +1644,13 @@ ALTER TABLE `tema_penelitian`
   ADD UNIQUE KEY `uuid` (`uuid`);
 
 --
+-- Indexes for table `tema_riset`
+--
+ALTER TABLE `tema_riset`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uuid` (`uuid`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -1557,6 +1684,12 @@ ALTER TABLE `user_roles`
 --
 
 --
+-- AUTO_INCREMENT for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `bidang_ilmu`
 --
 ALTER TABLE `bidang_ilmu`
@@ -1578,7 +1711,13 @@ ALTER TABLE `kelengkapan_dokumen`
 -- AUTO_INCREMENT for table `klaster_bantuan`
 --
 ALTER TABLE `klaster_bantuan`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `landing_settings`
+--
+ALTER TABLE `landing_settings`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `master_bidang_ilmu`
@@ -1602,7 +1741,7 @@ ALTER TABLE `master_jabatan_fungsional`
 -- AUTO_INCREMENT for table `master_profesi`
 --
 ALTER TABLE `master_profesi`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `master_program_studi`
@@ -1620,7 +1759,7 @@ ALTER TABLE `master_unit_kerja`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -1674,7 +1813,7 @@ ALTER TABLE `proposal_kontribusi_prodi`
 -- AUTO_INCREMENT for table `proposal_logbooks`
 --
 ALTER TABLE `proposal_logbooks`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `proposal_mahasiswa`
@@ -1692,7 +1831,7 @@ ALTER TABLE `proposal_outcomes`
 -- AUTO_INCREMENT for table `proposal_outputs`
 --
 ALTER TABLE `proposal_outputs`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `proposal_peneliti`
@@ -1740,7 +1879,7 @@ ALTER TABLE `proposal_tema_penelitian`
 -- AUTO_INCREMENT for table `publikasi`
 --
 ALTER TABLE `publikasi`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `riwayat_pendidikan`
@@ -1767,10 +1906,16 @@ ALTER TABLE `tema_penelitian`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `tema_riset`
+--
+ALTER TABLE `tema_riset`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `user_profiles`

@@ -25,9 +25,15 @@ class PublikasiController extends BaseController
 
     public function index(): string
     {
+        $filters = [
+            'search' => $this->request->getGet('search'),
+            'jenis_publikasi' => $this->request->getGet('jenis_publikasi'),
+            'tahun' => $this->request->getGet('tahun'),
+        ];
+
         return $this->renderView('admin/publikasi/index', array_merge(
             ['title' => 'Data Publikasi'],
-            $this->publikasiService->getIndexPayload()
+            $this->publikasiService->getIndexPayload($filters)
         ));
     }
 

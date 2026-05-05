@@ -52,8 +52,10 @@ class OutputController extends BaseController
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/proposals/outputs', $newName);
+            log_message('debug', 'Uploading output: ' . $newName . ' to ' . WRITEPATH . 'uploads/proposals/outputs');
+            $file->move(WRITEPATH . 'uploads/proposals/outputs', $newName);
             $file_path = 'uploads/proposals/outputs/' . $newName;
+            log_message('debug', 'Output moved to: ' . $file_path);
 
             $data = [
                 'uuid'              => bin2hex(random_bytes(16)),
@@ -66,8 +68,8 @@ class OutputController extends BaseController
             try {
                 if ($existing) {
                     // Delete old file
-                    if (file_exists(FCPATH . $existing->file_path)) {
-                        @unlink(FCPATH . $existing->file_path);
+                    if ($existing && !empty($existing->file_path) && is_file(WRITEPATH . $existing->file_path)) {
+                        @unlink(WRITEPATH . $existing->file_path);
                     }
                     $this->outputModel->update($existing->id, $data);
                 } else {

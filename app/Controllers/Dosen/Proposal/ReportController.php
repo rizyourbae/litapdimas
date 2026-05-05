@@ -52,7 +52,7 @@ class ReportController extends BaseController
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/proposals/reports', $newName);
+            $file->move(WRITEPATH . 'uploads/proposals/reports', $newName);
             $file_path = 'uploads/proposals/reports/' . $newName;
 
             $data = [
@@ -66,8 +66,8 @@ class ReportController extends BaseController
             try {
                 if ($existing) {
                     // Delete old file
-                    if (file_exists(FCPATH . $existing->file_path)) {
-                        @unlink(FCPATH . $existing->file_path);
+                    if ($existing && !empty($existing->file_path) && is_file(WRITEPATH . $existing->file_path)) {
+                        @unlink(WRITEPATH . $existing->file_path);
                     }
                     $this->reportModel->update($existing->id, $data);
                 } else {

@@ -20,7 +20,7 @@ $form = isset($presentation['form']) && is_array($presentation['form']) ? $prese
 ?>
 
 <div class="row g-3 admin-page reviewer-proposal-page">
-    <div class="col-12">
+    <div class="col-12 animate-fade-up">
         <?= view('components/ui-hero', [
             'type' => 'reviewer',
             'title' => esc((string) ($hero['title'] ?? 'Penilaian Presentasi')),
@@ -38,7 +38,7 @@ $form = isset($presentation['form']) && is_array($presentation['form']) ? $prese
         ]) ?>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 animate-fade-up delay-1">
         <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post" id="presentationForm">
             <?= csrf_field() ?>
             

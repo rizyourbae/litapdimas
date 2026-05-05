@@ -134,15 +134,32 @@ class PublikasiService
     }
 
     /**
-     * Ambil semua publikasi beserta nama dosen (join).
+     * Ambil semua publikasi beserta nama dosen (join), mendukung filter.
      */
-    public function getAllPublikasi(): array
+    public function getAllPublikasi(array $filters = []): array
     {
-        $publikasiList = $this->publikasiModel
+        $builder = $this->publikasiModel
             ->select("publikasi.*, COALESCE(NULLIF(users.nama_lengkap, ''), users.username) as nama_dosen")
             ->join('users', 'users.id = publikasi.user_id')
-            ->orderBy('publikasi.created_at', 'DESC')
-            ->findAll();
+            ->orderBy('publikasi.created_at', 'DESC');
+
+        if (!empty($filters['search'])) {
+            $builder->groupStart()
+                ->like('publikasi.judul', $filters['search'])
+                ->orLike('users.nama_lengkap', $filters['search'])
+                ->orLike('users.username', $filters['search'])
+                ->groupEnd();
+        }
+
+        if (!empty($filters['jenis_publikasi'])) {
+            $builder->where('publikasi.jenis_publikasi', $filters['jenis_publikasi']);
+        }
+
+        if (!empty($filters['tahun'])) {
+            $builder->where('publikasi.tahun', $filters['tahun']);
+        }
+
+        $publikasiList = $builder->findAll();
 
         foreach ($publikasiList as $publikasi) {
             $this->ensurePublikasiUuid($publikasi);
@@ -151,11 +168,12 @@ class PublikasiService
         return $publikasiList;
     }
 
-    public function getIndexPayload(): array
+    public function getIndexPayload(array $filters = []): array
     {
         $rows = [];
+        $items = $this->getAllPublikasi($filters);
 
-        foreach ($this->getAllPublikasi() as $publikasi) {
+        foreach ($items as $publikasi) {
             $publikasiKey = $publikasi->uuid ?: ('id-' . $publikasi->id);
 
             $rows[] = [
@@ -171,9 +189,31 @@ class PublikasiService
             ];
         }
 
+        // Hitung filter yang aktif (kecuali search)
+        $filterCount = 0;
+        if (!empty($filters['jenis_publikasi'])) $filterCount++;
+        if (!empty($filters['tahun'])) $filterCount++;
+
         return [
             'tableRows' => $rows,
+            'viewState' => [
+                'search' => $filters['search'] ?? '',
+                'jenis_publikasi' => $filters['jenis_publikasi'] ?? '',
+                'tahun' => $filters['tahun'] ?? '',
+                'hasFilters' => $filterCount > 0 || !empty($filters['search']),
+                'filterCount' => $filterCount,
+            ],
+            'filterOptions' => [
+                'jenis' => ['Jurnal', 'HKI', 'Prosiding', 'Buku'],
+                'tahun' => $this->getAvailableYears(),
+            ]
         ];
+    }
+
+    private function getAvailableYears(): array
+    {
+        $years = $this->publikasiModel->select('tahun')->distinct()->orderBy('tahun', 'DESC')->findAll();
+        return array_column($years, 'tahun');
     }
 
     public function getCreateFormPayload(): array
@@ -540,6 +580,7 @@ class PublikasiService
                 'jenis_label'       => $publikasi->jenis_publikasi,
                 'jenis_badge_class' => $this->mapJenisBadgeClass($publikasi->jenis_publikasi),
                 'tahun'             => $publikasi->tahun,
+                'created_at'        => $publikasi->created_at,
                 'show_url'          => site_url('dosen/publikasi/show/' . $key),
                 'edit_url'          => site_url('dosen/publikasi/edit/' . $key),
                 'delete_url'        => site_url('dosen/publikasi/delete/' . $key),

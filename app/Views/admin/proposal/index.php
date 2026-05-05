@@ -2,6 +2,18 @@
 
 <?= $this->section('content') ?>
 
+<?php
+/**
+ * View variables defined in AdminProposalService::getIndexPayload
+ * 
+ * @var string $title 
+ * @var array<int, array{label:string, value:string, tone_class:string, caption:string}> $metrics
+ * @var array<int, array{number:int, title:string, owner_name:string, bidang_ilmu:string, status_label:string, status_badge_class:string, updated_at:string, show_url:string}> $tableRows
+ * @var array{status:string, bidang_ilmu:string|int, search:string, hasFilters:bool, filterCount:int} $viewState
+ * @var array<int, array{id:int, nama:string}> $bidangIlmuList
+ */
+?>
+
 <div class="row g-4 admin-page">
     <div class="col-12 animate-fade-up">
         <?= view('components/ui-hero', [
@@ -27,12 +39,56 @@
         </div>
     <?php endforeach; ?>
 
+    <!-- Compact Controls & Filter Trigger -->
+    <div class="col-12 mt-4 animate-fade-up" style="animation-delay: 0.4s;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-2">
+            <div class="d-flex align-items-center gap-3 flex-grow-1" style="max-width: 500px;">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden border bg-white">
+                    <span class="input-group-text bg-white border-0 text-muted ps-3">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="mainSearchInput" class="form-control border-0 shadow-none py-2"
+                        placeholder="Cari judul, pengusul..."
+                        value="<?= esc($viewState['search'] ?? '') ?>"
+                        onkeypress="if(event.key === 'Enter') document.querySelector('[data-filter-submit-main]').click()">
+                    <button class="btn btn-primary px-4 fw-bold" type="button" data-filter-submit-main>Cari</button>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-white border rounded-pill px-4 shadow-sm position-relative fw-semibold" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterDrawer">
+                    <i class="bi bi-funnel me-2 text-primary"></i>Filter
+                    <?php if ($viewState['hasFilters']): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style="font-size: 0.6rem;">
+                            <?= esc((string) $viewState['filterCount']) ?>
+                        </span>
+                    <?php endif; ?>
+                </button>
+
+                <?php if ($viewState['hasFilters']): ?>
+                    <a href="<?= site_url('admin/proposals') ?>" class="btn btn-light rounded-pill px-3 shadow-sm text-muted" title="Hapus Filter">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Drawer (Partial) -->
+    <?= view('admin/proposal/partials/_filter_drawer', ['bidangIlmuList' => $bidangIlmuList, 'viewState' => $viewState]) ?>
+
     <div class="col-12 animate-fade-up" style="animation-delay: 0.5s;">
-        <?php if (empty($tableRows)): ?>
+        <?php if (empty($tableRows) && !$viewState['hasFilters']): ?>
             <?= view('components/ui-empty-state', [
                 'title' => 'Belum ada ajuan proposal',
                 'desc' => 'Proposal akan muncul di sini setelah dosen melakukan submit pengajuan.',
                 'icon' => 'bi bi-inbox-fill'
+            ]) ?>
+        <?php elseif (empty($tableRows) && $viewState['hasFilters']): ?>
+            <?= view('components/ui-empty-state', [
+                'title' => 'Tidak ada hasil',
+                'desc' => 'Coba ubah filter atau kata kunci pencarian Anda.',
+                'icon' => 'bi bi-search'
             ]) ?>
         <?php else: ?>
             <?php ob_start(); ?>
@@ -98,4 +154,7 @@
 </div>
 
 
+<?= $this->endSection() ?>
+<?= $this->section('scripts') ?>
+<script src="<?= base_url('custom/js/admin-filter-drawer.js') ?>"></script>
 <?= $this->endSection() ?>

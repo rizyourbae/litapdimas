@@ -17,7 +17,7 @@ use CodeIgniter\HTTP\Files\UploadedFile;
 class ProposalUploadService
 {
     // Constants
-    private const UPLOAD_DIR = 'writable/uploads/proposal';
+    private const UPLOAD_DIR = 'uploads/proposal';
     private const MAX_FILE_SIZE = 2097152; // 2MB in bytes
     private const ALLOWED_MIME_TYPES = ['application/pdf'];
     private const ALLOWED_EXTENSIONS = ['pdf'];
@@ -56,7 +56,7 @@ class ProposalUploadService
             }
 
             // Create proposal upload directory
-            $uploadPath = FCPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
+            $uploadPath = WRITEPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
@@ -106,11 +106,11 @@ class ProposalUploadService
             $error = is_array($files['error']) ? $files['error'][$i] : $files['error'];
 
             if (!empty($name) && $error === UPLOAD_ERR_OK) {
-                $file = new \CodeIgniter\Files\File($tmpName);
+                $file = new File($tmpName);
                 if ($this->validateMimeType($file, $name) && $this->validateFileSize($file)) {
                     $mimeType = $file->getMimeType();
                     $newFilename = 'pendukung_' . $i . '_' . time() . '_' . bin2hex(random_bytes(8)) . '.pdf';
-                    $uploadPath = FCPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
+                    $uploadPath = WRITEPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
                     if (!is_dir($uploadPath)) {
                         mkdir($uploadPath, 0755, true);
                     }
@@ -204,8 +204,8 @@ class ProposalUploadService
     public function deleteFile(string $filePath): bool
     {
         try {
-            $fullPath = FCPATH . $filePath;
-            if (file_exists($fullPath)) {
+            $fullPath = WRITEPATH . $filePath;
+            if (is_file($fullPath)) {
                 unlink($fullPath);
                 return true;
             }
@@ -237,8 +237,8 @@ class ProposalUploadService
      */
     public function getFilePath(string $filePath)
     {
-        $fullPath = FCPATH . $filePath;
-        if (file_exists($fullPath)) {
+        $fullPath = WRITEPATH . $filePath;
+        if (is_file($fullPath)) {
             return $fullPath;
         }
         return false;

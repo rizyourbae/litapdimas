@@ -9,7 +9,7 @@ $table = isset($table) && is_array($table) ? $table : [];
 ?>
 
 <div class="row g-3 admin-page">
-    <div class="col-12">
+    <div class="col-12 animate-fade-up">
         <?= view('components/ui-hero', [
             'type' => 'reviewer',
             'title' => esc((string) ($hero['title'] ?? 'Riwayat Review')),
@@ -21,8 +21,8 @@ $table = isset($table) && is_array($table) ? $table : [];
         ]) ?>
     </div>
 
-    <?php foreach ($metrics as $metric): ?>
-        <div class="col-md-6 col-xl-4">
+    <?php foreach ($metrics as $index => $metric): ?>
+        <div class="col-md-6 col-xl-4 animate-fade-up delay-<?= $index + 1 ?>">
             <?= view('components/ui-stat-card', [
                 'label' => $metric['label'] ?? '',
                 'value' => $metric['value'] ?? '0',
@@ -33,7 +33,7 @@ $table = isset($table) && is_array($table) ? $table : [];
         </div>
     <?php endforeach; ?>
 
-    <div class="col-12 mt-4">
+    <div class="col-12 mt-4 animate-fade-up delay-4">
         <?php if (empty($table['rows'])): ?>
             <?= view('components/ui-empty-state', [
                 'icon' => 'bi bi-clock-history',

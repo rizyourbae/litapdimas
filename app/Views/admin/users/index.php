@@ -17,14 +17,6 @@
             'badges' => [
                 ['label' => 'Operasional Admin', 'class' => 'text-bg-light border'],
                 ['label' => 'User Directory', 'class' => 'text-bg-primary shadow-sm']
-            ],
-            'actions' => [
-                [
-                    'label' => 'Tambah User',
-                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
-                    'icon' => 'bi bi-plus-lg',
-                    'url' => site_url('admin/users/create')
-                ]
             ]
         ]) ?>
     </div>
@@ -66,64 +58,43 @@
         ]) ?>
     </div>
 
+    <!-- Compact Controls & Filter Trigger -->
     <div class="col-12 mt-4 animate-fade-up" style="animation-delay: 0.4s;">
-        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
-            <div class="card-header bg-light py-3 px-4 border-bottom">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <h5 class="fw-bold mb-0 text-dark">
-                        <i class="bi bi-funnel-fill me-2 text-primary"></i>Filter Pengguna
-                    </h5>
-                    <?php if ($viewState['hasFilters']): ?>
-                        <span class="badge text-bg-warning-soft text-warning px-3 py-2 rounded-pill border border-warning border-opacity-25">
-                            <i class="bi bi-filter-circle-fill me-1"></i><?= esc((string) $viewState['filterCount']) ?> Filter Aktif
-                        </span>
-                    <?php endif; ?>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-2">
+            <div class="d-flex align-items-center gap-3 flex-grow-1" style="max-width: 500px;">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden border bg-white">
+                    <span class="input-group-text bg-white border-0 text-muted ps-3">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="mainSearchInput" class="form-control border-0 shadow-none py-2" 
+                           placeholder="Cari nama, username, email..." 
+                           value="<?= esc($viewState['searchValue']) ?>"
+                           onkeypress="if(event.key === 'Enter') document.querySelector('[data-filter-submit-main]').click()">
+                    <button class="btn btn-primary px-4 fw-bold" type="button" data-filter-submit-main>Cari</button>
                 </div>
             </div>
-            <div class="card-body p-4">
-                <form class="row g-3 align-items-end" data-admin-filter-form data-filter-base-url="<?= esc($viewState['baseUrl']) ?>">
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold text-muted mb-1 ls-1">PERAN PENGGUNA</label>
-                        <select id="filterRole" class="form-select shadow-none bg-light border-0 py-2 rounded-3" data-filter-param="role_id">
-                            <option value="">-- Semua Role --</option>
-                            <?php foreach ($roles as $role): ?>
-                                <option value="<?= esc((string) $role['id']) ?>" <?= ($viewState['selectedRoleId'] ?? '') == $role['id'] ? 'selected' : '' ?>>
-                                    <?= esc($role['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small fw-bold text-muted mb-1 ls-1">STATUS AKUN</label>
-                        <select class="form-select shadow-none bg-light border-0 py-2 rounded-3" data-filter-param="aktif">
-                            <option value="">-- Semua --</option>
-                            <option value="1" <?= ($viewState['selectedStatus'] ?? '') === '1' ? 'selected' : '' ?>>Aktif</option>
-                            <option value="0" <?= ($viewState['selectedStatus'] ?? '') === '0' ? 'selected' : '' ?>>Nonaktif</option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <label class="form-label small fw-bold text-muted mb-1 ls-1">KATA KUNCI</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0 text-muted">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" id="filterSearch" class="form-control bg-light border-0 shadow-none py-2" data-filter-param="search" placeholder="Cari nama, username, email..." value="<?= esc($viewState['searchValue']) ?>">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary rounded-pill flex-grow-1 fw-bold shadow-sm" data-filter-submit>
-                                Terapkan
-                            </button>
-                            <a href="<?= site_url('admin/users') ?>" class="btn btn-light rounded-pill px-3" title="Reset Filter">
-                                <i class="bi bi-arrow-counterclockwise"></i>
-                            </a>
-                        </div>
-                    </div>
-                </form>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-white border rounded-pill px-4 shadow-sm position-relative fw-semibold" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterDrawer">
+                    <i class="bi bi-funnel me-2 text-primary"></i>Filter
+                    <?php if ($viewState['hasFilters']): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style="font-size: 0.6rem;">
+                            <?= esc((string) $viewState['filterCount']) ?>
+                        </span>
+                    <?php endif; ?>
+                </button>
+                
+                <?php if ($viewState['hasFilters']): ?>
+                    <a href="<?= site_url('admin/users') ?>" class="btn btn-light rounded-pill px-3 shadow-sm text-muted" title="Hapus Filter">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <!-- The Drawer (Partial) -->
+    <?= view('admin/users/partials/_filter_drawer', ['roles' => $roles, 'viewState' => $viewState]) ?>
 
     <div class="col-12">
         <?php ob_start(); ?>
@@ -212,8 +183,23 @@
             'tableId' => 'dt-users',
             'header' => $header,
             'body' => $body,
-            'type' => 'admin'
+            'type' => 'admin',
+            'title' => 'Direktori Pengguna',
+            'icon' => 'bi bi-people-fill',
+            'actions' => [
+                [
+                    'label' => 'Tambah User',
+                    'url' => site_url('admin/users/create'),
+                    'icon' => 'bi bi-person-plus-fill',
+                    'class' => 'btn btn-primary btn-sm rounded-pill px-3 shadow-sm'
+                ]
+            ]
         ]) ?>
+    </div>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script src="<?= base_url('custom/js/admin-filter-drawer.js') ?>"></script>
 <?= $this->endSection() ?>

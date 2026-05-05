@@ -18,7 +18,7 @@ $userDisplayName = (string) ($userDisplayName ?? 'Reviewer');
 ?>
 
 <div class="row g-3 admin-page">
-    <div class="col-12">
+    <div class="col-12 animate-fade-up">
         <?= view('components/ui-hero', [
             'type' => 'reviewer',
             'title' => 'Selamat datang, ' . esc($userDisplayName) . '!',
@@ -34,8 +34,8 @@ $userDisplayName = (string) ($userDisplayName ?? 'Reviewer');
         ]) ?>
     </div>
 
-    <?php foreach ($metrics as $metric): ?>
-        <div class="col-md-6 col-xl-3">
+    <?php foreach ($metrics as $index => $metric): ?>
+        <div class="col-md-6 col-xl-3 animate-fade-up delay-<?= $index + 1 ?>">
             <?= view('components/ui-stat-card', [
                 'label' => $metric['label'] ?? '',
                 'value' => $metric['value'] ?? '0',
@@ -46,7 +46,7 @@ $userDisplayName = (string) ($userDisplayName ?? 'Reviewer');
         </div>
     <?php endforeach; ?>
 
-    <div class="col-12 mt-4">
+    <div class="col-12 mt-4 animate-fade-up delay-4">
         <div class="card shadow-sm border-0 overflow-hidden">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>

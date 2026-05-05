@@ -14,20 +14,42 @@ class KegiatanMandiriService
         $this->kegiatanMandiriModel = new KegiatanMandiriModel();
     }
 
-    public function getAllKegiatan(): array
+    public function getAllKegiatan(array $filters = []): array
     {
-        return $this->kegiatanMandiriModel
+        $builder = $this->kegiatanMandiriModel
             ->select('kegiatan_mandiri.*, users.username, users.nama_lengkap')
             ->join('users', 'users.id = kegiatan_mandiri.user_id')
-            ->orderBy('kegiatan_mandiri.created_at', 'DESC')
-            ->findAll();
+            ->orderBy('kegiatan_mandiri.created_at', 'DESC');
+
+        if (!empty($filters['search'])) {
+            $builder->groupStart()
+                ->like('kegiatan_mandiri.judul_kegiatan', $filters['search'])
+                ->orLike('users.nama_lengkap', $filters['search'])
+                ->orLike('users.username', $filters['search'])
+                ->groupEnd();
+        }
+
+        if (!empty($filters['jenis_kegiatan'])) {
+            $builder->where('kegiatan_mandiri.jenis_kegiatan', $filters['jenis_kegiatan']);
+        }
+
+        if (!empty($filters['klaster_skala_kegiatan'])) {
+            $builder->where('kegiatan_mandiri.klaster_skala_kegiatan', $filters['klaster_skala_kegiatan']);
+        }
+
+        if (!empty($filters['tahun'])) {
+            $builder->where('kegiatan_mandiri.tahun', $filters['tahun']);
+        }
+
+        return $builder->findAll();
     }
 
-    public function getIndexPayload(): array
+    public function getIndexPayload(array $filters = []): array
     {
         $rows = [];
+        $items = $this->getAllKegiatan($filters);
 
-        foreach ($this->getAllKegiatan() as $kegiatan) {
+        foreach ($items as $kegiatan) {
             $rows[] = [
                 'uuid'               => $kegiatan->uuid,
                 'display_name'       => $kegiatan->nama_lengkap ?: $kegiatan->username,
@@ -43,9 +65,34 @@ class KegiatanMandiriService
             ];
         }
 
+        // Hitung filter aktif
+        $filterCount = 0;
+        if (!empty($filters['jenis_kegiatan'])) $filterCount++;
+        if (!empty($filters['klaster_skala_kegiatan'])) $filterCount++;
+        if (!empty($filters['tahun'])) $filterCount++;
+
         return [
             'tableRows' => $rows,
+            'viewState' => [
+                'search' => $filters['search'] ?? '',
+                'jenis_kegiatan' => $filters['jenis_kegiatan'] ?? '',
+                'klaster_skala_kegiatan' => $filters['klaster_skala_kegiatan'] ?? '',
+                'tahun' => $filters['tahun'] ?? '',
+                'hasFilters' => $filterCount > 0 || !empty($filters['search']),
+                'filterCount' => $filterCount,
+            ],
+            'filterOptions' => [
+                'jenis' => array_keys($this->jenisKegiatanOptions()),
+                'klaster' => array_keys($this->klasterSkalaOptions()),
+                'tahun' => $this->getAvailableYears(),
+            ]
         ];
+    }
+
+    private function getAvailableYears(): array
+    {
+        $years = $this->kegiatanMandiriModel->select('tahun')->distinct()->orderBy('tahun', 'DESC')->findAll();
+        return array_column($years, 'tahun');
     }
 
     public function getDetailPayload(string $uuid): ?array

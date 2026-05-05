@@ -8,24 +8,27 @@ $this->section('content');
 ?>
 
 <div class="row g-4 admin-page">
-    <div class="col-12 animate-fade-up">
-        <?= view('components/ui-hero', [
-            'type' => 'dosen',
-            'title' => $title ?? 'Proposal Saya',
-            'subtitle' => 'Kelola proposal penelitian dan pengabdian Anda dalam satu panel terpusat.',
-            'badges' => [
-                ['label' => 'Proposal Saya', 'class' => 'text-bg-light border shadow-sm'],
-                ['label' => 'Litapdimas', 'class' => 'text-bg-primary shadow-sm']
-            ],
-            'actions' => [
-                [
-                    'label' => 'Buat Proposal Baru',
-                    'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
-                    'icon' => 'bi bi-plus-lg',
-                    'url' => site_url('dosen/proposals/create')
-                ]
+    <?php
+    $heroConfig = [
+        'type' => 'dosen',
+        'title' => $title ?? 'Proposal Saya',
+        'subtitle' => 'Kelola proposal penelitian dan pengabdian Anda dalam satu panel terpusat.',
+        'badges' => [
+            ['label' => 'Proposal Saya', 'class' => 'text-bg-light border shadow-sm'],
+            ['label' => 'Litapdimas', 'class' => 'text-bg-primary shadow-sm']
+        ],
+        'actions' => [
+            [
+                'label' => 'Buat Proposal Baru',
+                'class' => 'btn btn-primary rounded-pill px-4 shadow-sm',
+                'icon' => 'bi bi-plus-lg',
+                'url' => site_url('dosen/proposals/create')
             ]
-        ]) ?>
+        ]
+    ];
+    ?>
+    <div class="col-12 animate-fade-up">
+        <?= view('components/ui-hero', $heroConfig) ?>
     </div>
 
     <div class="col-12 animate-fade-up delay-1">
@@ -64,7 +67,7 @@ $this->section('content');
                         </span>
                     </td>
                     <td class="text-center small text-muted fw-medium">
-                        <i class="bi bi-calendar-check-fill opacity-50 me-1"></i><?= esc((string) $row['created_at_formatted']) ?>
+                        <i class="bi bi-calendar-check-fill opacity-50 me-1"></i><?= format_indo($row['created_at'] ?? '') ?>
                     </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">

@@ -53,9 +53,12 @@ class ReferensiController extends BaseController
         $postData = $this->request->getPost(['nama']);
 
         if ($model->insert($postData)) {
+            $label = self::TYPE_LABELS[$type];
+            $this->auditLog->log('CREATE', 'master', $type, "Menambahkan referensi {$label} baru: {$postData['nama']}");
+            
             return redirect()
                 ->to(site_url('admin/master/referensi'))
-                ->with('success', esc(self::TYPE_LABELS[$type]) . ' berhasil ditambahkan.')
+                ->with('success', esc($label) . ' berhasil ditambahkan.')
                 ->with('active_tab', $type);
         }
 
@@ -76,9 +79,12 @@ class ReferensiController extends BaseController
         $postData = $this->request->getPost(['nama']);
 
         if ($model->update($id, $postData)) {
+            $label = self::TYPE_LABELS[$type];
+            $this->auditLog->log('UPDATE', 'master', "{$type}:{$id}", "Memperbarui referensi {$label}: {$postData['nama']}");
+            
             return redirect()
                 ->to(site_url('admin/master/referensi'))
-                ->with('success', esc(self::TYPE_LABELS[$type]) . ' berhasil diubah.')
+                ->with('success', esc($label) . ' berhasil diubah.')
                 ->with('active_tab', $type);
         }
 
@@ -93,7 +99,11 @@ class ReferensiController extends BaseController
     {
         $model = $this->resolveModel($type);
         if ($model) {
+            $item = $model->find($id);
+            $name = $item ? $item['nama'] : "ID: {$id}";
             $model->delete($id);
+            $label = self::TYPE_LABELS[$type] ?? $type;
+            $this->auditLog->log('DELETE', 'master', "{$type}:{$id}", "Menghapus referensi {$label}: {$name}");
         }
 
         return redirect()
@@ -107,6 +117,10 @@ class ReferensiController extends BaseController
         $model = $this->resolveModel($type);
         if ($model) {
             $model->update($id, ['deleted_at' => null]);
+            $item = $model->find($id);
+            $name = $item ? $item['nama'] : "ID: {$id}";
+            $label = self::TYPE_LABELS[$type] ?? $type;
+            $this->auditLog->log('RESTORE', 'master', "{$type}:{$id}", "Memulihkan referensi {$label}: {$name}");
         }
 
         return redirect()

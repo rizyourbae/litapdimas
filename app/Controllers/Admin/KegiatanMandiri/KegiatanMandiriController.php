@@ -25,9 +25,16 @@ class KegiatanMandiriController extends BaseController
 
     public function index(): string
     {
+        $filters = [
+            'search' => $this->request->getGet('search'),
+            'jenis_kegiatan' => $this->request->getGet('jenis_kegiatan'),
+            'klaster_skala_kegiatan' => $this->request->getGet('klaster_skala_kegiatan'),
+            'tahun' => $this->request->getGet('tahun'),
+        ];
+
         return $this->renderView('admin/kegiatan_mandiri/index', array_merge(
             ['title' => 'Data Kegiatan Mandiri'],
-            $this->kegiatanMandiriService->getIndexPayload()
+            $this->kegiatanMandiriService->getIndexPayload($filters)
         ));
     }
 

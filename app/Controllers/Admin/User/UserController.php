@@ -86,6 +86,7 @@ class UserController extends BaseController
 
         $userId = $this->userService->createUser($payload);
         if ($userId) {
+            $this->auditLog->log('CREATE', 'user', (string) $userId, "Menambahkan user baru: {$payload['nama_lengkap']}");
             return redirect()->to(site_url('admin/users'))->with('success', 'User berhasil ditambahkan.');
         }
         return redirect()->back()->withInput()->with('error', 'Gagal menambahkan user.');
@@ -137,6 +138,7 @@ class UserController extends BaseController
 
         $updated = $this->userService->updateUser($id, $payload);
         if ($updated) {
+            $this->auditLog->log('UPDATE', 'user', $uuid, "Memperbarui data user: {$payload['nama_lengkap']}");
             return redirect()->to(site_url('admin/users'))->with('success', 'User berhasil diperbarui.');
         }
 
@@ -161,6 +163,7 @@ class UserController extends BaseController
         $user = $this->userService->getUserByUuid($uuid);
         if ($user) {
             $this->userService->deleteUser($user['id']);
+            $this->auditLog->log('DELETE', 'user', $uuid, "Menghapus user: {$user['nama_lengkap']}");
         }
         return redirect()->to(site_url('admin/users'))->with('success', 'User dihapus.');
     }
@@ -171,6 +174,7 @@ class UserController extends BaseController
         $user = $this->userService->getUserByUuid($uuid);
         if ($user) {
             $this->userService->restoreUser($user['id']);
+            $this->auditLog->log('RESTORE', 'user', $uuid, "Mengembalikan user: {$user['nama_lengkap']}");
         }
         return redirect()->to(site_url('admin/users'))->with('success', 'User dikembalikan.');
     }
@@ -268,7 +272,7 @@ class UserController extends BaseController
             'activeTab'       => $activeTab,
             'isEdit'          => $user !== null,
             'currentPhotoUrl' => !empty($photoPath)
-                ? base_url('uploads/' . ltrim((string) $photoPath, '/'))
+                ? site_url('uploads/' . ltrim((string) $photoPath, '/'))
                 : base_url('assets/adminlte/assets/img/user2-160x160.jpg'),
             'hasPhoto'        => !empty($photoPath),
             'photoName'       => !empty($photoPath) ? basename((string) $photoPath) : null,

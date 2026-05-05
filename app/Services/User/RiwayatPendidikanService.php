@@ -234,7 +234,7 @@ class RiwayatPendidikanService
         }
 
         // Create directory if not exists (in public folder)
-        $uploadPath = FCPATH . self::UPLOAD_DIR;
+        $uploadPath = WRITEPATH . self::UPLOAD_DIR;
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
@@ -314,9 +314,7 @@ class RiwayatPendidikanService
             return null;
         }
 
-        if ($riwayat->dokumen_tipe === 'file') {
-            return base_url($riwayat->dokumen_ijazah);
-        }
+            return site_url($riwayat->dokumen_ijazah);
 
         return $riwayat->dokumen_ijazah;
     }

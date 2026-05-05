@@ -12,6 +12,7 @@
  * @var string $icon
  * @var bool   $useSkeleton  Default true
  * @var string $type         'dosen' | 'admin' (affects data- attribute)
+ * @var array  $actions      Optional: Array of button configs [['label' => '', 'url' => '', 'icon' => '', 'class' => '', 'attr' => '']]
  */
 
 $tableId = $tableId ?? ('dt-' . uniqid());
@@ -24,15 +25,39 @@ $realWrapId = "rw-" . $tableId;
     <?php if (isset($title)): ?>
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
             <div class="d-flex justify-content-between align-items-center">
-                <h3 class="h5 fw-bold mb-0">
-                    <?php if (isset($icon)): ?>
-                        <i class="<?= esc($icon) ?> me-2 opacity-50"></i>
+                <div class="d-flex align-items-center gap-3">
+                    <h3 class="h5 fw-bold mb-0">
+                        <?php if (isset($icon)): ?>
+                            <i class="<?= esc($icon) ?> me-2 opacity-50"></i>
+                        <?php endif; ?>
+                        <?= esc($title) ?>
+                    </h3>
+                    <?php if (isset($badge)): ?>
+                        <span class="badge text-bg-light border px-3 py-2 rounded-pill"><?= esc($badge) ?></span>
                     <?php endif; ?>
-                    <?= esc($title) ?>
-                </h3>
-                <?php if (isset($badge)): ?>
-                    <span class="badge text-bg-light border px-3 py-2"><?= esc($badge) ?></span>
-                <?php endif; ?>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2">
+                    <?php if (isset($actions) && is_array($actions)): ?>
+                        <?php foreach ($actions as $action): ?>
+                            <?php if (isset($action['url'])): ?>
+                                <a href="<?= esc($action['url']) ?>" 
+                                   class="<?= esc($action['class'] ?? 'btn btn-primary rounded-pill px-3 shadow-sm') ?>"
+                                   <?= $action['attr'] ?? '' ?>>
+                                    <?php if (isset($action['icon'])): ?><i class="<?= esc($action['icon']) ?> me-1"></i><?php endif; ?>
+                                    <?= esc($action['label'] ?? '') ?>
+                                </a>
+                            <?php else: ?>
+                                <button type="button" 
+                                        class="<?= esc($action['class'] ?? 'btn btn-primary rounded-pill px-3 shadow-sm') ?>"
+                                        <?= $action['attr'] ?? '' ?>>
+                                    <?php if (isset($action['icon'])): ?><i class="<?= esc($action['icon']) ?> me-1"></i><?php endif; ?>
+                                    <?= esc($action['label'] ?? '') ?>
+                                </button>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     <?php endif; ?>
@@ -85,4 +110,3 @@ $realWrapId = "rw-" . $tableId;
         </div>
     </div>
 </div>
-

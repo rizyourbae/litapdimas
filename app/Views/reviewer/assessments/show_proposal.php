@@ -23,7 +23,7 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
 ?>
 
 <div class="row g-3 admin-page reviewer-proposal-page">
-    <div class="col-12">
+    <div class="col-12 animate-fade-up">
         <?= view('components/ui-hero', [
             'type' => 'reviewer',
             'title' => esc((string) ($hero['title'] ?? 'Penilaian Proposal')),
@@ -41,7 +41,7 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
         ]) ?>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 animate-fade-up delay-1">
         <div class="card shadow-sm border-0 overflow-hidden mb-4">
             <div class="card-header bg-light py-3 px-4">
                 <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1">
@@ -61,10 +61,10 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
         </div>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 animate-fade-up delay-2">
         <form action="<?= esc((string) ($form['action_url'] ?? '#')) ?>" method="post" id="assessmentForm">
             <?= csrf_field() ?>
-            
+
             <div class="card shadow-sm border-0 overflow-hidden">
                 <div class="card-header p-0 bg-light border-bottom">
                     <ul class="nav nav-tabs nav-fill border-0" id="reviewerProposalDetailTabs" role="tablist">
@@ -90,7 +90,7 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
                     <div class="tab-content" id="reviewerProposalDetailTabsContent">
                         <!-- Tab: Review Substansi -->
                         <div class="<?= esc((string) (($detailTabs[0]['pane_class'] ?? 'tab-pane fade show active'))) ?>" id="<?= esc((string) ($detailTabs[0]['pane_id'] ?? 'reviewer-detail-pane-review')) ?>" role="tabpanel" aria-labelledby="<?= esc((string) ($detailTabs[0]['button_id'] ?? 'reviewer-detail-tab-review')) ?>" tabindex="0">
-                            
+
                             <div class="alert alert-info border-0 shadow-sm mb-4 d-flex align-items-center gap-3">
                                 <i class="bi bi-info-circle-fill fs-4"></i>
                                 <div>
@@ -123,10 +123,69 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
                                 <?php endforeach; ?>
                             </div>
                         </div>
+                        
+                        <!-- Tab: Berkas Lampiran -->
+                        <div class="<?= esc((string) (($detailTabs[2]['pane_class'] ?? 'tab-pane fade'))) ?>" id="<?= esc((string) ($detailTabs[2]['pane_id'] ?? 'reviewer-detail-pane-documents')) ?>" role="tabpanel" aria-labelledby="<?= esc((string) ($detailTabs[2]['button_id'] ?? 'reviewer-detail-tab-documents')) ?>" tabindex="0">
+                            <div class="alert alert-info border-0 shadow-sm mb-4 d-flex align-items-center gap-3">
+                                <i class="bi bi-folder-fill fs-4"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1"><?= esc((string) ($proposal['documents']['card_title'] ?? 'Daftar Berkas Lampiran')) ?></h6>
+                                    <p class="small mb-0 text-dark-50">Silakan unduh atau lihat berkas yang telah diunggah oleh pengusul untuk mendukung penilaian Anda.</p>
+                                </div>
+                            </div>
+
+                            <div class="border rounded-3 overflow-hidden bg-white">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="py-3 px-4" style="width: 50px;">#</th>
+                                                <th class="py-3 px-4">Jenis & Nama Berkas</th>
+                                                <th class="py-3 px-4 text-center" style="width: 200px;">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (empty($proposal['documents']['rows'])): ?>
+                                                <tr>
+                                                    <td colspan="3" class="text-center py-5 text-muted">
+                                                        <i class="bi bi-file-earmark-x d-block fs-1 mb-2 opacity-25"></i>
+                                                        <?= esc((string) ($proposal['documents']['empty_message'] ?? 'Tidak ada berkas.')) ?>
+                                                    </td>
+                                                </tr>
+                                            <?php else: ?>
+                                                <?php foreach ($proposal['documents']['rows'] as $index => $doc): ?>
+                                                    <tr>
+                                                        <td class="text-center text-muted small px-4"><?= $index + 1 ?></td>
+                                                        <td class="px-4">
+                                                            <div class="fw-bold text-dark"><?= esc((string) ($doc['label'] ?? '-')) ?></div>
+                                                            <div class="small text-muted d-flex align-items-center gap-2">
+                                                                <span class="text-truncate" style="max-width: 300px;"><?= esc((string) ($doc['file_name'] ?? '-')) ?></span>
+                                                                <?php if (!empty($doc['file_size_label'])): ?>
+                                                                    <span class="badge bg-light text-dark fw-normal border"><?= esc((string) $doc['file_size_label']) ?></span>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center px-4">
+                                                            <?php if (!empty($doc['has_file'])): ?>
+                                                                <a href="<?= esc((string) $doc['view_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary rounded-pill px-3">
+                                                                    <i class="bi bi-eye-fill me-1"></i>Lihat Berkas
+                                                                </a>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-light text-muted fw-normal px-3 py-2 rounded-pill border">Belum Diunggah</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Tab: Skor & Penilaian -->
                         <div class="<?= esc((string) (($detailTabs[1]['pane_class'] ?? 'tab-pane fade'))) ?>" id="<?= esc((string) ($detailTabs[1]['pane_id'] ?? 'reviewer-detail-pane-scoring')) ?>" role="tabpanel" aria-labelledby="<?= esc((string) ($detailTabs[1]['button_id'] ?? 'reviewer-detail-tab-scoring')) ?>" tabindex="0">
-                            
+
                             <div class="row g-4">
                                 <div class="col-lg-8">
                                     <div class="border rounded-3 p-4 bg-white mb-4">
@@ -178,7 +237,7 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
                                         <div class="card border-0 bg-primary text-white shadow-sm mb-3">
                                             <div class="card-body p-4">
                                                 <div class="small text-uppercase opacity-75 fw-bold mb-3 ls-1">Ringkasan Nilai</div>
-                                                
+
                                                 <div class="mb-4">
                                                     <div class="small opacity-75 mb-1"><?= esc((string) ($totals['raw_label'] ?? 'Bobot x Skor')) ?></div>
                                                     <div class="h3 fw-bold mb-0"><?= esc((string) ($totals['raw_value'] ?? '0')) ?></div>
@@ -190,7 +249,7 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="card border-0 bg-light shadow-none">
                                             <div class="card-body p-4">
                                                 <div class="d-grid gap-2">

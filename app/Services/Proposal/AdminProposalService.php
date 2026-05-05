@@ -30,9 +30,9 @@ class AdminProposalService
         $this->db = Database::connect();
     }
 
-    public function getIndexPayload(): array
+    public function getIndexPayload(array $filters = []): array
     {
-        $proposals = $this->getAdminVisibleProposals();
+        $proposals = $this->getAdminVisibleProposals($filters);
         $tableRows = [];
         $statusCounts = [
             'submitted' => 0,
@@ -89,6 +89,14 @@ class AdminProposalService
                 ],
             ],
             'tableRows' => $tableRows,
+            'viewState' => [
+                'status' => $filters['status'] ?? '',
+                'bidang_ilmu' => $filters['bidang_ilmu'] ?? '',
+                'search' => $filters['search'] ?? '',
+                'hasFilters' => !empty(array_filter($filters)),
+                'filterCount' => count(array_filter($filters)),
+            ],
+            'bidangIlmuList' => $this->db->table('bidang_ilmu')->select('id, nama')->orderBy('nama', 'ASC')->get()->getResultArray(),
         ];
     }
 
@@ -294,9 +302,9 @@ class AdminProposalService
         ]);
     }
 
-    private function getAdminVisibleProposals(): array
+    private function getAdminVisibleProposals(array $filters = []): array
     {
-        return $this->db->table('proposal_pengajuan')
+        $builder = $this->db->table('proposal_pengajuan')
             ->select([
                 'proposal_pengajuan.*',
                 'COALESCE(NULLIF(users.nama_lengkap, ""), users.username) AS pengusul_nama',
@@ -308,8 +316,26 @@ class AdminProposalService
             ->join('proposal_bidang_ilmu', 'proposal_bidang_ilmu.id = proposal_pengajuan.bidang_ilmu_id', 'left')
             ->join('proposal_reviewer_assignments', 'proposal_reviewer_assignments.proposal_id = proposal_pengajuan.id AND proposal_reviewer_assignments.deleted_at IS NULL', 'left')
             ->where('proposal_pengajuan.deleted_at', null)
-            ->whereIn('proposal_pengajuan.status', self::ADMIN_VISIBLE_STATUSES)
-            ->groupBy('proposal_pengajuan.id')
+            ->whereIn('proposal_pengajuan.status', self::ADMIN_VISIBLE_STATUSES);
+
+        if (!empty($filters['status'])) {
+            $builder->where('proposal_pengajuan.status', $filters['status']);
+        }
+
+        if (!empty($filters['bidang_ilmu'])) {
+            $builder->where('proposal_pengajuan.bidang_ilmu_id', $filters['bidang_ilmu']);
+        }
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $builder->groupStart()
+                ->like('proposal_pengajuan.judul', $search)
+                ->orLike('users.nama_lengkap', $search)
+                ->orLike('users.username', $search)
+                ->groupEnd();
+        }
+
+        return $builder->groupBy('proposal_pengajuan.id')
             ->orderBy('proposal_pengajuan.updated_at', 'DESC')
             ->get()
             ->getResult();

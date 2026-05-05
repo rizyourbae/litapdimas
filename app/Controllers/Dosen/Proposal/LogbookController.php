@@ -5,7 +5,7 @@ namespace App\Controllers\Dosen\Proposal;
 use App\Controllers\BaseController;
 use App\Models\Proposal\ProposalLogbook;
 use App\Models\Proposal\ProposalPengajuan;
-use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Encryption\Encryption;
 use Exception;
 
 class LogbookController extends BaseController
@@ -53,12 +53,12 @@ class LogbookController extends BaseController
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/proposals/logbooks', $newName);
+            $file->move(WRITEPATH . 'uploads/proposals/logbooks', $newName);
             $berkasPath = 'uploads/proposals/logbooks/' . $newName;
         }
 
         $data = [
-            'uuid'               => \CodeIgniter\Encryption\Encryption::createKey(16), // simple random for uuid if not using helper
+            'uuid'               => Encryption::createKey(16), 
             'proposal_id'        => $proposal->id,
             'tanggal'            => $this->request->getPost('tanggal'),
             'tempat'             => $this->request->getPost('tempat'),
@@ -91,14 +91,14 @@ class LogbookController extends BaseController
             return redirect()->back()->with('error', 'Data logbook tidak ditemukan.');
         }
 
-        $proposal = $this->proposalModel->find($logbook->proposal_id);
+        $proposal = $this->proposalModel->where('id', $logbook->proposal_id)->first();
         if (!$proposal || (int) $proposal->user_id !== $userId) {
             return redirect()->back()->with('error', 'Akses ditolak.');
         }
 
         try {
-            if ($logbook->berkas_path && file_exists(FCPATH . $logbook->berkas_path)) {
-                @unlink(FCPATH . $logbook->berkas_path);
+            if ($logbook->berkas_path && file_exists(WRITEPATH . $logbook->berkas_path)) {
+                @unlink(WRITEPATH . $logbook->berkas_path);
             }
             $this->logbookModel->delete($logbook->id);
             return redirect()->back()->with('success', 'Logbook berhasil dihapus.');

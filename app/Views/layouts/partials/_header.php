@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
     <title><?= esc($title ?? 'Litapdimas') ?> | LITAPDIMAS</title>
+    <base href="<?= base_url() ?>/">
 
     <!-- Fonts -->
     <link rel="stylesheet"
@@ -43,6 +44,7 @@
     <link rel="stylesheet" href="<?= base_url('custom/css/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('custom/css/dosen.css') ?>">
     <link rel="stylesheet" href="<?= base_url('custom/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('custom/css/sidebar-search.css') ?>">
 
     <!-- Flatpickr Datepicker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
