@@ -577,7 +577,19 @@ class ReviewerAssessmentService
         $scoring = $this->buildProposalScoringPayload($row, $assessment, $totals);
         $detailTabs = $this->buildDetailTabs($activeDetailTab);
 
+        // Cari URL PDF utama untuk Workspace
+        $primaryPdfUrl = null;
+        if (!empty($row['document_rows'])) {
+            foreach ($row['document_rows'] as $doc) {
+                if (($doc['label'] ?? '') === 'Proposal' && !empty($doc['view_url'])) {
+                    $primaryPdfUrl = $doc['view_url'];
+                    break;
+                }
+            }
+        }
+
         return [
+            'primary_pdf_url' => $primaryPdfUrl,
             'title' => self::TAB_DEFINITIONS['proposal']['label'],
             'currentModule' => 'Reviewer',
             'page_type' => 'proposal',
@@ -1213,17 +1225,20 @@ class ReviewerAssessmentService
         $options = $this->buildProposalScaleOptions();
 
         foreach (self::PROPOSAL_SCORE_ASPECTS as $key => $aspect) {
-            $aspects[] = [
-                'field_name' => 'scores[' . $key . ']',
-                'label' => $aspect['number'] . '. ' . $aspect['label'] . ' (Bobot: ' . $aspect['weight'] . ')',
-                'selected_value' => (string) ($assessment['scores'][$key] ?? ''),
+            $sections[] = [
+                'title' => $aspect['number'] . '. ' . $aspect['label'],
+                'weight' => $aspect['weight'],
+                'score_field_name' => 'scores[' . $key . ']',
+                'score_value' => (string) ($assessment['scores'][$key] ?? ''),
+                'comment_field_name' => 'comments[' . $key . ']',
+                'comment_value' => (string) ($assessment['comments'][$key] ?? ''),
                 'options' => $options,
             ];
         }
 
         return [
-            'card_title' => 'Skor Penilaian',
-            'aspects' => $aspects,
+            'card_title' => 'Formulir Penilaian Proposal',
+            'sections' => $sections,
             'general_comment' => [
                 'label' => 'Komentar Umum Proposal',
                 'field_name' => 'general_comment',

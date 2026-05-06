@@ -139,6 +139,16 @@
                 'badge' => count($tableRows) . ' Data',
                 'actions' => [
                     [
+                        'label' => 'Export Excel',
+                        'url' => site_url('admin/publikasi/export?' . http_build_query([
+                            'search' => $viewState['search'] ?? '',
+                            'jenis_publikasi' => $viewState['jenis_publikasi'] ?? '',
+                            'tahun' => $viewState['tahun'] ?? '',
+                        ])),
+                        'icon' => 'bi bi-file-earmark-excel',
+                        'class' => 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
+                    ],
+                    [
                         'label' => 'Tambah Publikasi',
                         'url' => site_url('admin/publikasi/create'),
                         'icon' => 'bi bi-plus-lg',

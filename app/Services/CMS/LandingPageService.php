@@ -4,6 +4,7 @@ namespace App\Services\CMS;
 
 use App\Models\Master\LandingSettingModel;
 use App\Models\Master\TemaRisetModel;
+use App\Models\Master\LandingBannerModel;
 use App\Models\Proposal\ProposalPengajuan;
 use App\Models\Auth\UserModel;
 use App\Models\Publikasi\PublikasiModel;
@@ -12,11 +13,13 @@ class LandingPageService
 {
     private LandingSettingModel $settingModel;
     private TemaRisetModel $temaModel;
+    private LandingBannerModel $bannerModel;
 
     public function __construct()
     {
         $this->settingModel = new LandingSettingModel();
         $this->temaModel = new TemaRisetModel();
+        $this->bannerModel = new LandingBannerModel();
     }
 
     /**
@@ -29,6 +32,7 @@ class LandingPageService
             'contact'    => $this->settingModel->getGroup('contact'),
             'stats'      => $this->getLiveStatistics(),
             'temaRiset'  => $this->temaModel->getActiveThemes(),
+            'banners'    => $this->bannerModel->getActiveBanners(),
         ];
     }
 
@@ -70,6 +74,7 @@ class LandingPageService
             'contactSettings' => $this->settingModel->getGroup('contact'),
             'statsSettings'   => $this->settingModel->getGroup('stats'),
             'themes'          => $this->temaModel->orderBy('sort_order', 'ASC')->findAll(),
+            'banners'         => $this->bannerModel->orderBy('sort_order', 'ASC')->findAll(),
         ];
     }
 
@@ -133,5 +138,73 @@ class LandingPageService
         if (!$existing) throw new \Exception('Tema riset tidak ditemukan.');
 
         $this->temaModel->delete($existing['id']);
+    }
+
+    // ============================================================
+    // BANNER MANAGEMENT
+    // ============================================================
+
+    public function getBannerByUuid(string $uuid): ?array
+    {
+        return $this->bannerModel->where('uuid', $uuid)->first();
+    }
+
+    /**
+     * Simpan Banner Baru (Dengan Upload)
+     */
+    public function storeBanner(array $input, $imageFile): void
+    {
+        // 1. Handle Upload
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
+            $newName = $imageFile->getRandomName();
+            $imageFile->move(FCPATH . 'uploads/banners', $newName);
+            $input['image'] = 'uploads/banners/' . $newName;
+        } else {
+            throw new \Exception('File gambar tidak valid atau gagal diupload.');
+        }
+
+        $input['is_active'] = isset($input['is_active']) ? 1 : 0;
+
+        if (!$this->bannerModel->insert($input)) {
+            throw new \Exception('Gagal menyimpan banner: ' . implode(', ', $this->bannerModel->errors()));
+        }
+    }
+
+    /**
+     * Update Banner
+     */
+    public function updateBanner(string $uuid, array $input, $imageFile = null): void
+    {
+        $existing = $this->getBannerByUuid($uuid);
+        if (!$existing) throw new \Exception('Banner tidak ditemukan.');
+
+        // 1. Handle Upload Baru (Jika ada)
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
+            // Hapus file lama jika perlu (opsional, untuk hemat storage)
+            if (file_exists(FCPATH . $existing['image'])) {
+                @unlink(FCPATH . $existing['image']);
+            }
+
+            $newName = $imageFile->getRandomName();
+            $imageFile->move(FCPATH . 'uploads/banners', $newName);
+            $input['image'] = 'uploads/banners/' . $newName;
+        }
+
+        $input['is_active'] = isset($input['is_active']) ? 1 : 0;
+
+        if (!$this->bannerModel->update($existing['id'], $input)) {
+            throw new \Exception('Gagal memperbarui banner: ' . implode(', ', $this->bannerModel->errors()));
+        }
+    }
+
+    /**
+     * Hapus Banner
+     */
+    public function deleteBanner(string $uuid): void
+    {
+        $existing = $this->getBannerByUuid($uuid);
+        if (!$existing) throw new \Exception('Banner tidak ditemukan.');
+
+        $this->bannerModel->delete($existing['id']);
     }
 }

@@ -29,6 +29,11 @@ $photoUrl     = $sessionUser['foto_url'] ?? base_url('assets/adminlte/assets/img
                 </a>
             </li>
 
+            <!-- Notifications -->
+            <li class="nav-item">
+                <?= view_cell('App\Cells\NotificationCell::render') ?>
+            </li>
+
             <!-- User Dropdown -->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">

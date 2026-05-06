@@ -20,6 +20,8 @@ $routes->get('uploads/(:segment)/(:any)', 'SecureFileController::generalUpload/$
 // Public Routes
 // ============================================================
 $routes->get('/', 'HomeController::index');
+$routes->get('pengumuman', 'AnnouncementController::index', ['as' => 'announcements.index']);
+$routes->get('pengumuman/(:any)', 'AnnouncementController::show/$1', ['as' => 'announcements.show']);
 
 // Auth Routes
 $routes->match(['GET', 'POST'], 'login', 'AuthController::login');
@@ -39,10 +41,21 @@ $routes->group('profile', ['filter' => 'auth:profile.manage'], function ($routes
 });
 
 // ============================================================
+// Notifications Routes (Accessible by all logged-in users)
+// ============================================================
+$routes->group('notifications', function ($routes) {
+    $routes->get('/', 'NotificationController::index', ['as' => 'notifications.index']);
+    $routes->get('read/(:num)', 'NotificationController::read/$1', ['as' => 'notifications.read']);
+    $routes->get('mark-all-read', 'NotificationController::markAllAsRead', ['as' => 'notifications.mark_all_read']);
+});
+
+// ============================================================
 // Admin Routes
 // ============================================================
 $routes->group('admin', ['filter' => 'auth:admin.access'], function ($routes) {
-    $routes->get('dashboard', 'Admin\Dashboard::index');
+    $routes->get('dashboard', 'Admin\Dashboard::index', ['as' => 'admin.dashboard']);
+    $routes->get('analytics', 'Admin\Analytics::index', ['as' => 'admin.analytics']);
+
     $routes->get('logs',      'Admin\AuditLogController::index', ['as' => 'admin.logs.index']);
 
     // CMS Landing Page
@@ -55,6 +68,22 @@ $routes->group('admin', ['filter' => 'auth:admin.access'], function ($routes) {
         $routes->get('themes/json/(:any)', 'Admin\CMS\LandingController::jsonTheme/$1', ['as' => 'admin.cms.landing.themes.json']);
         $routes->post('themes/update/(:any)', 'Admin\CMS\LandingController::updateTheme/$1', ['as' => 'admin.cms.landing.themes.update']);
         $routes->get('themes/delete/(:any)', 'Admin\CMS\LandingController::deleteTheme/$1', ['as' => 'admin.cms.landing.themes.delete']);
+
+        // Banner Slider CRUD
+        $routes->post('banners/store', 'Admin\CMS\LandingController::storeBanner', ['as' => 'admin.cms.landing.banners.store']);
+        $routes->get('banners/json/(:any)', 'Admin\CMS\LandingController::jsonBanner/$1', ['as' => 'admin.cms.landing.banners.json']);
+        $routes->post('banners/update/(:any)', 'Admin\CMS\LandingController::updateBanner/$1', ['as' => 'admin.cms.landing.banners.update']);
+        $routes->get('banners/delete/(:any)', 'Admin\CMS\LandingController::deleteBanner/$1', ['as' => 'admin.cms.landing.banners.delete']);
+
+    });
+
+    // Announcement CRUD
+    $routes->group('cms/announcements', function ($routes) {
+        $routes->get('/', 'Admin\CMS\AnnouncementController::index', ['as' => 'admin.cms.announcements.index']);
+        $routes->post('store', 'Admin\CMS\AnnouncementController::store', ['as' => 'admin.cms.announcements.store']);
+        $routes->get('json/(:any)', 'Admin\CMS\AnnouncementController::json/$1', ['as' => 'admin.cms.announcements.json']);
+        $routes->post('update/(:any)', 'Admin\CMS\AnnouncementController::update/$1', ['as' => 'admin.cms.announcements.update']);
+        $routes->get('delete/(:any)', 'Admin\CMS\AnnouncementController::delete/$1', ['as' => 'admin.cms.announcements.delete']);
     });
 });
 
@@ -203,6 +232,7 @@ $routes->group('admin/master', ['filter' => 'auth:master.manage'], function ($ro
 // ============================================================
 $routes->group('admin/publikasi', ['filter' => 'auth:admin.access'], function ($routes) {
     $routes->get('/',              'Admin\Publikasi\PublikasiController::index',  ['as' => 'admin.publikasi.index']);
+    $routes->get('export',         'Admin\Publikasi\PublikasiController::export', ['as' => 'admin.publikasi.export']);
     $routes->get('create',         'Admin\Publikasi\PublikasiController::create', ['as' => 'admin.publikasi.create']);
     $routes->get('show/(:any)',    'Admin\Publikasi\PublikasiController::show/$1', ['as' => 'admin.publikasi.show']);
     $routes->post('store',         'Admin\Publikasi\PublikasiController::store',  ['as' => 'admin.publikasi.store']);
@@ -215,7 +245,8 @@ $routes->group('admin/publikasi', ['filter' => 'auth:admin.access'], function ($
 // Admin Kegiatan Mandiri Routes
 // ============================================================
 $routes->group('admin/kegiatan-mandiri', ['filter' => 'auth:admin.access'], function ($routes) {
-    $routes->get('/',              'Admin\KegiatanMandiri\KegiatanMandiriController::index', ['as' => 'admin.kegiatan_mandiri.index']);
+    $routes->get('/',              'Admin\KegiatanMandiri\KegiatanMandiriController::index',  ['as' => 'admin.kegiatan_mandiri.index']);
+    $routes->get('export',         'Admin\KegiatanMandiri\KegiatanMandiriController::export', ['as' => 'admin.kegiatan_mandiri.export']);
     $routes->get('create',         'Admin\KegiatanMandiri\KegiatanMandiriController::create', ['as' => 'admin.kegiatan_mandiri.create']);
     $routes->get('show/(:any)',    'Admin\KegiatanMandiri\KegiatanMandiriController::show/$1', ['as' => 'admin.kegiatan_mandiri.show']);
     $routes->post('store',         'Admin\KegiatanMandiri\KegiatanMandiriController::store', ['as' => 'admin.kegiatan_mandiri.store']);

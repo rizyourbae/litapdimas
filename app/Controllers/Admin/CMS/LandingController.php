@@ -93,4 +93,46 @@ class LandingController extends BaseController
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    // ============================================================
+    // BANNER MANAGEMENT
+    // ============================================================
+
+    public function storeBanner()
+    {
+        try {
+            $file = $this->request->getFile('image');
+            $this->cmsService->storeBanner($this->request->getPost(), $file);
+            return redirect()->back()->with('success', 'Banner baru berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function jsonBanner(string $uuid)
+    {
+        $banner = $this->cmsService->getBannerByUuid($uuid);
+        return $this->response->setJSON($banner);
+    }
+
+    public function updateBanner(string $uuid)
+    {
+        try {
+            $file = $this->request->getFile('image');
+            $this->cmsService->updateBanner($uuid, $this->request->getPost(), $file);
+            return redirect()->back()->with('success', 'Banner berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deleteBanner(string $uuid)
+    {
+        try {
+            $this->cmsService->deleteBanner($uuid);
+            return redirect()->back()->with('success', 'Banner berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 }

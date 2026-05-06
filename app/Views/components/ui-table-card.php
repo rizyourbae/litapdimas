@@ -96,6 +96,7 @@ $realWrapId = "rw-" . $tableId;
                     <div class="table-responsive">
                         <table id="<?= esc($tableId) ?>" class="table table-hover table-bordered align-middle mb-0 w-100" 
                             <?= $dtAttr ?> 
+                            data-admin-datatable-options='<?= isset($options) ? json_encode($options) : "" ?>'
                             data-skeleton-id="<?= esc($skeletonId) ?>" 
                             data-real-wrap-id="<?= esc($realWrapId) ?>">
                             <?= $header ?? '' ?>

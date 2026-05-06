@@ -25,17 +25,42 @@ class KegiatanMandiriController extends BaseController
 
     public function index(): string
     {
-        $filters = [
-            'search' => $this->request->getGet('search'),
-            'jenis_kegiatan' => $this->request->getGet('jenis_kegiatan'),
-            'klaster_skala_kegiatan' => $this->request->getGet('klaster_skala_kegiatan'),
-            'tahun' => $this->request->getGet('tahun'),
-        ];
+        $filters = $this->getFilters();
 
         return $this->renderView('admin/kegiatan_mandiri/index', array_merge(
             ['title' => 'Data Kegiatan Mandiri'],
             $this->kegiatanMandiriService->getIndexPayload($filters)
         ));
+    }
+
+    public function export()
+    {
+        $filters = $this->getFilters();
+        $items = $this->kegiatanMandiriService->getAllKegiatan($filters);
+
+        $data = [
+            'title' => 'Rekapitulasi Kegiatan Mandiri Dosen',
+            'items' => $items,
+            'date'  => date('d/m/Y H:i')
+        ];
+
+        // Set headers for Excel download
+        $filename = "Rekap_Kegiatan_Mandiri_" . date('Ymd_His') . ".xls";
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Cache-Control: max-age=0");
+
+        return view('admin/kegiatan_mandiri/export_excel', $data);
+    }
+
+    private function getFilters(): array
+    {
+        return [
+            'search' => $this->request->getGet('search'),
+            'jenis_kegiatan' => $this->request->getGet('jenis_kegiatan'),
+            'klaster_skala_kegiatan' => $this->request->getGet('klaster_skala_kegiatan'),
+            'tahun' => $this->request->getGet('tahun'),
+        ];
     }
 
     public function show(string $uuid)

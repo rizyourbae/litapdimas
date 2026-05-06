@@ -10,13 +10,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class SecureFileController extends BaseController
 {
-    protected AuditLogService $auditLog;
-
-    public function __construct()
-    {
-        $this->auditLog = new AuditLogService();
-    }
-
     /**
      * View proposal document
      */

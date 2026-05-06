@@ -25,16 +25,41 @@ class PublikasiController extends BaseController
 
     public function index(): string
     {
-        $filters = [
-            'search' => $this->request->getGet('search'),
-            'jenis_publikasi' => $this->request->getGet('jenis_publikasi'),
-            'tahun' => $this->request->getGet('tahun'),
-        ];
+        $filters = $this->getFilters();
 
         return $this->renderView('admin/publikasi/index', array_merge(
             ['title' => 'Data Publikasi'],
             $this->publikasiService->getIndexPayload($filters)
         ));
+    }
+
+    public function export()
+    {
+        $filters = $this->getFilters();
+        $items = $this->publikasiService->getAllPublikasi($filters);
+
+        $data = [
+            'title' => 'Rekapitulasi Publikasi Ilmiah',
+            'items' => $items,
+            'date'  => date('d/m/Y H:i')
+        ];
+
+        // Set headers for Excel download
+        $filename = "Rekap_Publikasi_" . date('Ymd_His') . ".xls";
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Cache-Control: max-age=0");
+
+        return view('admin/publikasi/export_excel', $data);
+    }
+
+    private function getFilters(): array
+    {
+        return [
+            'search' => $this->request->getGet('search'),
+            'jenis_publikasi' => $this->request->getGet('jenis_publikasi'),
+            'tahun' => $this->request->getGet('tahun'),
+        ];
     }
 
     public function create(): string

@@ -31,6 +31,11 @@
                             <i class="bi bi-grid-3x3-gap me-2"></i>Tema Riset Prioritas
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold py-3" id="banners-tab" data-bs-toggle="tab" data-bs-target="#banners" type="button" role="tab">
+                            <i class="bi bi-images me-2"></i>Banner Slider
+                        </button>
+                    </li>
                 </ul>
             </div>
             <div class="card-body p-4">
@@ -48,6 +53,11 @@
                     <div class="tab-pane fade" id="themes" role="tabpanel" aria-labelledby="themes-tab">
                         <?= view('admin/cms/landing/_tab_themes', ['themes' => $themes]) ?>
                     </div>
+
+                    <!-- Tab 3: Banners -->
+                    <div class="tab-pane fade" id="banners" role="tabpanel" aria-labelledby="banners-tab">
+                        <?= view('admin/cms/landing/_tab_banners', ['banners' => $banners]) ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,6 +66,7 @@
 
 <!-- PARTIALS: MODALS -->
 <?= view('admin/cms/landing/partials/_modals_theme') ?>
+<?= view('admin/cms/landing/partials/_modals_banner') ?>
 
 <?= $this->endSection() ?>
 

@@ -12,9 +12,15 @@ class Menu extends BaseConfig
         // ============================================================
         [
             'label'      => 'Dashboard',
-            'icon'       => 'bi-speedometer',
+            'icon'       => 'bi-grid-fill',
             'url'        => 'dashboard',
-            'permission' => 'dashboard.access',
+            'permission' => 'dashboard.access', // Kita asumsikan ini permission dasar untuk semua role
+        ],
+        [
+            'label'      => 'Analisa Data',
+            'icon'       => 'bi-graph-up',
+            'url'        => 'admin/analytics',
+            'permission' => 'admin.access',
         ],
 
         // ============================================================
@@ -86,10 +92,14 @@ class Menu extends BaseConfig
             ],
         ],
         [
-            'label'      => 'Manajemen Landing',
+            'label'      => 'Informasi',
             'icon'       => 'bi-window-sidebar',
-            'url'        => 'admin/cms/landing',
+            'url'        => '#',
             'permission' => 'admin.access',
+            'children'   => [
+                ['label' => 'Halaman Depan', 'url' => 'admin/cms/landing', 'icon' => 'bi-circle'],
+                ['label' => 'Pengumuman', 'url' => 'admin/cms/announcements', 'icon' => 'bi-circle'],
+            ],
         ],
         [
             'label'      => 'Keamanan',

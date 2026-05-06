@@ -19,6 +19,7 @@ class AdminProposalService
     private ProposalReviewerAssignment $assignmentModel;
 
     private ProposalDetailService $detailService;
+    private \App\Services\NotificationService $notificationService;
 
     private $db;
 
@@ -27,6 +28,7 @@ class AdminProposalService
         $this->proposalModel = new ProposalPengajuan();
         $this->assignmentModel = new ProposalReviewerAssignment();
         $this->detailService = new ProposalDetailService();
+        $this->notificationService = new \App\Services\NotificationService();
         $this->db = Database::connect();
     }
 
@@ -248,6 +250,18 @@ class AdminProposalService
         }
 
         $this->proposalModel->update((int) $proposal->id, ['status' => 'assigned']);
+        
+        // Kirim Notifikasi ke setiap Reviewer
+        foreach ($reviewerIds as $reviewerId) {
+            $this->notificationService->send(
+                $reviewerId,
+                'Tugas Review Baru',
+                'Anda telah ditugaskan untuk mereview proposal: ' . ($proposal->judul ?: 'Tanpa Judul'),
+                site_url('reviewer/dashboard'), // Asumsi rute dashboard reviewer
+                'info'
+            );
+        }
+
         $this->db->transComplete();
 
         if (!$this->db->transStatus()) {
@@ -300,6 +314,18 @@ class AdminProposalService
             'decided_at' => date('Y-m-d H:i:s'),
             'decided_by' => user()['id'] ?? null,
         ]);
+
+        // Kirim Notifikasi ke Dosen
+        $statusLabel = $decision === 'approved' ? 'DISETUJUI' : 'DITOLAK';
+        $type = $decision === 'approved' ? 'success' : 'danger';
+        
+        $this->notificationService->send(
+            (int) $proposal->user_id,
+            'Status Proposal: ' . $statusLabel,
+            'Proposal Anda dengan judul "' . ($proposal->judul ?: 'Tanpa Judul') . '" telah ' . strtolower($statusLabel) . ' oleh Admin.',
+            site_url('dosen/proposals'),
+            $type
+        );
     }
 
     private function getAdminVisibleProposals(array $filters = []): array

@@ -98,4 +98,86 @@ $(document).ready(function() {
             }
         });
     });
+
+    // ============================================================
+    // BANNER MANAGEMENT
+    // ============================================================
+    const modalBanner = new bootstrap.Modal(document.getElementById('modalBanner'));
+    const formBanner = $('#formBanner');
+    const modalBannerTitle = $('#modalBannerTitle');
+    const bannerPreview = $('#banner_preview');
+    const bannerPlaceholder = $('#banner_placeholder');
+
+    // --- TAMBAH BANNER ---
+    $(document).on('click', '.btn-add-banner', function(e) {
+        e.preventDefault();
+        formBanner.attr('action', `${baseUrl}admin/cms/landing/banners/store`);
+        formBanner[0].reset();
+        modalBannerTitle.html('<i class="bi bi-image me-2"></i>Tambah Banner Carousel');
+        bannerPreview.addClass('d-none');
+        bannerPlaceholder.removeClass('d-none');
+        modalBanner.show();
+    });
+
+    // --- EDIT BANNER ---
+    $(document).on('click', '.btn-edit-banner', function() {
+        const url = $(this).data('url');
+        const btn = $(this);
+        const oldHtml = btn.html();
+        btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+        $.get(url, function(data) {
+            btn.html(oldHtml);
+            const updateUrl = url.replace('/json/', '/update/');
+            formBanner.attr('action', updateUrl);
+            modalBannerTitle.html('<i class="bi bi-pencil-square me-2"></i>Edit Banner Carousel');
+            
+            $('#banner_title').val(data.title);
+            $('#banner_description').val(data.description);
+            $('#banner_link').val(data.link_url);
+            $('#banner_sort').val(data.sort_order);
+            $('#banner_active').prop('checked', data.is_active == 1);
+            
+            // Show current image
+            bannerPreview.attr('src', `${baseUrl}${data.image}`).removeClass('d-none');
+            bannerPlaceholder.addClass('d-none');
+            
+            modalBanner.show();
+        });
+    });
+
+    // --- DELETE BANNER ---
+    $(document).on('click', '.btn-delete-banner', function() {
+        const url = $(this).data('url');
+        Swal.fire({
+            title: 'Hapus Banner?',
+            text: "Gambar ini tidak akan muncul lagi di slider.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'btn btn-danger px-4 rounded-pill',
+                cancelButton: 'btn btn-light px-4 rounded-pill'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) window.location.href = url;
+        });
+    });
+
+    // --- IMAGE PREVIEW ---
+    $('#banner_file').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bannerPreview.attr('src', e.target.result).removeClass('d-none');
+                bannerPlaceholder.addClass('d-none');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 });

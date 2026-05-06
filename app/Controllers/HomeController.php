@@ -16,7 +16,7 @@ class HomeController extends BaseController
             'currentPage' => 'home',
         ], $payload);
 
-        return view('layouts/landing', $data);
+        return view('landing/index', $data);
     }
 
     /**

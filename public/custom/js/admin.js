@@ -165,12 +165,17 @@
 
     var normalizedValue = value == null ? "" : value;
 
+    // Checkbox handling
+    if (field.type === "checkbox") {
+      field.checked = (normalizedValue == 1 || normalizedValue == "1" || normalizedValue === true);
+    } else {
+      field.value = normalizedValue;
+    }
+
     // Simpan nilai yang di-queue supaya bisa diterapkan ketika TomSelect di-inisialisasi
     try {
       field.setAttribute("data-admin-queued-value", normalizedValue);
     } catch (e) {}
-
-    field.value = normalizedValue;
 
     if (field.matches("[data-select2]")) {
       if (window.Select2Init && typeof window.Select2Init.setValue === "function" && field.tomselect) {

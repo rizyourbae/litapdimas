@@ -146,6 +146,17 @@
                 'badge' => count($tableRows) . ' Entri',
                 'actions' => [
                     [
+                        'label' => 'Export Excel',
+                        'url' => site_url('admin/kegiatan-mandiri/export?' . http_build_query([
+                            'search' => $viewState['search'] ?? '',
+                            'jenis_kegiatan' => $viewState['jenis_kegiatan'] ?? '',
+                            'klaster_skala_kegiatan' => $viewState['klaster_skala_kegiatan'] ?? '',
+                            'tahun' => $viewState['tahun'] ?? '',
+                        ])),
+                        'icon' => 'bi bi-file-earmark-excel',
+                        'class' => 'btn btn-success btn-sm rounded-pill px-3 shadow-sm'
+                    ],
+                    [
                         'label' => 'Tambah Kegiatan',
                         'url' => site_url('admin/kegiatan-mandiri/create'),
                         'icon' => 'bi bi-plus-lg',

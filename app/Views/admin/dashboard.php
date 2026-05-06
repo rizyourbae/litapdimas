@@ -16,7 +16,7 @@
     <div class="col-md-6 col-xl-3 animate-fade-up delay-1">
         <?= view('components/ui-stat-card', [
             'label' => 'Total Pengguna',
-            'value' => '1.240',
+            'value' => number_format($stats['total_users']),
             'desc' => 'Dosen & Reviewer terdaftar',
             'icon' => 'bi bi-people',
             'colorClass' => 'text-primary'
@@ -25,7 +25,7 @@
     <div class="col-md-6 col-xl-3 animate-fade-up delay-2">
         <?= view('components/ui-stat-card', [
             'label' => 'Proposal Aktif',
-            'value' => '42',
+            'value' => number_format($stats['active_proposals']),
             'desc' => 'Dalam proses review',
             'icon' => 'bi bi-file-earmark-text',
             'colorClass' => 'text-warning'
@@ -34,7 +34,7 @@
     <div class="col-md-6 col-xl-3 animate-fade-up delay-3">
         <?= view('components/ui-stat-card', [
             'label' => 'Publikasi Baru',
-            'value' => '12',
+            'value' => number_format($stats['new_publications']),
             'desc' => 'Menunggu verifikasi',
             'icon' => 'bi bi-journal-bookmark',
             'colorClass' => 'text-info'
@@ -42,10 +42,10 @@
     </div>
     <div class="col-md-6 col-xl-3 animate-fade-up delay-3">
         <?= view('components/ui-stat-card', [
-            'label' => 'Server Load',
-            'value' => '14%',
-            'desc' => 'Kondisi sistem optimal',
-            'icon' => 'bi bi-cpu',
+            'label' => 'Pengumuman Aktif',
+            'value' => number_format($stats['active_announcements']),
+            'desc' => 'Tayang di halaman landing',
+            'icon' => 'bi bi-megaphone',
             'colorClass' => 'text-success'
         ]) ?>
     </div>
