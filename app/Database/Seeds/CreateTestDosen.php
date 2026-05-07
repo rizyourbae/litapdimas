@@ -25,6 +25,7 @@ class CreateTestDosen extends Seeder
 
         $password = password_hash('password123', PASSWORD_BCRYPT);
 
+        // Extended test users with various roles
         $userData = [
             [
                 'uuid' => '550e8400-e29b-41d4-a716-446655550001',
@@ -52,31 +53,45 @@ class CreateTestDosen extends Seeder
         $this->db->table('users')->insertBatch($userData);
         echo "✓ Test dosen users created successfully!\n";
 
-        // Get the 'dosen' role ID
+        // Get roles
         $dosenRole = $this->db->table('roles')->where('name', 'dosen')->get()->getRow();
+        $reviewerRole = $this->db->table('roles')->where('name', 'reviewer')->get()->getRow();
+        
         if (!$dosenRole) {
             echo "✗ ERROR: 'dosen' role not found. Run migrations first!\n";
+            return;
+        }
+        if (!$reviewerRole) {
+            echo "✗ ERROR: 'reviewer' role not found. Run migrations first!\n";
             return;
         }
 
         // Get the user IDs that were just inserted
         $users = $this->db->table('users')
             ->whereIn('username', ['dosen1', 'dosen2'])
-            ->select('id')
+            ->select('id, username')
             ->get()
             ->getResultArray();
 
-        // Assign dosen role to both users
+        // Assign roles
         $roleAssignments = [];
+        
+        // dosen1 gets reviewer role, dosen2 gets dosen role
+        $dosenRoles = [
+            'dosen1' => $reviewerRole->id,
+            'dosen2' => $dosenRole->id,
+        ];
+        
         foreach ($users as $user) {
+            $roleId = $dosenRoles[$user['username']] ?? $dosenRole->id;
             $roleAssignments[] = [
                 'user_id' => $user['id'],
-                'role_id' => $dosenRole->id,
+                'role_id' => $roleId,
                 'created_at' => date('Y-m-d H:i:s'),
             ];
         }
 
         $this->db->table('user_roles')->insertBatch($roleAssignments);
-        echo "✓ Dosen role assigned to test users!\n";
+        echo "✓ Dosen roles assigned to test users!\n";
     }
 }

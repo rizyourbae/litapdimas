@@ -17,7 +17,7 @@ class CreateAnnouncementsTable extends Migration
             'image'           => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'file_attachment' => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'view_count'      => ['type' => 'INT', 'constraint' => 11, 'default' => 0],
-            'is_active'       => ['type' => 'BOOLEAN', 'default' => true],
+            'is_active'       => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
             'created_at'      => ['type' => 'DATETIME', 'null' => true],
             'updated_at'      => ['type' => 'DATETIME', 'null' => true],
             'deleted_at'      => ['type' => 'DATETIME', 'null' => true],

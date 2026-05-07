@@ -15,7 +15,7 @@ class CreateNotificationsTable extends Migration
             'message'     => ['type' => 'TEXT'],
             'type'        => ['type' => 'ENUM', 'constraint' => ['info', 'success', 'warning', 'danger'], 'default' => 'info'],
             'link'        => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
-            'is_read'     => ['type' => 'BOOLEAN', 'default' => false],
+            'is_read'     => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 0],
             'created_at'  => ['type' => 'DATETIME', 'null' => true],
             'updated_at'  => ['type' => 'DATETIME', 'null' => true],
         ]);

@@ -29,7 +29,7 @@ class MasterSeeder extends Seeder
         $prodiModel->skipValidation(true);
 
         // --- Profesi ---
-        $profesi = ['Dosen', 'Pranata Komputer', 'Pengembang TP', 'Pranata Keuangan', 'Perancang UU'];
+        $profesi = ['Dosen', 'Pranata Komputer', 'Pengembang TP', 'Pranata Keuangan', 'Perancang UU', 'Guru'];
         foreach ($profesi as $p) {
             $profesiModel->insert(['nama' => $p]);
         }
@@ -44,6 +44,8 @@ class MasterSeeder extends Seeder
             'Pendidikan Agama Islam',
             'Ekonomi Syariah',
             'Studi Al-Quran dan Tafsir',
+            'Studi Islam/Dirasat Islamiyah/Islamic Studies',
+            'Ekonomi dan Bisnis Islam',
         ];
         foreach ($bidangIlmu as $b) {
             $bidangIlmuModel->insert(['nama' => $b]);
@@ -104,6 +106,32 @@ class MasterSeeder extends Seeder
 
         foreach ($prodiList as $prodi) {
             $prodiModel->insert($prodi);
+        }
+
+        // --- Klaster Bantuan ---
+        $klasterBantuan = [
+            ['nama' => 'BOPTN', 'is_active' => 1],
+            ['nama' => 'Dana Hibah', 'is_active' => 1],
+            ['nama' => 'Dana Klastering', 'is_active' => 1],
+        ];
+        foreach ($klasterBantuan as $k) {
+            // Check if already exists
+            if (!$this->db->table('klaster_bantuan')->where('nama', $k['nama'])->countAllResults() > 0) {
+                $k['uuid'] = bin2hex(random_bytes(16));
+                $this->db->table('klaster_bantuan')->insert($k);
+            }
+        }
+
+        // --- Tema Penelitian ---
+        $temaPenelitian = [
+            ['nama' => 'Agama dan Keagamaan', 'is_active' => 1],
+        ];
+        foreach ($temaPenelitian as $t) {
+            // Check if already exists
+            if (!$this->db->table('tema_penelitian')->where('nama', $t['nama'])->countAllResults() > 0) {
+                $t['uuid'] = bin2hex(random_bytes(16));
+                $this->db->table('tema_penelitian')->insert($t);
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ class LandingPageSeeder extends Seeder
             ['key' => 'hero_cta_outline', 'value' => 'Panduan Juknis', 'group' => 'hero'],
             
             ['key' => 'stats_base_proposal', 'value' => '1200', 'group' => 'stats'],
-            ['key' => 'stats_base_peneliti', 'value' => '400', 'group' => 'stats'],
+            ['key' => 'stats_base_peneliti', 'value' => '2900', 'group' => 'stats'],
             ['key' => 'stats_base_publikasi', 'value' => '80', 'group' => 'stats'],
         ];
 
@@ -43,6 +43,33 @@ class LandingPageSeeder extends Seeder
 
         foreach ($temas as $t) {
             $temaModel->insert($t);
+        }
+
+        // 3. Seed Landing Banners
+        $banners = [
+            [
+                'uuid' => 'b49c2ebd-6d9e-46a1-81c2-e8702104ecfd',
+                'image' => 'uploads/banners/placeholder-tema-prioritas.jpg',
+                'title' => 'Tema Prioritas Kemenag',
+                'description' => '',
+                'link_url' => 'https://litapdimas.kemenag.go.id/index.php/',
+                'sort_order' => 2,
+                'is_active' => 1,
+            ],
+            [
+                'uuid' => '5a545e50-9df6-40ef-9dd9-b2f031d4e93d',
+                'image' => 'uploads/banners/placeholder-welcome.jpg',
+                'title' => 'Welcome',
+                'description' => 'Sistem Informasi Penelitian, Publikasi Ilmiah, dan Pengabdian kepada Masyarakat',
+                'link_url' => '',
+                'sort_order' => 1,
+                'is_active' => 1,
+            ],
+        ];
+
+        $bannerModel = new \App\Models\Master\LandingBannerModel();
+        foreach ($banners as $b) {
+            $bannerModel->insert($b);
         }
     }
 }

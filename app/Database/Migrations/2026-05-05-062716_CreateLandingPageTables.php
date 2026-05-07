@@ -28,7 +28,7 @@ class CreateLandingPageTables extends Migration
             'nama'        => ['type' => 'VARCHAR', 'constraint' => 255],
             'icon'        => ['type' => 'VARCHAR', 'constraint' => 100, 'default' => 'bi bi-journal-text'],
             'keterangan'  => ['type' => 'TEXT', 'null' => true],
-            'is_active'   => ['type' => 'BOOLEAN', 'default' => true],
+            'is_active'   => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
             'sort_order'  => ['type' => 'INT', 'constraint' => 5, 'default' => 0],
             'created_at'  => ['type' => 'DATETIME', 'null' => true],
             'updated_at'  => ['type' => 'DATETIME', 'null' => true],
