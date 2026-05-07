@@ -12,7 +12,7 @@ class HomeController extends BaseController
         $payload = $cmsService->getPublicLandingPayload();
 
         $data = array_merge([
-            'title'       => 'Litapdimas - UINSI Samarinda',
+            'title'       => 'SMART - LP2M',
             'currentPage' => 'home',
         ], $payload);
 

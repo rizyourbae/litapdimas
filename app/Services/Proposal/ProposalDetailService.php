@@ -177,10 +177,10 @@ class ProposalDetailService
 
         return array_merge($detail, [
             'review_overview_cards' => [
-                ['label' => 'Peneliti Internal', 'value' => (string) $penelitiInternalCount, 'icon' => 'fas fa-users'],
-                ['label' => 'Mahasiswa', 'value' => (string) $mahasiswaCount, 'icon' => 'fas fa-user-graduate'],
-                ['label' => 'Dokumen', 'value' => (string) count($documents), 'icon' => 'fas fa-folder-open'],
-                ['label' => 'Tahap', 'value' => '5/5', 'icon' => 'fas fa-list-check'],
+                ['label' => 'Peneliti Internal', 'value' => '1/5', 'icon' => 'bi bi-people'],
+                ['label' => 'Data Peneliti', 'value' => '2/5', 'icon' => 'bi bi-person-badge'],
+                ['label' => 'Dokumen Proposal', 'value' => '3/5', 'icon' => 'bi bi-folder2-open'],
+                ['label' => 'Review Proposal', 'value' => '4/5', 'icon' => 'bi bi-check2-all'],
             ],
             'review_step1_items' => $reviewStep1Items,
             'review_step2_sections' => $this->prepareProposalReviewStep2Sections($step2),

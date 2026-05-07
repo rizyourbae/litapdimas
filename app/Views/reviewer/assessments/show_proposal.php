@@ -2,6 +2,11 @@
 
 <?= $this->section('styles') ?>
 <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+<style>
+    .summary-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ls-1 { letter-spacing: 1px; }
+    .reviewer-proposal-page .nav-tabs .nav-link.active { color: var(--bs-primary); border-bottom: 3px solid var(--bs-primary) !important; }
+</style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -43,17 +48,30 @@ $validatorNote = isset($scoring['validator_note']) && is_array($scoring['validat
 
     <div class="col-12 animate-fade-up delay-1">
         <div class="card shadow-sm border-0 overflow-hidden mb-4">
-            <div class="card-header bg-light py-3 px-4">
-                <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1">
-                    <i class="bi bi-journal-richtext me-2 text-primary"></i><?= esc((string) ($proposal['summary_card_title'] ?? 'Ringkasan Usulan')) ?>
+            <div class="card-header bg-white py-3 px-4 border-bottom">
+                <h5 class="h6 fw-bold mb-0 text-uppercase letter-spacing-1 text-primary">
+                    <i class="bi bi-info-circle-fill me-2"></i><?= esc((string) ($proposal['summary_card_title'] ?? 'Ringkasan Usulan')) ?>
                 </h5>
             </div>
             <div class="card-body p-4">
                 <div class="row g-4">
                     <?php foreach ($summaryItems as $item): ?>
                         <div class="col-md-6 col-lg-3">
-                            <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;"><?= esc((string) ($item['label'] ?? '')) ?></div>
-                            <div class="fw-bold text-dark"><?= esc((string) ($item['value'] ?? '')) ?></div>
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="summary-icon-box bg-light text-primary rounded-3 p-2">
+                                    <i class="<?= esc((string) ($item['icon'] ?? 'bi bi-dot')) ?> fs-5"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="small text-muted text-uppercase fw-bold mb-1 ls-1" style="font-size: 0.65rem;"><?= esc((string) ($item['label'] ?? '')) ?></div>
+                                    <div class="fw-bold text-dark lh-sm">
+                                        <?php if (isset($item['badge_class'])): ?>
+                                            <span class="badge <?= esc((string) $item['badge_class']) ?> rounded-pill px-3"><?= esc((string) ($item['value'] ?? '')) ?></span>
+                                        <?php else: ?>
+                                            <?= esc((string) ($item['value'] ?? '')) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>

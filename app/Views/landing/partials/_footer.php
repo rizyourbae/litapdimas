@@ -37,7 +37,7 @@
         </div>
         <hr class="my-5 opacity-10">
         <div class="text-center text-white-50 small">
-            <p class="mb-0">&copy; <?= date('Y') ?> Litapdimas. Dikembangkan untuk kemajuan riset Indonesia.</p>
+            <p class="mb-0">&copy; <?= date('Y') ?> SMART-LP2M. Dikembangkan untuk kemajuan riset Indonesia.</p>
         </div>
     </div>
 </footer>

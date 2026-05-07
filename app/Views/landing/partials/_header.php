@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Litapdimas') ?> - Sistem Informasi Penelitian & Pengabdian</title>
+    <link rel="icon" href="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>">
+    <title><?= esc($title ?? 'Litapdimas') ?></title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

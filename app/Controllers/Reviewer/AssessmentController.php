@@ -57,7 +57,7 @@ class AssessmentController extends BaseController
         }
 
         $view = match ($payload['page_type'] ?? 'generic') {
-            'proposal' => 'reviewer/assessments/workspace_proposal',
+            'proposal' => 'reviewer/assessments/show_proposal',
             'presentasi' => 'reviewer/assessments/show_presentasi',
             default => 'reviewer/assessments/show',
         };

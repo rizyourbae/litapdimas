@@ -46,7 +46,7 @@ class AuthController extends BaseController
         }
 
         // GET request: tampilkan form
-        return view('auth/login', ['title' => 'Login Litapdimas']);
+        return view('auth/login', ['title' => 'LOGIN']);
     }
 
     public function logout()

@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Login') ?> | Litapdimas UINSI Samarinda</title>
-    
+    <title><?= esc($title ?? 'Login') ?> | SMART-LP2M</title>
+    <link rel="icon" href="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>">
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +31,7 @@
                     <img src="<?= base_url('assets/adminlte/assets/img/logo/logo_kemenag.png') ?>" alt="Kemenag" class="logo-item">
                     <img src="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>" alt="UINSI" class="logo-item">
                 </div>
-                <h1 class="auth-brand">LITAPDIMAS</h1>
+                <h1 class="auth-brand">SMART-P2M</h1>
                 <p class="auth-subtitle">UIN Sultan Aji Muhammad Idris Samarinda</p>
             </div>
 
@@ -53,7 +54,7 @@
             </div>
 
             <div class="auth-footer">
-                &copy; <?= date('Y') ?> <strong>LP2M UINSI Samarinda</strong>. All rights reserved.
+                &copy; <?= date('Y') ?> <strong>UINSI Samarinda</strong>. All rights reserved.
             </div>
         </div>
     </div>

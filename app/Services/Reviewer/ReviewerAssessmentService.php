@@ -595,10 +595,10 @@ class ReviewerAssessmentService
             'page_type' => 'proposal',
             'hero' => [
                 'title' => self::TAB_DEFINITIONS['proposal']['label'],
-                'subtitle' => 'Reviewer dapat membaca substansi usulan, memberi komentar per bagian, lalu mengisi penilaian proposal dengan skala 1 sampai 5 pada setiap aspek.',
+                'subtitle' => 'Tinjau secara mendalam substansi proposal, berikan catatan per bagian, dan tentukan skor kelayakan berdasarkan kriteria yang telah ditetapkan.',
                 'badges' => [
-                    ['label' => 'Reviewer Workspace', 'class' => 'text-bg-light border'],
-                    ['label' => 'Penilaian Proposal', 'class' => 'text-bg-danger'],
+                    ['label' => 'Reviewer Workspace', 'class' => 'text-bg-light border px-3 rounded-pill'],
+                    ['label' => 'Penilaian Proposal', 'class' => 'text-bg-primary px-3 rounded-pill'],
                 ],
             ],
             'detail' => [
@@ -904,22 +904,29 @@ class ReviewerAssessmentService
             [
                 'label' => 'Judul Usulan',
                 'value' => $row['title'],
+                'icon' => 'bi bi-journal-text',
             ],
             [
-                'label' => 'Klaster',
+                'label' => 'Klaster Bantuan',
                 'value' => $row['cluster'],
+                'icon' => 'bi bi-layers',
             ],
             [
                 'label' => 'Usulan Biaya',
                 'value' => (string) ($row['budget_label'] ?? $this->formatCurrency((int) ($row['budget_amount'] ?? 0))),
+                'icon' => 'bi bi-cash-stack',
+                'is_amount' => true,
             ],
             [
                 'label' => 'Status Review',
-                'value' => $this->mapProposalSummaryStatus((string) ($assessment['review_status'] ?? 'pending')),
+                'value' => $this->mapStatusLabel((string) ($assessment['review_status'] ?? 'pending')),
+                'badge_class' => $this->mapStatusBadgeClass((string) ($assessment['review_status'] ?? 'pending')),
+                'icon' => 'bi bi-check2-circle',
             ],
             [
                 'label' => 'Lampiran Berkas',
                 'value' => (string) ($row['attachment_label'] ?? 'Tidak ada berkas.'),
+                'icon' => 'bi bi-paperclip',
             ],
         ];
     }
@@ -1225,20 +1232,17 @@ class ReviewerAssessmentService
         $options = $this->buildProposalScaleOptions();
 
         foreach (self::PROPOSAL_SCORE_ASPECTS as $key => $aspect) {
-            $sections[] = [
-                'title' => $aspect['number'] . '. ' . $aspect['label'],
-                'weight' => $aspect['weight'],
-                'score_field_name' => 'scores[' . $key . ']',
-                'score_value' => (string) ($assessment['scores'][$key] ?? ''),
-                'comment_field_name' => 'comments[' . $key . ']',
-                'comment_value' => (string) ($assessment['comments'][$key] ?? ''),
+            $aspects[] = [
+                'field_name' => 'scores[' . $key . ']',
+                'label' => $aspect['number'] . '. ' . $aspect['label'] . ' (Bobot: ' . $aspect['weight'] . ')',
+                'selected_value' => (string) ($assessment['scores'][$key] ?? ''),
                 'options' => $options,
             ];
         }
 
         return [
-            'card_title' => 'Formulir Penilaian Proposal',
-            'sections' => $sections,
+            'card_title' => 'Skor Penilaian',
+            'aspects' => $aspects,
             'general_comment' => [
                 'label' => 'Komentar Umum Proposal',
                 'field_name' => 'general_comment',
@@ -1545,6 +1549,7 @@ class ReviewerAssessmentService
 
         return number_format($score, 2, ',', '.');
     }
+
 
     private function mapStatusLabel(string $status): string
     {

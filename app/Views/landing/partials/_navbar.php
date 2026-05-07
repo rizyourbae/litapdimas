@@ -3,7 +3,7 @@
         <a class="navbar-brand d-flex align-items-center" href="<?= site_url() ?>">
             <img src="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>" alt="Logo UINSI" class="me-3" style="height: 50px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));">
             <div class="d-flex flex-column lh-1">
-                <span class="fs-4 fw-bold">LITAPDIMAS</span>
+                <span class="fs-4 fw-bold">SMART-LP2M</span>
                 <span class="small opacity-75 fw-normal" style="font-size: 0.7rem; letter-spacing: 1px;">UINSI SAMARINDA</span>
             </div>
         </a>
