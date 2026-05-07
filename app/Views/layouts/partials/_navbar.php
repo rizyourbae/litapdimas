@@ -37,13 +37,13 @@ $photoUrl     = $sessionUser['foto_url'] ?? base_url('assets/adminlte/assets/img
             <!-- User Dropdown -->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="<?= esc($photoUrl) ?>"
+                    <img src="<?= route_to('profile.foto') ?>"
                         class="user-image rounded-circle shadow" alt="User">
                     <span class="d-none d-md-inline"><?= esc($displayName) ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <li class="user-header text-bg-primary">
-                        <img src="<?= esc($photoUrl) ?>"
+                        <img src="<?= route_to('profile.foto') ?>"
                             class="rounded-circle shadow" alt="User">
                         <p>
                             <?= esc($displayName) ?>

@@ -6,10 +6,12 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Libraries\Storage;
 
 class ProfileController extends BaseController
 {
     protected $userService;
+    protected $storage;
 
     public function initController(
         RequestInterface $request,
@@ -18,6 +20,7 @@ class ProfileController extends BaseController
     ) {
         parent::initController($request, $response, $logger);
         $this->userService = service('userService');
+        $this->storage = new Storage();
     }
 
     /**
@@ -104,6 +107,27 @@ class ProfileController extends BaseController
             ->with('error', 'Gagal menyimpan profil. Silakan coba lagi.');
     }
 
+    public function foto()
+    {
+        $auth   = service('auth');
+        $userId = $auth->userId();
+
+        $user   = $this->userService->getUserById($userId);
+        $profil = $user['profil'] ?? [];
+        $photoPath = $profil['foto'] ?? null;
+
+        if (empty($photoPath)) {
+            return redirect()->to(base_url('assets/img/avatar.jpg'));
+        }
+
+        try {
+            $imageUrl = $this->storage->getObjectUrl('foto', $photoPath, '', Storage::SHR_PUBLIC);
+            return redirect()->to($imageUrl);
+        } catch (\Exception $e) {
+            return redirect()->to(base_url('assets/img/avatar.jpg'));
+        }
+    }
+
     private function handlePhotoUpload(int $userId, array $profil): array
     {
         $file = $this->request->getFile('foto');
@@ -124,27 +148,29 @@ class ProfileController extends BaseController
             throw new \Exception('Ukuran foto maksimal 2MB.');
         }
 
-        $uploadDir = FCPATH . 'uploads/profile';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
         $existingUser = $this->userService->getUserById($userId);
         $oldPhoto = $existingUser['profil']['foto'] ?? null;
-
-        $newName = $file->getRandomName();
-        if (!$file->move($uploadDir, $newName)) {
-            throw new \Exception('Gagal memindahkan file foto.');
-        }
-
         if (!empty($oldPhoto)) {
-            $oldPath = FCPATH . 'uploads/' . ltrim($oldPhoto, '/');
-            if (is_file($oldPath)) {
-                unlink($oldPath);
-            }
+            $this->storage->deleteObject($oldPhoto);
         }
 
-        $profil['foto'] = 'profile/' . $newName;
+        $newName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+        try {
+            $upload = $this->storage->putObject(
+                $_FILES['foto'],
+                'foto',
+                $newName,
+                Storage::SHR_PUBLIC,
+            );
+        } catch (\Exception $e) {
+            $upload = ['status' => 0, 'message' => $e->getMessage()];
+        }
+
+        if (!isset($upload['status']) || $upload['status'] != 1) {
+            throw new \Exception('Gagal mengunggah foto: ' . ($upload['message'] ?? 'Unknown error'));
+        }
+
+        $profil['foto'] = $upload['data']['object_name'];
         return $profil;
     }
 
@@ -154,14 +180,21 @@ class ProfileController extends BaseController
         $profil = $user['profil'] ?? [];
         $photoPath = $profil['foto'] ?? null;
 
+        $currentPhotoUrl = base_url('assets/img/avatar.jpg');
+        if (!empty($photoPath)) {
+            try {
+                $currentPhotoUrl = $this->storage->getObjectUrl('foto', $photoPath, '', Storage::SHR_PUBLIC);
+            } catch (\Exception $e) {
+                $currentPhotoUrl = base_url('assets/img/avatar.jpg');
+            }
+        }
+
         return [
             'errors'           => $errors,
             'activeTab'        => $this->resolveActiveProfileTab($errors),
-            'currentPhotoUrl'  => !empty($photoPath)
-                ? base_url('uploads/' . ltrim((string) $photoPath, '/'))
-                : base_url('assets/adminlte/assets/img/user2-160x160.jpg'),
+            'currentPhotoUrl'  => $currentPhotoUrl,
             'hasSavedPhoto'    => !empty($photoPath),
-            'savedPhotoName'   => !empty($photoPath) ? basename((string) $photoPath) : null,
+            'savedPhotoName'   => !empty($photoPath) ? $photoPath : null,
         ];
     }
 

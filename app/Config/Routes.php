@@ -38,6 +38,7 @@ $routes->get('dashboard', 'HomeController::dashboard', ['filter' => 'auth']);
 $routes->group('profile', ['filter' => 'auth:profile.manage'], function ($routes) {
     $routes->get('/',       'Profile\ProfileController::index',  ['as' => 'profile.edit']);
     $routes->post('update', 'Profile\ProfileController::update', ['as' => 'profile.update']);
+    $routes->get('foto',    'Profile\ProfileController::foto',   ['as' => 'profile.foto']);
 });
 
 // ============================================================
