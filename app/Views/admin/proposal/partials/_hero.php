@@ -7,11 +7,11 @@
 <div class="col-12 mb-2">
     <?= view('components/ui-hero', [
         'type' => 'admin',
-        'title' => esc((string) ($hero['title'] ?? $title)),
-        'subtitle' => esc((string) ($hero['subtitle'] ?? '')),
+        'title' => (string) ($hero['title'] ?? $title),
+        'subtitle' => (string) ($hero['subtitle'] ?? ''),
         'badges' => [
             ['label' => 'Proposal Detail', 'class' => 'text-bg-light border shadow-sm'],
-            ['label' => esc((string) ($hero['status_label'] ?? '')), 'class' => esc((string) ($hero['status_class'] ?? 'text-bg-primary')) . ' shadow-sm']
+            ['label' => (string) ($hero['status_label'] ?? ''), 'class' => (string) ($hero['status_class'] ?? 'text-bg-primary') . ' shadow-sm']
         ],
         'actions' => [
             [

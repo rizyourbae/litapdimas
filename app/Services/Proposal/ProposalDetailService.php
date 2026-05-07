@@ -510,15 +510,13 @@ class ProposalDetailService
             }
 
             $recommendationLabel = match ($assignment->recommendation) {
-                'recommended' => 'Direkomendasikan',
-                'revision' => 'Perlu Revisi',
-                'rejected' => 'Ditolak',
+                'recommended', 'revision' => 'Layak',
+                'rejected' => 'Tidak Layak',
                 default => 'Tertunda',
             };
 
             $recommendationBadge = match ($assignment->recommendation) {
-                'recommended' => 'text-bg-success',
-                'revision' => 'text-bg-warning',
+                'recommended', 'revision' => 'text-bg-success',
                 'rejected' => 'text-bg-danger',
                 default => 'text-bg-secondary',
             };

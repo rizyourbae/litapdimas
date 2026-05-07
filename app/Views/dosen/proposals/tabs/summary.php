@@ -41,7 +41,7 @@ $documentRows = $proposal['document_rows'] ?? [];
 
                     <div class="summary-stack">
                         <div class="content-card">
-                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Ringkasan Proposal</div>
+                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-info-circle text-primary"></i></span>Ringkasan Proposal</div>
                             <div class="summary-list">
                                 <div class="summary-item">
                                     <div class="summary-item-label">Judul Proposal</div>
@@ -79,7 +79,7 @@ $documentRows = $proposal['document_rows'] ?? [];
                         </div>
 
                         <div class="content-card">
-                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Ringkasan Ulasan</div>
+                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-chat-left-text text-primary"></i></span>Ringkasan Ulasan</div>
                             <div class="summary-abstract rich-content"><?= !empty($reviewSummary['abstrak'] ?? '') ? $reviewSummary['abstrak'] : '<p class="mb-0 text-muted">Abstrak belum diisi.</p>' ?></div>
                             <div class="summary-note-box mt-3">
                                 <div class="summary-note-label">Catatan Validator</div>
@@ -89,7 +89,7 @@ $documentRows = $proposal['document_rows'] ?? [];
 
                         <?php foreach ($teamSections as $section): ?>
                             <div class="content-card">
-                                <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span><?= esc((string) ($section['title'] ?? 'Tim')) ?></div>
+                                <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-people text-primary"></i></span><?= esc((string) ($section['title'] ?? 'Tim')) ?></div>
                                 <div class="table-responsive dosen-table-wrap">
                                     <table class="table table-sm table-bordered align-middle summary-table mb-0">
                                         <thead>
@@ -120,7 +120,7 @@ $documentRows = $proposal['document_rows'] ?? [];
                         <?php endforeach; ?>
 
                         <div class="content-card">
-                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Publikasi Tujuan</div>
+                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-journal-bookmark text-primary"></i></span>Publikasi Tujuan</div>
                             <div class="summary-list">
                                 <div class="summary-item">
                                     <div class="summary-item-label">ISSN</div>
@@ -146,7 +146,7 @@ $documentRows = $proposal['document_rows'] ?? [];
                         </div>
 
                         <div class="content-card">
-                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Dokumen Proposal</div>
+                            <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-file-earmark-pdf text-primary"></i></span>Dokumen Proposal</div>
                             <div class="table-responsive dosen-table-wrap">
                                 <table class="table table-sm table-bordered align-middle summary-table mb-0">
                                     <thead>

@@ -61,9 +61,37 @@ class ProposalUploadService
                 return false;
             }
 
-            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
             $fileSize = $file->getSize();
             $mimeType = $file->getMimeType();
+
+            // Opsi Switch Berdasarkan Environment
+            if (ENVIRONMENT === 'development') {
+                // Mode Development: Simpan ke storage lokal
+                $newFilename = $docType . '_' . time() . '_' . $file->getRandomName();
+                $uploadPath = WRITEPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
+
+                if (!is_dir($uploadPath)) {
+                    if (!mkdir($uploadPath, 0755, true) && !is_dir($uploadPath)) {
+                        $this->lastError = 'Gagal membuat direktori upload lokal';
+                        return false;
+                    }
+                }
+
+                if ($file->move($uploadPath, $newFilename)) {
+                    return [
+                        'nama_file' => $newFilename,
+                        'path_file' => self::UPLOAD_DIR . '/' . $proposalUuid . '/' . $newFilename,
+                        'file_size' => $fileSize,
+                        'mime_type' => $mimeType,
+                    ];
+                }
+
+                $this->lastError = 'Gagal memindahkan file ke folder lokal';
+                return false;
+            }
+
+            // Mode Production: Gunakan UINSI Storage API
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
             
             try {
                 $upload = $this->storage->putObject(
@@ -221,11 +249,18 @@ class ProposalUploadService
     public function deleteFile(string $filePath): bool
     {
         try {
+            // Jika development atau file ada di lokal, hapus lokal
             $fullPath = WRITEPATH . $filePath;
             if (is_file($fullPath)) {
-                unlink($fullPath);
-                return true;
+                return unlink($fullPath);
             }
+
+            // Jika di production dan tidak ada di lokal, hapus dari Storage API
+            if (ENVIRONMENT === 'production') {
+                $result = $this->storage->deleteObject($filePath);
+                return (isset($result['status']) && $result['status'] == 1);
+            }
+
             return false;
         } catch (\Exception $e) {
             $this->lastError = 'Error saat menghapus file: ' . $e->getMessage();

@@ -31,15 +31,15 @@ $sections = $review['substansi_bagian'] ?? [];
                     <?php endif; ?>
 
                     <div class="content-card">
-                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Judul Proposal</div>
+                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-type text-primary"></i></span>Judul Proposal</div>
                         <div class="rich-content fw-bold text-primary"><?= esc((string) ($review['judul'] ?? '-')) ?></div>
                     </div>
                     <div class="content-card">
-                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Abstrak</div>
+                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-justify-left text-primary"></i></span>Abstrak</div>
                         <div class="rich-content"><?= !empty($review['abstrak']) ? $review['abstrak'] : '<p class="mb-0 text-muted">Abstrak belum diisi.</p>' ?></div>
                     </div>
                     <div class="content-card">
-                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"></span>Bagian Substansi</div>
+                        <div class="summary-panel-title"><span class="summary-panel-dot" aria-hidden="true"><i class="bi bi-layers text-primary"></i></span>Bagian Substansi</div>
                         <?php if (empty($sections)): ?>
                             <div class="text-muted">Bagian substansi belum diisi.</div>
                         <?php else: ?>

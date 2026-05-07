@@ -31,7 +31,7 @@
                     <img src="<?= base_url('assets/adminlte/assets/img/logo/logo_kemenag.png') ?>" alt="Kemenag" class="logo-item">
                     <img src="<?= base_url('assets/adminlte/assets/img/logo/logo-uinsi.png') ?>" alt="UINSI" class="logo-item">
                 </div>
-                <h1 class="auth-brand">SMART-P2M</h1>
+                <h1 class="auth-brand">SMART-LP2M</h1>
                 <p class="auth-subtitle">UIN Sultan Aji Muhammad Idris Samarinda</p>
             </div>
 

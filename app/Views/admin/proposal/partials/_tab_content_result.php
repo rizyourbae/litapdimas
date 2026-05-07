@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array $reviewerResultsPanel
  * @var array $reviewerResultItems
@@ -73,7 +74,7 @@
             </div>
 
             <!-- Presentation Assessment Pane -->
-            <div class="tab-pane fade" id="proposalShowPresentationPane" role="tabpanel">
+            <div class="tab-pane fade" id="proposalReviewerPresentasiPane" role="tabpanel">
                 <div class="alert alert-info border-0 shadow-sm rounded-3 mb-4 small">
                     <i class="bi bi-info-circle-fill me-2"></i>
                     <?= esc((string) ($reviewerResultsPanel['completion_message'] ?? '')) ?>
@@ -124,19 +125,6 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="text-center mt-4">
-                    <?php if (!empty($reviewerResultsPanel['all_reviewed'])): ?>
-                        <a href="<?= esc((string) ($reviewerResultsPanel['presentasi_url'] ?? '#')) ?>" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
-                            <i class="bi bi-easel2 me-2"></i><?= esc((string) ($reviewerResultsPanel['presentasi_label'] ?? 'Buka Penilaian Presentasi')) ?>
-                        </a>
-                        <p class="small text-muted mt-2 px-lg-5"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></p>
-                    <?php else: ?>
-                        <button type="button" class="btn btn-outline-secondary btn-lg px-5 rounded-pill" disabled>
-                            <i class="bi bi-lock-fill me-2"></i>Penilaian Presentasi Belum Tersedia
-                        </button>
-                        <p class="small text-muted mt-2 px-lg-5"><?= esc((string) ($reviewerResultsPanel['presentasi_hint'] ?? '')) ?></p>
-                    <?php endif; ?>
-                </div>
             </div>
         </div>
     </div>

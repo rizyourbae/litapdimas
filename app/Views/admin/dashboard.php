@@ -70,7 +70,7 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="<?= site_url('admin/master/index') ?>" class="text-decoration-none d-block h-100">
+                        <a href="<?= site_url('admin/master/referensi') ?>" class="text-decoration-none d-block h-100">
                             <div class="bg-light p-4 h-100 rounded-4 transition-base border border-transparent hover-lift">
                                 <div class="admin-panel-icon-sm mb-3 bg-white shadow-sm rounded-3 text-info fs-4"><i class="bi bi-database-gear"></i></div>
                                 <h4 class="h6 fw-bold text-dark">Master Referensi</h4>
@@ -79,7 +79,7 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="<?= site_url('admin/proposal') ?>" class="text-decoration-none d-block h-100">
+                        <a href="<?= site_url('admin/proposals') ?>" class="text-decoration-none d-block h-100">
                             <div class="bg-light p-4 h-100 rounded-4 transition-base border border-transparent hover-lift">
                                 <div class="admin-panel-icon-sm mb-3 bg-white shadow-sm rounded-3 text-warning fs-4"><i class="bi bi-files"></i></div>
                                 <h4 class="h6 fw-bold text-dark">Monitoring Proposal</h4>

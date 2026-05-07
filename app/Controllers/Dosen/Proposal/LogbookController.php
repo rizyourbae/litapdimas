@@ -41,8 +41,13 @@ class LogbookController extends BaseController
             'nama_kegiatan'      => 'required|max_length[255]',
             'teknik'             => 'required|in_list[Analisis Dokumen,Diskusi,FGD,Observasi,Penyebaran Angket,Wawancara]',
             'deskripsi_kegiatan' => 'required',
-            'berkas'             => 'uploaded[berkas]|max_size[berkas,2048]|ext_in[berkas,pdf,jpg,jpeg,png,zip,docx]',
         ];
+
+        // Hanya validasi berkas jika ada file yang diunggah
+        $file = $this->request->getFile('berkas');
+        if ($file && $file->isValid()) {
+            $rules['berkas'] = 'max_size[berkas,2048]|ext_in[berkas,pdf,jpg,jpeg,png,zip,docx]';
+        }
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('error', 'Validasi gagal: ' . implode(', ', $this->validator->getErrors()));

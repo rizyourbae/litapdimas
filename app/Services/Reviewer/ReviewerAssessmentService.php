@@ -1175,11 +1175,11 @@ class ReviewerAssessmentService
 
     private function mapRecommendationByScore(float $score): string
     {
-        if ($score >= 80) {
+        if ($score >= 70) {
             return 'recommended';
         }
 
-        if ($score >= 60) {
+        if ($score >= 50) {
             return 'revision';
         }
 

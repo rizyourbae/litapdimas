@@ -182,6 +182,13 @@ class SecureFileController extends BaseController
                 ->setBody('<h1>404 Not Found</h1><p>File tidak ditemukan atau path tidak valid.</p>');
         }
 
+        // 1. Cek apakah file ada di lokal (untuk mode development)
+        $fullPath = WRITEPATH . $cleanPath;
+        if (is_file($fullPath)) {
+            return $this->response->download($fullPath, null)->inline();
+        }
+
+        // 2. Jika tidak ada di lokal, coba ambil dari Storage API (mode production)
         try {
             $fileUrl = $this->storage->getObjectUrl($mod, $originalName, '', Storage::SHR_PUBLIC);
             return redirect()->to($fileUrl);

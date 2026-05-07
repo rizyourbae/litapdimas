@@ -834,9 +834,8 @@ class AdminProposalService
     private function mapRecommendationLabel(string $recommendation): string
     {
         return match ($recommendation) {
-            'recommended' => 'Layak Dilanjutkan',
-            'revision' => 'Perlu Revisi',
-            'rejected' => 'Tidak Direkomendasikan',
+            'recommended', 'revision' => 'Layak',
+            'rejected' => 'Tidak Layak',
             default => 'Belum Ada Rekomendasi',
         };
     }
@@ -844,10 +843,9 @@ class AdminProposalService
     private function mapRecommendationBadgeClass(string $recommendation): string
     {
         return match ($recommendation) {
-            'recommended' => 'text-bg-success',
-            'revision' => 'text-bg-warning',
+            'recommended', 'revision' => 'text-bg-success',
             'rejected' => 'text-bg-danger',
-            default => 'text-bg-light border',
+            default => 'text-bg-secondary',
         };
     }
 
