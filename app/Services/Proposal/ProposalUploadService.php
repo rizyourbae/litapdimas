@@ -4,6 +4,7 @@ namespace App\Services\Proposal;
 
 use CodeIgniter\Files\File;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use App\Libraries\Storage;
 
 /**
  * ProposalUploadService
@@ -16,6 +17,8 @@ use CodeIgniter\HTTP\Files\UploadedFile;
  */
 class ProposalUploadService
 {
+    protected $storage;
+    
     // Constants
     private const UPLOAD_DIR = 'uploads/proposal';
     private const MAX_FILE_SIZE = 2097152; // 2MB in bytes
@@ -23,6 +26,11 @@ class ProposalUploadService
     private const ALLOWED_EXTENSIONS = ['pdf'];
 
     private $lastError = '';
+
+    public function __construct()
+    {
+        $this->storage = new Storage();
+    }
 
     /**
      * Upload single file
@@ -48,32 +56,41 @@ class ProposalUploadService
                 return false;
             }
 
-            $mimeType = $file->getMimeType();
-
             // Validasi file size
             if (!$this->validateFileSize($file)) {
                 return false;
             }
 
-            // Create proposal upload directory
-            $uploadPath = WRITEPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            $fileSize = $file->getSize();
+            $mimeType = $file->getMimeType();
+            
+            try {
+                $upload = $this->storage->putObject(
+                    $_FILES[$fileInputName],
+                    'proposal',
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
             }
 
-            // Generate unique filename
-            $newFilename = $docType . '_' . time() . '_' . bin2hex(random_bytes(8)) . '.pdf';
-            $destination = $uploadPath . '/' . $newFilename;
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $this->lastError = 'Gagal mengunggah file: ' . ($upload['message'] ?? 'Unknown error');
+                return false;
+            }
 
-            if (!move_uploaded_file($file->getTempName(), $destination)) {
-                $this->lastError = 'Gagal memindahkan file ke folder tujuan';
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                $this->lastError = 'Gagal mendapatkan nama file dari upload';
                 return false;
             }
 
             return [
-                'nama_file' => $newFilename,
-                'path_file' => self::UPLOAD_DIR . '/' . $proposalUuid . '/' . $newFilename,
-                'file_size' => filesize($destination),
+                'nama_file' => $objectName,
+                'path_file' => $objectName,
+                'file_size' => $fileSize,
                 'mime_type' => $mimeType,
             ];
         } catch (\Exception $e) {

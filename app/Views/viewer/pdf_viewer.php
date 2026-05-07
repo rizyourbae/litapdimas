@@ -118,6 +118,8 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+            z-index: 1000;
+            font-size: 0.95rem;
         }
 
         .spinner {
@@ -132,6 +134,10 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        .loader-wrapper.hidden {
+            display: none;
         }
 
         /* Watermark */
@@ -195,10 +201,10 @@
         <main class="viewer-main" id="viewer-main">
             <div class="loader-wrapper" id="loader">
                 <div class="spinner"></div>
-                <div class="small">Memuat Dokumen...</div>
+                <div>Memuat Dokumen...</div>
             </div>
             
-            <div id="pdf-canvas-container">
+            <div id="pdf-canvas-container" style="display: none;">
                 <!-- Watermark Layer -->
                 <div class="watermark">SECURE VIEW</div>
                 <canvas id="pdf-canvas"></canvas>
@@ -247,7 +253,9 @@
                         renderPage(pageNumPending);
                         pageNumPending = null;
                     }
-                    document.getElementById('loader').style.display = 'none';
+                    // Sembunyikan loader saat rendering selesai
+                    document.getElementById('loader').classList.add('hidden');
+                    document.getElementById('pdf-canvas-container').style.display = 'block';
                 });
             });
 
@@ -319,7 +327,7 @@
             renderPage(pageNum);
         }).catch(function(error) {
             console.error('Error loading PDF:', error);
-            document.getElementById('loader').innerHTML = '<div class="text-danger"><i class="bi bi-exclamation-triangle fs-1"></i><br>Gagal memuat dokumen.</div>';
+            document.getElementById('loader').innerHTML = '<div style="color: #e74c3c;"><i class="bi bi-exclamation-triangle"></i><br>Gagal memuat dokumen.</div>';
         });
     </script>
 </body>

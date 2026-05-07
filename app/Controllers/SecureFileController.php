@@ -7,9 +7,18 @@ use App\Models\Proposal\ProposalPengajuan as ProposalModel;
 use App\Models\Proposal\ProposalReviewerAssignment;
 use App\Services\AuditLogService;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Libraries\Storage;
 
 class SecureFileController extends BaseController
 {
+
+    protected $storage;
+
+    function __construct()
+    {
+        $this->storage = new Storage();
+    }
+
     /**
      * View proposal document
      */
@@ -26,7 +35,7 @@ class SecureFileController extends BaseController
 
         $this->auditLog->log('VIEW_FILE', 'proposal', $uuid, 'Melihat dokumen proposal: ' . $record->nama_file);
 
-        return $this->serveFile($record->path_file, $record->nama_file);
+        return $this->serveFile($record->path_file, $record->nama_file, null, 'proposal');
     }
 
     /**
@@ -160,8 +169,9 @@ class SecureFileController extends BaseController
 
     /**
      * Internal helper to serve file
+     * Access control sudah dilakukan di method pemanggil
      */
-    private function serveFile(string $relativePath, string $originalName, ?string $mimeType = null): ResponseInterface
+    private function serveFile(string $relativePath, string $originalName, ?string $mimeType = null, string $mod = null): ResponseInterface
     {
         // Clean relative path from redundant prefixes
         $cleanPath = ltrim($relativePath, '/');
@@ -171,45 +181,13 @@ class SecureFileController extends BaseController
              return $this->response->setStatusCode(404)
                 ->setBody('<h1>404 Not Found</h1><p>File tidak ditemukan atau path tidak valid.</p>');
         }
-        if (strpos($cleanPath, 'writable/') === 0) {
-            $cleanPath = substr($cleanPath, 9); // strip "writable/"
+
+        try {
+            $fileUrl = $this->storage->getObjectUrl($mod, $originalName, '', Storage::SHR_PUBLIC);
+            return redirect()->to($fileUrl);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(404)
+                ->setBody('<h1>404 Not Found</h1><p>File tidak ditemukan atau tidak dapat diakses.</p>');
         }
-
-        // Ensure paths are joined correctly
-        $baseWritePath = rtrim(WRITEPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $baseFcPath = rtrim(FCPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-        // Try WRITEPATH first (The NEW secure location)
-        $fullPath = $baseWritePath . $cleanPath;
-        if (!is_file($fullPath)) {
-            // Try FCPATH (The OLD public location)
-            $fullPath = $baseFcPath . $cleanPath;
-            if (!is_file($fullPath)) {
-                // Try literal path from DB as last resort
-                $fullPath = $baseFcPath . $relativePath;
-                if (!is_file($fullPath)) {
-                    return $this->response->setStatusCode(404)
-                        ->setBody('<h1>404 Not Found</h1><p>File tidak ditemukan atau tidak dapat diakses.</p>');
-                }
-            }
-        }
-
-        // Final check to ensure it's not a directory
-        if (is_dir($fullPath)) {
-            return $this->response->setStatusCode(403)
-                ->setBody('<h1>403 Forbidden</h1><p>Akses ke direktori tidak diperbolehkan.</p>');
-        }
-
-        if (!$mimeType) {
-            $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
-        }
-
-        $fileSize = filesize($fullPath);
-
-        return $this->response
-            ->setHeader('Content-Type', $mimeType)
-            ->setHeader('Content-Length', $fileSize)
-            ->setHeader('Content-Disposition', 'inline; filename="' . $originalName . '"')
-            ->setBody(file_get_contents($fullPath));
     }
 }
