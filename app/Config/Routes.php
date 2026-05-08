@@ -14,6 +14,8 @@ $routes->get('files/logbook/(:segment)',  'SecureFileController::logbookDocument
 $routes->get('files/output/(:segment)',   'SecureFileController::outputDocument/$1');
 $routes->get('files/report/(:segment)',   'SecureFileController::reportDocument/$1');
 $routes->get('files/outcome/(:segment)',  'SecureFileController::outcomeDocument/$1');
+$routes->get('files/pendidikan/(:segment)',  'SecureFileController::pendidikanDocument/$1');
+$routes->get('files/kelengkapan/(:segment)', 'SecureFileController::kelengkapanDocument/$1');
 $routes->get('files/view/(:segment)/(:segment)', 'SecureFileController::viewer/$1/$2');
 $routes->get('uploads/(:segment)/(:any)', 'SecureFileController::generalUpload/$1/$2');
 

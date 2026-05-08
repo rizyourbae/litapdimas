@@ -3,14 +3,15 @@
 namespace App\Services\User;
 
 use App\Models\User\KelengkapanDokumenModel;
+use App\Libraries\Storage;
 use Exception;
 use Ramsey\Uuid\Uuid;
 
 class KelengkapanDokumenService
 {
     private KelengkapanDokumenModel $model;
+    private Storage $storage;
     private const ID_KEY_PREFIX = 'id-';
-    private const UPLOAD_DIR = 'uploads/kelengkapan_dokumen';
 
     // Fixed document types per gambar
     private const DOCUMENT_TYPES = [
@@ -22,6 +23,7 @@ class KelengkapanDokumenService
     public function __construct()
     {
         $this->model = new KelengkapanDokumenModel();
+        $this->storage = new Storage();
     }
 
     /**
@@ -125,12 +127,9 @@ class KelengkapanDokumenService
             throw new Exception('File dokumen harus diupload.');
         }
 
-        // Delete old file if exists
+        // Delete old file from storage if exists
         if ($dokumen->dokumen_file) {
-            $oldFilePath = WRITEPATH . $dokumen->dokumen_file;
-            if (is_file($oldFilePath)) {
-                unlink($oldFilePath);
-            }
+            $this->storage->deleteObject($dokumen->dokumen_file);
         }
 
         // Handle new file upload
@@ -229,30 +228,31 @@ class KelengkapanDokumenService
             throw new Exception('Ukuran file tidak boleh lebih dari 10MB.');
         }
 
-        // Create directory if not exists (in public folder)
-        $uploadPath = WRITEPATH . self::UPLOAD_DIR;
-        if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0755, true);
+        $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+
+        try {
+            $upload = $this->storage->putObject(
+                $_FILES['file_dokumen'],
+                'kelengkapan',
+                $fileName,
+                Storage::SHR_PUBLIC,
+            );
+        } catch (\Exception $e) {
+            $upload = ['status' => 0, 'message' => $e->getMessage()];
         }
 
-        // Move to public uploads directory
-        $newName = $file->getRandomName();
-        if (empty($newName)) {
-            throw new Exception('Gagal generate nama file.');
+        if (!isset($upload['status']) || $upload['status'] != 1) {
+            $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+            throw new Exception($errorMsg);
         }
 
-        if (!$file->move($uploadPath, $newName)) {
-            throw new Exception('Gagal memindahkan file: ' . $file->getErrorString());
+        $objectName = $upload['data']['object_name'] ?? null;
+        if (!$objectName) {
+            throw new Exception('Gagal mendapatkan nama file dari penyimpanan.');
         }
 
-        // Verify file actually exists
-        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $newName;
-        if (!is_file($fullPath)) {
-            throw new Exception('File tidak ditemukan setelah upload: ' . $fullPath);
-        }
-
-        // Return relative path from public root (for base_url())
-        return 'uploads/kelengkapan_dokumen/' . $newName;
+        // Return file path from storage
+        return $objectName;
     }
 
     private function resolveFormValues(?object $dokumen): array
@@ -280,6 +280,6 @@ class KelengkapanDokumenService
             return null;
         }
 
-        return site_url($dokumen->dokumen_file);
+        return site_url('files/kelengkapan/' . $dokumen->uuid);
     }
 }

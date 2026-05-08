@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Proposal\ProposalPengajuan as ProposalModel;
 use App\Models\Proposal\ProposalReviewerAssignment;
-use App\Services\AuditLogService;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\Storage;
 
@@ -101,6 +100,58 @@ class SecureFileController extends BaseController
     }
 
     /**
+     * View pendidikan document
+     */
+    public function pendidikanDocument(string $uuid)
+    {
+        $model = new \App\Models\User\RiwayatPendidikanModel();
+        $record = $model->where('uuid', $uuid)->first();
+        if (!$record) return $this->response->setStatusCode(404)->setBody('Riwayat pendidikan record not found.');
+        if (!$record->dokumen_ijazah) return $this->response->setStatusCode(404)->setBody('Riwayat pendidikan file not found.');
+        
+        // Check if user is logged in
+        if (!service('auth')->isLoggedIn()) {
+            return $this->response->setStatusCode(403)->setBody('Access Denied.');
+        }
+        
+        // For pendidikan, we can check if the current user is the owner of the document
+        $userId = (int) (user()['id'] ?? 0);
+        if ((int) $record->user_id !== $userId && !service('auth')->hasRole('admin')) {
+            return $this->response->setStatusCode(403)->setBody('Access Denied.');
+        }
+        
+        $this->auditLog->log('VIEW_FILE', 'pendidikan', $uuid, 'Melihat berkas riwayat pendidikan: ' . $record->institusi);
+
+        return $this->serveFile($record->dokumen_ijazah, $record->dokumen_ijazah, null, 'pendidikan');
+    }
+
+    /**
+     * View kelengkapan document
+     */
+    public function kelengkapanDocument(string $uuid)
+    {
+        $model = new \App\Models\User\KelengkapanDokumenModel();
+        $record = $model->where('uuid', $uuid)->first();
+        if (!$record) return $this->response->setStatusCode(404)->setBody('Kelengkapan record not found.');
+        if (!$record->dokumen_file) return $this->response->setStatusCode(404)->setBody('Kelengkapan file not found.');
+        
+        // Check if user is logged in
+        if (!service('auth')->isLoggedIn()) {
+            return $this->response->setStatusCode(403)->setBody('Access Denied.');
+        }
+        
+        // For kelengkapan, we can check if the current user is the owner of the document
+        $userId = (int) (user()['id'] ?? 0);
+        if ((int) $record->user_id !== $userId && !service('auth')->hasRole('admin')) {
+            return $this->response->setStatusCode(403)->setBody('Access Denied.');
+        }
+        
+        $this->auditLog->log('VIEW_FILE', 'kelengkapan', $uuid, 'Melihat berkas kelengkapan: ' . $record->dokumen_file);
+
+        return $this->serveFile($record->dokumen_file, $record->dokumen_file, null, 'kelengkapan');
+    }
+
+    /**
      * Display in-browser PDF viewer
      */
     public function viewer(string $type, string $uuid)
@@ -134,6 +185,16 @@ class SecureFileController extends BaseController
                 $model = new \App\Models\Proposal\ProposalOutcome();
                 $rec = $model->where('uuid', $uuid)->first();
                 if ($rec) $title = "Outcome: " . $rec->judul;
+                break;
+            case 'pendidikan':
+                $model = new \App\Models\User\RiwayatPendidikanModel();
+                $rec = $model->where('uuid', $uuid)->first();
+                if ($rec) $title = "Riwayat Pendidikan: " . $rec->nama_institusi;
+                break;
+            case 'kelengkapan':
+                $model = new \App\Models\User\KelengkapanDokumenModel();
+                $rec = $model->where('uuid', $uuid)->first();
+                if ($rec) $title = "Kelengkapan: " . $rec->nama_dokumen;
                 break;
         }
 

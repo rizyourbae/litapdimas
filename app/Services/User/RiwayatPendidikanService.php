@@ -3,18 +3,20 @@
 namespace App\Services\User;
 
 use App\Models\User\RiwayatPendidikanModel;
+use App\Libraries\Storage;
 use Exception;
 use Ramsey\Uuid\Uuid;
 
 class RiwayatPendidikanService
 {
     private RiwayatPendidikanModel $model;
+    private Storage $storage;
     private const ID_KEY_PREFIX = 'id-';
-    private const UPLOAD_DIR = 'uploads/riwayat_pendidikan';
 
     public function __construct()
     {
         $this->model = new RiwayatPendidikanModel();
+        $this->storage = new Storage();
     }
 
     /**
@@ -148,12 +150,9 @@ class RiwayatPendidikanService
             throw new Exception('Data riwayat pendidikan tidak ditemukan.');
         }
 
-        // Clean up file if exists
+        // Clean up file from storage if exists
         if ($riwayat->dokumen_tipe === 'file' && $riwayat->dokumen_ijazah) {
-            $filePath = WRITEPATH . $riwayat->dokumen_ijazah;
-            if (is_file($filePath)) {
-                unlink($filePath);
-            }
+            $this->storage->deleteObject($riwayat->dokumen_ijazah);
         }
 
         $this->model->delete($riwayat->id);
@@ -233,26 +232,31 @@ class RiwayatPendidikanService
             throw new Exception('File tidak valid: ' . $file->getErrorString());
         }
 
-        // Create directory if not exists (in public folder)
-        $uploadPath = WRITEPATH . self::UPLOAD_DIR;
-        if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0755, true);
+        $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+
+        try {
+            $upload = $this->storage->putObject(
+                $_FILES['file_dokumen'],
+                'pendidikan',
+                $fileName,
+                Storage::SHR_PUBLIC,
+            );
+        } catch (\Exception $e) {
+            $upload = ['status' => 0, 'message' => $e->getMessage()];
         }
 
-        // Move to public uploads directory
-        $newName = $file->getRandomName();
-        if (!$file->move($uploadPath, $newName)) {
-            throw new Exception('Gagal memindahkan file: ' . $file->getErrorString());
+        if (!isset($upload['status']) || $upload['status'] != 1) {
+            $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+            throw new Exception($errorMsg);
         }
 
-        // Verify file actually exists
-        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $newName;
-        if (!is_file($fullPath)) {
-            throw new Exception('File tidak ditemukan setelah upload: ' . $fullPath);
+        $objectName = $upload['data']['object_name'] ?? null;
+        if (!$objectName) {
+            throw new Exception('Gagal mendapatkan nama file dari penyimpanan.');
         }
 
-        // Return relative path from public root (for base_url())
-        return self::UPLOAD_DIR . '/' . $newName;
+        // Return object name from storage
+        return $objectName;
     }
 
     private function resolveFormValues(?object $riwayat): array
@@ -314,7 +318,9 @@ class RiwayatPendidikanService
             return null;
         }
 
-            return site_url($riwayat->dokumen_ijazah);
+        if ($riwayat->dokumen_tipe === 'file') {
+            return site_url('files/pendidikan/' . $riwayat->uuid);
+        }
 
         return $riwayat->dokumen_ijazah;
     }
