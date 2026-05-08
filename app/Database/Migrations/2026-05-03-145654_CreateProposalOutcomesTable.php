@@ -40,6 +40,11 @@ class CreateProposalOutcomesTable extends Migration
                 'constraint' => '100',
                 'null'       => true,
             ],
+            'file_path' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '255',
+                'null'       => true,
+            ],
             'url' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '255',
