@@ -627,10 +627,26 @@ class ProposalDetailService
         ];
 
         foreach ($outcomes as $out) {
-            $item = (array) $out;
+            $item = [
+                'uuid' => $out->uuid,
+                'tipe' => $out->tipe,
+                'judul' => $out->judul,
+                'nama_penerbit_jurnal' => $out->nama_penerbit_jurnal,
+                'volume_nomor' => $out->volume_nomor,
+                'file_path' => $out->file_path,
+                'file_url' => (!empty($out->uuid) && basename($out->file_path) !== 'outcomes') ? site_url('files/view/outcome/' . $out->uuid) : null,
+                'download_url' => (!empty($out->uuid) && basename($out->file_path) !== 'outcomes') ? site_url('files/outcome/' . $out->uuid) : null,
+                'original_filename' => $out->file_path,
+                'uploaded_at' => format_indo($out->created_at, true),
+            ];
+            
             if ($out->tipe === 'jurnal') {
+                $item['nama_penerbit_jurnal'] = $out->nama_penerbit_jurnal;
+                $item['volume_nomor'] = $out->volume_nomor;
                 $result['journals'][] = $item;
             } else {
+                $item['isbn'] = $out->isbn;
+                $item['tahun_terbit'] = $out->tahun_terbit;
                 $result['books'][] = $item;
             }
         }

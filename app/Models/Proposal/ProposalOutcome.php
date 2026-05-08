@@ -18,6 +18,7 @@ class ProposalOutcome extends Model
         'judul',
         'nama_penerbit_jurnal',
         'volume_nomor',
+        'file_path',
         'url',
         'isbn',
         'tahun_terbit'

@@ -13,23 +13,35 @@
                                         <tr>
                                             <th class="py-3">Judul Artikel</th>
                                             <th class="py-3">Nama Jurnal</th>
+                                            <th class="py-3">Berkas</th>
                                             <th class="py-3" style="width: 80px;">Hapus</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (empty($proposal['outcomes']['journals'])): ?>
                                             <tr>
-                                                <td colspan="3" class="text-center py-4 text-muted small">Maaf, belum ada data publikasi dalam bentuk artikel jurnal.</td>
+                                                <td colspan="4" class="text-center py-4 text-muted small">Maaf, belum ada data publikasi dalam bentuk artikel jurnal.</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($proposal['outcomes']['journals'] as $jurnal): ?>
                                                 <tr>
                                                     <td class="ps-3 small"><?= esc($jurnal['judul']) ?></td>
                                                     <td class="text-center">
-                                                        <a href="https://<?= esc($jurnal['url']) ?>" target="_blank" class="text-decoration-none">
-                                                            <?= esc($jurnal['nama_penerbit_jurnal']) ?>
-                                                            <div class="small text-muted"><?= esc($jurnal['volume_nomor']) ?></div>
-                                                        </a>
+                                                        <?= esc($jurnal['nama_penerbit_jurnal']) ?>
+                                                        <div class="small text-muted"><?= esc($jurnal['volume_nomor']) ?></div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <?php if (!empty($jurnal['file_path'])): ?>
+                                                            <a href="<?= $jurnal['file_url'] ?? '#' ?>" target="_blank" class="btn btn-info btn-sm text-white px-3 rounded-2 shadow-sm">
+                                                                <i class="bi bi-file-earmark-pdf me-1"></i>Lihat berkas
+                                                            </a>
+                                                        <?php elseif (!empty($jurnal['url'])): ?>
+                                                            <a href="https://<?= esc($jurnal['url']) ?>" target="_blank" class="btn btn-info btn-sm text-white px-3 rounded-2 shadow-sm">
+                                                                <i class="bi bi-link-45deg me-1"></i>Buka URL
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-2">Belum ada</span>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td class="text-center">
                                                         <button type="button" class="btn btn-danger btn-sm px-2" onclick="SwalDelete('<?= site_url('dosen/proposals/outcomes/delete/' . $jurnal['uuid']) ?>', 'Outcome ini')">
@@ -58,13 +70,14 @@
                                         <tr>
                                             <th class="py-3">Judul Buku</th>
                                             <th class="py-3">Penerbit</th>
+                                            <th class="py-3">Berkas</th>
                                             <th class="py-3" style="width: 80px;">Hapus</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (empty($proposal['outcomes']['books'])): ?>
                                             <tr>
-                                                <td colspan="3" class="text-center py-4 text-muted small">Maaf, belum ada data publikasi dalam bentuk buku.</td>
+                                                <td colspan="4" class="text-center py-4 text-muted small">Maaf, belum ada data publikasi dalam bentuk buku.</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($proposal['outcomes']['books'] as $buku): ?>
@@ -73,6 +86,19 @@
                                                     <td class="text-center small">
                                                         <?= esc($buku['nama_penerbit_jurnal']) ?>
                                                         <div class="text-muted">ISBN: <?= esc($buku['isbn']) ?> (<?= esc($buku['tahun_terbit']) ?>)</div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <?php if (!empty($buku['file_path'])): ?>
+                                                            <a href="<?= $buku['file_url'] ?? '#' ?>" target="_blank" class="btn btn-info btn-sm text-white px-3 rounded-2 shadow-sm">
+                                                                <i class="bi bi-file-earmark-pdf me-1"></i>Lihat berkas
+                                                            </a>
+                                                        <?php elseif (!empty($buku['url'])): ?>
+                                                            <a href="https://<?= esc($buku['url']) ?>" target="_blank" class="btn btn-info btn-sm text-white px-3 rounded-2 shadow-sm">
+                                                                <i class="bi bi-link-45deg me-1"></i>Buka URL
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-2">Belum ada</span>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td class="text-center">
                                                         <button type="button" class="btn btn-danger btn-sm px-2" onclick="SwalDelete('<?= site_url('dosen/proposals/outcomes/delete/' . $buku['uuid']) ?>', 'Outcome ini')">
