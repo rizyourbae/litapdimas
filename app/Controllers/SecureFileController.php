@@ -50,7 +50,7 @@ class SecureFileController extends BaseController
         
         $this->auditLog->log('VIEW_FILE', 'logbook', $uuid, 'Melihat berkas logbook');
 
-        return $this->serveFile($record->berkas_path, basename($record->berkas_path));
+        return $this->serveFile($record->berkas_path, $record->berkas_path, null, 'logbook');
     }
 
     /**
@@ -65,7 +65,7 @@ class SecureFileController extends BaseController
         
         $this->auditLog->log('VIEW_FILE', 'output', $uuid, 'Melihat berkas luaran: ' . $record->kategori);
 
-        return $this->serveFile($record->file_path, $record->original_filename);
+        return $this->serveFile($record->file_path, $record->file_path, null, 'output');
     }
 
     /**
@@ -80,7 +80,24 @@ class SecureFileController extends BaseController
         
         $this->auditLog->log('VIEW_FILE', 'report', $uuid, 'Melihat berkas laporan: ' . $record->kategori);
 
-        return $this->serveFile($record->file_path, $record->original_filename);
+        return $this->serveFile($record->file_path, $record->file_path, null, 'report');
+    }
+
+    /**
+     * View outcome document
+     */
+    public function outcomeDocument(string $uuid)
+    {
+        $model = new \App\Models\Proposal\ProposalOutcome();
+        $record = $model->where('uuid', $uuid)->first();
+        if (!$record) return $this->response->setStatusCode(404)->setBody('Outcome record not found.');
+        if (!$record->file_path) return $this->response->setStatusCode(404)->setBody('Outcome file not found.');
+        if (!$record || !$record->file_path) return $this->response->setStatusCode(404)->setBody('Outcome file not found.');
+        if (!$this->canAccessProposal($record->proposal_id)) return $this->response->setStatusCode(403)->setBody('Access Denied.');
+        
+        $this->auditLog->log('VIEW_FILE', 'outcome', $uuid, 'Melihat berkas outcome: ' . $record->judul);
+
+        return $this->serveFile($record->file_path, $record->file_path, null, 'outcome');
     }
 
     /**
@@ -112,6 +129,11 @@ class SecureFileController extends BaseController
                 $model = new \App\Models\Proposal\ProposalReport();
                 $rec = $model->where('uuid', $uuid)->first();
                 if ($rec) $title = "Report: " . $rec->kategori;
+                break;
+            case 'outcome':
+                $model = new \App\Models\Proposal\ProposalOutcome();
+                $rec = $model->where('uuid', $uuid)->first();
+                if ($rec) $title = "Outcome: " . $rec->judul;
                 break;
         }
 

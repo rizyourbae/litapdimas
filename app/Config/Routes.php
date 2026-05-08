@@ -13,6 +13,7 @@ $routes->get('files/proposal/(:segment)', 'SecureFileController::proposalDocumen
 $routes->get('files/logbook/(:segment)',  'SecureFileController::logbookDocument/$1');
 $routes->get('files/output/(:segment)',   'SecureFileController::outputDocument/$1');
 $routes->get('files/report/(:segment)',   'SecureFileController::reportDocument/$1');
+$routes->get('files/outcome/(:segment)',  'SecureFileController::outcomeDocument/$1');
 $routes->get('files/view/(:segment)/(:segment)', 'SecureFileController::viewer/$1/$2');
 $routes->get('uploads/(:segment)/(:any)', 'SecureFileController::generalUpload/$1/$2');
 
