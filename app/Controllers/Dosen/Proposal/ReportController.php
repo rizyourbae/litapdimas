@@ -5,18 +5,20 @@ namespace App\Controllers\Dosen\Proposal;
 use App\Controllers\BaseController;
 use App\Models\Proposal\ProposalReport;
 use App\Models\Proposal\ProposalPengajuan;
-use CodeIgniter\HTTP\ResponseInterface;
+use App\Libraries\Storage;
 use Exception;
 
 class ReportController extends BaseController
 {
     protected ProposalReport $reportModel;
     protected ProposalPengajuan $proposalModel;
+    protected Storage $storage;
 
     public function __construct()
     {
         $this->reportModel = new ProposalReport();
         $this->proposalModel = new ProposalPengajuan();
+        $this->storage = new Storage();
     }
 
     /**
@@ -51,23 +53,42 @@ class ReportController extends BaseController
         $existing = $this->reportModel->getByProposalAndKategori($proposal->id, $kategori);
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            $file->move(WRITEPATH . 'uploads/proposals/reports', $newName);
-            $file_path = 'uploads/proposals/reports/' . $newName;
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            
+            try {
+                $upload = $this->storage->putObject(
+                    $_FILES['berkas'],
+                    'report',
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
+            }
+
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+                return redirect()->back()->with('error', $errorMsg);
+            }
+
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                return redirect()->back()->with('error', 'Gagal mendapatkan nama file dari penyimpanan.');
+            }
 
             $data = [
                 'uuid'              => bin2hex(random_bytes(16)),
                 'proposal_id'       => $proposal->id,
                 'kategori'          => $kategori,
-                'file_path'         => $file_path,
+                'file_path'         => $objectName,
                 'original_filename' => $file->getClientName(),
             ];
 
             try {
                 if ($existing) {
-                    // Delete old file
-                    if ($existing && !empty($existing->file_path) && is_file(WRITEPATH . $existing->file_path)) {
-                        @unlink(WRITEPATH . $existing->file_path);
+                    // Delete old file from storage
+                    if ($existing && !empty($existing->file_path)) {
+                        $this->storage->deleteObject($existing->file_path);
                     }
                     $this->reportModel->update($existing->id, $data);
                 } else {

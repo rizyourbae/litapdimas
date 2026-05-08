@@ -5,18 +5,20 @@ namespace App\Controllers\Dosen\Proposal;
 use App\Controllers\BaseController;
 use App\Models\Proposal\ProposalLogbook;
 use App\Models\Proposal\ProposalPengajuan;
-use CodeIgniter\Encryption\Encryption;
+use App\Libraries\Storage;
 use Exception;
 
 class LogbookController extends BaseController
 {
     protected ProposalLogbook $logbookModel;
     protected ProposalPengajuan $proposalModel;
+    protected Storage $storage;
 
     public function __construct()
     {
         $this->logbookModel = new ProposalLogbook();
         $this->proposalModel = new ProposalPengajuan();
+        $this->storage = new Storage();
     }
 
     /**
@@ -54,27 +56,43 @@ class LogbookController extends BaseController
         }
 
         $file = $this->request->getFile('berkas');
-        $berkasPath = null;
+        $objectName = null;
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            $file->move(WRITEPATH . 'uploads/proposals/logbooks', $newName);
-            $berkasPath = 'uploads/proposals/logbooks/' . $newName;
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            
+            try {
+                $upload = $this->storage->putObject(
+                    $_FILES['berkas'],
+                    'logbook',
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
+            }
+
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+                return redirect()->back()->withInput()->with('error', $errorMsg);
+            }
+
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                return redirect()->back()->withInput()->with('error', 'Gagal mendapatkan nama berkas dari penyimpanan.');
+            }
         }
 
         $data = [
-            'uuid'               => Encryption::createKey(16), 
+            'uuid'               => bin2hex(random_bytes(16)),
             'proposal_id'        => $proposal->id,
             'tanggal'            => $this->request->getPost('tanggal'),
             'tempat'             => $this->request->getPost('tempat'),
             'nama_kegiatan'      => $this->request->getPost('nama_kegiatan'),
             'teknik'             => $this->request->getPost('teknik'),
             'deskripsi_kegiatan' => $this->request->getPost('deskripsi_kegiatan'),
-            'berkas_path'        => $berkasPath,
-        ];
-
-        // Ensure real UUID
-        $data['uuid'] = bin2hex(random_bytes(16)); 
+            'berkas_path'        => $objectName,
+        ]; 
 
         try {
             $this->logbookModel->insert($data);
@@ -102,8 +120,8 @@ class LogbookController extends BaseController
         }
 
         try {
-            if ($logbook->berkas_path && file_exists(WRITEPATH . $logbook->berkas_path)) {
-                @unlink(WRITEPATH . $logbook->berkas_path);
+            if ($logbook->berkas_path) {
+                $this->storage->deleteObject($logbook->berkas_path);
             }
             $this->logbookModel->delete($logbook->id);
             return redirect()->back()->with('success', 'Logbook berhasil dihapus.');

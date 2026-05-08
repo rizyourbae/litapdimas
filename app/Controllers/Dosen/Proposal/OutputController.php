@@ -5,18 +5,20 @@ namespace App\Controllers\Dosen\Proposal;
 use App\Controllers\BaseController;
 use App\Models\Proposal\ProposalOutput;
 use App\Models\Proposal\ProposalPengajuan;
-use CodeIgniter\HTTP\ResponseInterface;
+use App\Libraries\Storage;
 use Exception;
 
 class OutputController extends BaseController
 {
     protected ProposalOutput $outputModel;
     protected ProposalPengajuan $proposalModel;
+    protected Storage $storage;
 
     public function __construct()
     {
         $this->outputModel = new ProposalOutput();
         $this->proposalModel = new ProposalPengajuan();
+        $this->storage = new Storage();
     }
 
     /**
@@ -51,25 +53,42 @@ class OutputController extends BaseController
         $existing = $this->outputModel->getByProposalAndKategori($proposal->id, $kategori);
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName();
-            log_message('debug', 'Uploading output: ' . $newName . ' to ' . WRITEPATH . 'uploads/proposals/outputs');
-            $file->move(WRITEPATH . 'uploads/proposals/outputs', $newName);
-            $file_path = 'uploads/proposals/outputs/' . $newName;
-            log_message('debug', 'Output moved to: ' . $file_path);
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            
+            try {
+                $upload = $this->storage->putObject(
+                    $_FILES['berkas'],
+                    'output',
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
+            }
+
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+                return redirect()->back()->with('error', $errorMsg);
+            }
+
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                return redirect()->back()->with('error', 'Gagal mendapatkan nama file dari penyimpanan.');
+            }
 
             $data = [
                 'uuid'              => bin2hex(random_bytes(16)),
                 'proposal_id'       => $proposal->id,
                 'kategori'          => $kategori,
-                'file_path'         => $file_path,
+                'file_path'         => $objectName,
                 'original_filename' => $file->getClientName(),
             ];
 
             try {
                 if ($existing) {
-                    // Delete old file
-                    if ($existing && !empty($existing->file_path) && is_file(WRITEPATH . $existing->file_path)) {
-                        @unlink(WRITEPATH . $existing->file_path);
+                    // Delete old file from storage
+                    if ($existing && !empty($existing->file_path)) {
+                        $this->storage->deleteObject($existing->file_path);
                     }
                     $this->outputModel->update($existing->id, $data);
                 } else {
