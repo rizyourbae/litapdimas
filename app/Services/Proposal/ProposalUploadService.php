@@ -110,6 +110,7 @@ class ProposalUploadService
             }
 
             $objectName = $upload['data']['object_name'] ?? null;
+            $objectDir  = $upload['data']['directory'] ?? null;
             if (!$objectName) {
                 $this->lastError = 'Gagal mendapatkan nama file dari upload';
                 return false;
@@ -117,7 +118,7 @@ class ProposalUploadService
 
             return [
                 'nama_file' => $objectName,
-                'path_file' => $objectName,
+                'path_file' => $objectDir . '/' . $objectName,
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
             ];
@@ -129,6 +130,7 @@ class ProposalUploadService
 
     /**
      * Upload multiple files (untuk dokumen pendukung)
+     * Menggunakan UINSI Storage API untuk upload
      * 
      * @param string $fileInputName Name dari input file di form
      * @param string $proposalUuid UUID proposal
@@ -149,25 +151,49 @@ class ProposalUploadService
             $name = is_array($files['name']) ? $files['name'][$i] : $files['name'];
             $tmpName = is_array($files['tmp_name']) ? $files['tmp_name'][$i] : $files['tmp_name'];
             $error = is_array($files['error']) ? $files['error'][$i] : $files['error'];
+            $size = is_array($files['size']) ? $files['size'][$i] : $files['size'];
 
             if (!empty($name) && $error === UPLOAD_ERR_OK) {
                 $file = new File($tmpName);
                 if ($this->validateMimeType($file, $name) && $this->validateFileSize($file)) {
                     $mimeType = $file->getMimeType();
-                    $newFilename = 'pendukung_' . $i . '_' . time() . '_' . bin2hex(random_bytes(8)) . '.pdf';
-                    $uploadPath = WRITEPATH . self::UPLOAD_DIR . '/' . $proposalUuid;
-                    if (!is_dir($uploadPath)) {
-                        mkdir($uploadPath, 0755, true);
-                    }
+                    
+                    // Prepare file array for putObject
+                    $fileArray = [
+                        'name' => $name,
+                        'tmp_name' => $tmpName,
+                        'size' => $size,
+                        'error' => $error,
+                        'type' => $mimeType,
+                    ];
 
-                    $destination = $uploadPath . '/' . $newFilename;
-                    if (move_uploaded_file($tmpName, $destination)) {
-                        $results[] = [
-                            'nama_file' => $newFilename,
-                            'path_file' => self::UPLOAD_DIR . '/' . $proposalUuid . '/' . $newFilename,
-                            'file_size' => filesize($destination),
-                            'mime_type' => $mimeType,
-                        ];
+                    // Generate filename
+                    $fileName = time() . '_' . bin2hex(random_bytes(10));
+                    
+                    try {
+                        $upload = $this->storage->putObject(
+                            $fileArray,
+                            'proposal',
+                            $fileName,
+                            Storage::SHR_PUBLIC,
+                        );
+
+                        if (isset($upload['status']) && $upload['status'] == 1) {
+                            $objectName = $upload['data']['object_name'];
+                            $objectDir  = $upload['data']['directory'];
+                            if ($objectName) {
+                                $results[] = [
+                                    'nama_file' => $objectName,
+                                    'path_file' => $objectDir .'/'. $objectName,
+                                    'file_size' => $size,
+                                    'mime_type' => $mimeType,
+                                ];
+                            }
+                        } else {
+                            $this->lastError = 'Gagal mengunggah file: ' . ($upload['message'] ?? 'Unknown error');
+                        }
+                    } catch (\Exception $e) {
+                        $this->lastError = 'Error saat upload: ' . $e->getMessage();
                     }
                 }
             }
