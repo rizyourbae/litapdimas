@@ -61,11 +61,11 @@ class AdminSeeder extends Seeder
         }
 
         // --- User Admin ---
-        $adminUser = $userModel->where('email', 'admin@litapdimas.ac.id')->first();
+        $adminUser = $userModel->where('email', 'admin.smart@uinsi.ac.id')->first();
         if (!$adminUser) {
             $userId = $userModel->insert([
                 'username'     => 'admin',
-                'email'        => 'admin@litapdimas.ac.id',
+                'email'        => 'admin.smart@uinsi.ac.id',
                 'password'     => password_hash('Litap@admin123', PASSWORD_BCRYPT),
                 'nama_lengkap' => 'Administrator',
                 'aktif'        => 1,
