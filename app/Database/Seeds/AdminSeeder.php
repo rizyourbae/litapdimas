@@ -66,7 +66,7 @@ class AdminSeeder extends Seeder
             $userId = $userModel->insert([
                 'username'     => 'admin',
                 'email'        => 'admin@litapdimas.ac.id',
-                'password'     => password_hash('admin123', PASSWORD_BCRYPT),
+                'password'     => password_hash('Litap@admin123', PASSWORD_BCRYPT),
                 'nama_lengkap' => 'Administrator',
                 'aktif'        => 1,
             ], true);
