@@ -14,7 +14,7 @@
                     <div class="carousel-item h-100 <?= $index === 0 ? 'active' : '' ?>" data-bs-interval="6000">
                         <!-- Banner Image -->
                         <div class="hero-bg position-absolute top-0 start-0 w-100 h-100" 
-                             style="background: url('<?= base_url($banner['image']) ?>') no-repeat center center / cover;">
+                             style="background: url('<?= route_to('media.serve', 'banners', $banner['image']) ?>') no-repeat center center / cover;">
                         </div>
                         
                         <!-- Subtle Overlay (Only show if there is text) -->

@@ -77,7 +77,7 @@
 
                     <?php if ($row['image']): ?>
                         <div class="mb-5">
-                            <img src="<?= base_url($row['image']) ?>" class="w-100 rounded-4 shadow-sm" alt="<?= esc($row['title']) ?>">
+                            <img src="<?= route_to('media.serve', 'announcements', $row['image']) ?>" class="w-100 rounded" alt="<?= esc($row['title']) ?>">
                         </div>
                     <?php endif; ?>
 
@@ -94,7 +94,7 @@
                                 <h6 class="fw-bold mb-1">Dokumen Lampiran</h6>
                                 <p class="text-muted small mb-0">Silakan unduh file untuk informasi lebih detail.</p>
                             </div>
-                            <a href="<?= base_url($row['file_attachment']) ?>" class="btn btn-primary rounded-pill px-4" download>
+                            <a href="<?= route_to('media.serve', 'attachments', $row['file_attachment']) ?>" class="btn btn-primary rounded-pill px-4" target="_blank">
                                 <i class="bi bi-download me-2"></i> Unduh File
                             </a>
                         </div>

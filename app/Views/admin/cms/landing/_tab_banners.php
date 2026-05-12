@@ -17,7 +17,7 @@
             <tr>
                 <td class="text-center fw-bold text-primary"><?= esc($row['sort_order']) ?></td>
                 <td>
-                    <img src="<?= base_url($row['image']) ?>" class="rounded shadow-sm" style="width: 120px; height: 60px; object-fit: cover;">
+                    <img src="<?= route_to('media.serve', 'banners', $row['image']) ?>" alt="<?= esc($row['title']) ?>" class="img-fluid rounded shadow-sm">
                 </td>
                 <td>
                     <div class="fw-bold text-dark mb-1"><?= esc($row['title'] ?: 'Tanpa Judul') ?></div>
