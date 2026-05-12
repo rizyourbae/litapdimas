@@ -8,18 +8,21 @@ use App\Models\Master\LandingBannerModel;
 use App\Models\Proposal\ProposalPengajuan;
 use App\Models\Auth\UserModel;
 use App\Models\Publikasi\PublikasiModel;
+use App\Libraries\Storage;
 
 class LandingPageService
 {
     private LandingSettingModel $settingModel;
     private TemaRisetModel $temaModel;
     private LandingBannerModel $bannerModel;
+    protected Storage $storage;
 
     public function __construct()
     {
         $this->settingModel = new LandingSettingModel();
         $this->temaModel = new TemaRisetModel();
         $this->bannerModel = new LandingBannerModel();
+        $this->storage = new Storage();
     }
 
     /**
@@ -156,9 +159,7 @@ class LandingPageService
     {
         // 1. Handle Upload
         if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
-            $newName = $imageFile->getRandomName();
-            $imageFile->move(FCPATH . 'uploads/banners', $newName);
-            $input['image'] = 'uploads/banners/' . $newName;
+            $input['image'] = $this->handleFileUpload('banners', $imageFile);
         } else {
             throw new \Exception('File gambar tidak valid atau gagal diupload.');
         }
@@ -180,14 +181,16 @@ class LandingPageService
 
         // 1. Handle Upload Baru (Jika ada)
         if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
-            // Hapus file lama jika perlu (opsional, untuk hemat storage)
-            if (file_exists(FCPATH . $existing['image'])) {
-                @unlink(FCPATH . $existing['image']);
-            }
+            $input['image'] = $this->handleFileUpload('banners', $imageFile);
 
-            $newName = $imageFile->getRandomName();
-            $imageFile->move(FCPATH . 'uploads/banners', $newName);
-            $input['image'] = 'uploads/banners/' . $newName;
+            // 2. Hapus file lama jika ada
+            if($existing['image']){
+                try {
+                    $this->storage->deleteObject($existing['image']);
+                } catch (\Exception $e) {
+                    log_message('error', 'Gagal menghapus file banner lama: ' . $e->getMessage());
+                }
+            }
         }
 
         $input['is_active'] = isset($input['is_active']) ? 1 : 0;
@@ -205,6 +208,51 @@ class LandingPageService
         $existing = $this->getBannerByUuid($uuid);
         if (!$existing) throw new \Exception('Banner tidak ditemukan.');
 
+        if($existing['image']){
+            try {
+                $this->storage->deleteObject($existing['image']);
+            } catch (\Exception $e) {
+                log_message('error', 'Gagal menghapus file banner: ' . $e->getMessage());
+            }
+        }
+
         $this->bannerModel->delete($existing['id']);
+    }
+
+    private function handleFileUpload(string $folder, $file)
+    {
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            
+            try {
+                $fileArray = [
+                    'tmp_name' => $file->getTempName(),
+                    'size'     => $file->getSize(),
+                    'name'     => $file->getClientName(),
+                ];
+                
+                $upload = $this->storage->putObject(
+                    $fileArray,
+                    $folder,
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
+            }
+
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+                throw new \Exception($errorMsg);
+            }
+
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                throw new \Exception('Gagal mendapatkan nama berkas dari penyimpanan.');
+            }
+
+            return $objectName;
+        }
+        throw new \Exception('File tidak valid atau gagal diupload.');
     }
 }
