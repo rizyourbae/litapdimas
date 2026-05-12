@@ -105,7 +105,7 @@ class Storage extends BaseConfig
      * 
      * @var array
      */
-    public $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
+    public $allowedExt = ['jpg', 'jpeg', 'png', 'pdf', 'webp', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip'];
 
     /**
      * Expires Time
