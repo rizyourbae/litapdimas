@@ -29,11 +29,20 @@ class HomeController extends BaseController
 
     public function mediaServe(string $mod, string $img){
         try {
+            if (str_contains($img, '..')) {
+                throw new \Exception('Invalid path');
+            }
+
             $fileUrl = $this->storage->getObjectUrl($mod, $img, '', Storage::SHR_PUBLIC);
+            if (!$fileUrl) {
+                throw new \Exception('Not found');
+            }
+
             return redirect()->to($fileUrl);
-        } catch (\Exception $e) {
+
+        } catch (\Throwable $e) {
             return $this->response->setStatusCode(404)
-                ->setBody('<h1>404 Not Found</h1><p>File tidak ditemukan atau tidak dapat diakses.</p>');
+                ->setBody('Not Found');
         }
     }
 
