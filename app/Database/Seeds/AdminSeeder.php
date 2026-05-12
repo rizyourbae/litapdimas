@@ -31,9 +31,7 @@ class AdminSeeder extends Seeder
             ['name' => 'proposals.view', 'description' => 'Lihat proposal'],
             ['name' => 'master.manage', 'description' => 'Mengelola Data Master'],
             ['name' => 'dashboard.access', 'description' => 'Akses dashboard'],
-            ['name' => 'dosen.access', 'description' => 'Akses panel dosen'],
             ['name' => 'profile.manage', 'description' => 'Kelola profil sendiri'],
-            ['name' => 'reviewer.access', 'description' => 'Akses panel reviewer'],
             ['name' => 'reviews.manage', 'description' => 'Mengelola review proposal'],
         ];
         foreach ($permissions as $p) {
