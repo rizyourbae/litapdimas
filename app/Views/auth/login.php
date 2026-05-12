@@ -27,8 +27,12 @@
         <a href="#" class="small text-decoration-none text-success fw-semibold">Lupa Password?</a>
     </div>
 
-    <button type="submit" class="btn btn-auth-submit w-100">
+    <button type="submit" class="btn btn-auth-submit w-100 mb-3">
         Masuk ke Sistem <i class="bi bi-arrow-right ms-2"></i>
     </button>
+
+    <div class="text-center mt-3">
+        <p class="small text-muted">Belum punya akun? <a href="<?= site_url('register') ?>" class="text-success fw-bold text-decoration-none">Daftar di sini</a></p>
+    </div>
 </form>
 <?= $this->endSection() ?>

@@ -32,6 +32,33 @@ class AuthService
         $this->userProfileModel = new UserProfileModel();
     }
 
+    /**
+     * Daftarkan user baru dengan role default 'dosen'.
+     */
+    public function register(array $data): ?int
+    {
+        // Cari ID role 'dosen' secara dinamis
+        $role = $this->roleModel->where('name', 'dosen')->first();
+        if (!$role) {
+            log_message('error', 'AuthService::register failed: "dosen" role not found in database.');
+            return null;
+        }
+
+        $payload = [
+            'username'     => $data['username'],
+            'email'        => $data['email'],
+            'password'     => $data['password'],
+            'nama_lengkap' => $data['nama_lengkap'],
+            'aktif'        => 1, // Langsung aktif
+            'roles'        => [$role['id']],
+            'profil'       => [
+                'nama_lengkap' => $data['nama_lengkap'],
+            ]
+        ];
+
+        return service('userService')->createUser($payload);
+    }
+
     public function attempt(string $username, string $password): bool
     {
         $user = $this->userModel->where('username', $username)->orWhere('email', $username)->first();

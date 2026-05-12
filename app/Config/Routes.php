@@ -28,6 +28,7 @@ $routes->get('pengumuman/(:any)', 'AnnouncementController::show/$1', ['as' => 'a
 
 // Auth Routes
 $routes->match(['GET', 'POST'], 'login', 'AuthController::login');
+$routes->match(['GET', 'POST'], 'register', 'AuthController::register');
 $routes->get('logout', 'AuthController::logout');
 
 // ============================================================

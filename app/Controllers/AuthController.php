@@ -49,6 +49,42 @@ class AuthController extends BaseController
         return view('auth/login', ['title' => 'LOGIN']);
     }
 
+    public function register()
+    {
+        // Jika sudah login, redirect
+        if (service('auth')->isLoggedIn()) {
+            return redirect()->to('dashboard');
+        }
+
+        if ($this->request->is('post')) {
+            $data = $this->request->getPost();
+
+            // Validasi sederhana (SOLID: Controller handle basic request validation)
+            $rules = [
+                'nama_lengkap' => 'required|min_length[3]',
+                'email'        => 'required|valid_email|is_unique[users.email]',
+                'username'     => 'required|min_length[3]|is_unique[users.username]',
+                'password'     => 'required|min_length[6]',
+                'confirm_password' => 'required|matches[password]'
+            ];
+
+            if (!$this->validate($rules)) {
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            }
+
+            $userId = service('auth')->register($data);
+
+            if ($userId) {
+                $this->auditLog->log('REGISTER', 'user', (string) $userId, "User mendaftar mandiri: {$data['nama_lengkap']}");
+                return redirect()->to('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
+            }
+
+            return redirect()->back()->withInput()->with('error', 'Gagal mendaftar. Silakan coba lagi nanti.');
+        }
+
+        return view('auth/register', ['title' => 'REGISTER']);
+    }
+
     public function logout()
     {
         $user = service('auth')->user();
