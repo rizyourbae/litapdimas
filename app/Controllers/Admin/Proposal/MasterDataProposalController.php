@@ -53,6 +53,9 @@ class MasterDataProposalController extends BaseController
             'bidang_ilmu'       => $this->service->getAllBidangIlmu(),
             'klaster_bantuan'   => $this->service->getAllKlasterBantuan(),
             'tema_penelitian'   => $this->service->getAllTemaPenelitian(),
+            'pengelola_bantuan' => $this->service->getAllPengelolaBantuan(),
+            'jenis_penelitian'  => $this->service->getAllJenisPenelitian(),
+            'kontribusi_prodi'  => $this->service->getAllKontribusiProdi(),
             'counts'            => $this->service->getSummaryCounts(),
         ];
 
@@ -379,6 +382,207 @@ class MasterDataProposalController extends BaseController
         return $this->response->setJSON([
             'uuid' => $item->uuid ?? null,
             'id' => $item->id ?? null,
+            'nama' => $item->nama ?? '',
+        ]);
+    }
+
+    // ========================================================================
+    // PENGELOLA BANTUAN ACTIONS
+    // ========================================================================
+
+    public function storePengelolaBantuan()
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        if ($this->service->createPengelolaBantuan($data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Pengelola bantuan berhasil ditambahkan.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal menambahkan pengelola bantuan.');
+    }
+
+    public function updatePengelolaBantuan(string $uuid)
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        $item = $this->service->findPengelolaBantuanByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Pengelola bantuan tidak ditemukan.');
+        }
+
+        if ($this->service->updatePengelolaBantuan((int) $item->id, $data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Pengelola bantuan berhasil diperbarui.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal memperbarui pengelola bantuan.');
+    }
+
+    public function deletePengelolaBantuan(string $uuid)
+    {
+        $item = $this->service->findPengelolaBantuanByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Pengelola bantuan tidak ditemukan.');
+        }
+
+        if ($this->service->deletePengelolaBantuan((int) $item->id)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Pengelola bantuan berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', $this->service->getLastError() ?? 'Gagal menghapus pengelola bantuan.');
+    }
+
+    public function jsonPengelolaBantuan(string $uuid)
+    {
+        $item = $this->service->findPengelolaBantuanByUuid($uuid);
+        if (!$item) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Pengelola bantuan tidak ditemukan.']);
+        }
+
+        return $this->response->setJSON([
+            'uuid' => $item->uuid ?? null,
+            'id'   => $item->id ?? null,
+            'nama' => $item->nama ?? '',
+        ]);
+    }
+
+    // ========================================================================
+    // JENIS PENELITIAN ACTIONS
+    // ========================================================================
+
+    public function storeJenisPenelitian()
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        if ($this->service->createJenisPenelitian($data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Jenis penelitian berhasil ditambahkan.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal menambahkan jenis penelitian.');
+    }
+
+    public function updateJenisPenelitian(string $uuid)
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        $item = $this->service->findJenisPenelitianByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Jenis penelitian tidak ditemukan.');
+        }
+
+        if ($this->service->updateJenisPenelitian((int) $item->id, $data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Jenis penelitian berhasil diperbarui.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal memperbarui jenis penelitian.');
+    }
+
+    public function deleteJenisPenelitian(string $uuid)
+    {
+        $item = $this->service->findJenisPenelitianByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Jenis penelitian tidak ditemukan.');
+        }
+
+        if ($this->service->deleteJenisPenelitian((int) $item->id)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Jenis penelitian berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', $this->service->getLastError() ?? 'Gagal menghapus jenis penelitian.');
+    }
+
+    public function jsonJenisPenelitian(string $uuid)
+    {
+        $item = $this->service->findJenisPenelitianByUuid($uuid);
+        if (!$item) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Jenis penelitian tidak ditemukan.']);
+        }
+
+        return $this->response->setJSON([
+            'uuid' => $item->uuid ?? null,
+            'id'   => $item->id ?? null,
+            'nama' => $item->nama ?? '',
+        ]);
+    }
+
+    // ========================================================================
+    // KONTRIBUSI PRODI ACTIONS
+    // ========================================================================
+
+    public function storeKontribusiProdi()
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        if ($this->service->createKontribusiProdi($data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Kontribusi prodi berhasil ditambahkan.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal menambahkan kontribusi prodi.');
+    }
+
+    public function updateKontribusiProdi(string $uuid)
+    {
+        $validationRules = ['nama' => 'required|min_length[3]|max_length[100]'];
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('error', implode(', ', $this->validator->getErrors()));
+        }
+
+        $data = ['nama' => $this->request->getPost('nama')];
+        $item = $this->service->findKontribusiProdiByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Kontribusi prodi tidak ditemukan.');
+        }
+
+        if ($this->service->updateKontribusiProdi((int) $item->id, $data)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Kontribusi prodi berhasil diperbarui.');
+        }
+
+        return redirect()->back()->withInput()->with('error', $this->service->getLastError() ?? 'Gagal memperbarui kontribusi prodi.');
+    }
+
+    public function deleteKontribusiProdi(string $uuid)
+    {
+        $item = $this->service->findKontribusiProdiByUuid($uuid);
+        if (!$item) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('error', 'Kontribusi prodi tidak ditemukan.');
+        }
+
+        if ($this->service->deleteKontribusiProdi((int) $item->id)) {
+            return redirect()->to(site_url('admin/master-data-proposal'))->with('success', 'Kontribusi prodi berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', $this->service->getLastError() ?? 'Gagal menghapus kontribusi prodi.');
+    }
+
+    public function jsonKontribusiProdi(string $uuid)
+    {
+        $item = $this->service->findKontribusiProdiByUuid($uuid);
+        if (!$item) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Kontribusi prodi tidak ditemukan.']);
+        }
+
+        return $this->response->setJSON([
+            'uuid' => $item->uuid ?? null,
+            'id'   => $item->id ?? null,
             'nama' => $item->nama ?? '',
         ]);
     }

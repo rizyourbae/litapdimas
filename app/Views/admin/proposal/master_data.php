@@ -8,6 +8,9 @@
  * @var array $bidang_ilmu
  * @var array $klaster_bantuan
  * @var array $tema_penelitian
+ * @var array $pengelola_bantuan
+ * @var array $jenis_penelitian
+ * @var array $kontribusi_prodi
  */
 ?>
 
@@ -19,7 +22,7 @@
         <?= view('components/ui-hero', [
             'type' => 'admin',
             'title' => esc((string) $title),
-            'subtitle' => 'Kelola data pendukung proposal meliputi Bidang Ilmu, Klaster Bantuan, dan Tema Penelitian.',
+            'subtitle' => 'Kelola data pendukung proposal meliputi rumpun ilmu, skema bantuan, kontribusi program studi, hingga instrumen penelitian.',
             'badges' => [
                 ['label' => 'Master Data', 'class' => 'text-bg-light border shadow-sm'],
                 ['label' => 'Proposal', 'class' => 'text-bg-primary shadow-sm']
@@ -51,6 +54,24 @@
                             <span class="badge bg-primary-soft text-primary rounded-pill ms-2"><?= count($tema_penelitian) ?></span>
                         </a>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link py-3" id="tab-pengelola-link" data-bs-toggle="tab" href="#tab-pengelola" role="tab">
+                            <i class="bi bi-person-gear me-2"></i>Pengelola Bantuan
+                            <span class="badge bg-primary-soft text-primary rounded-pill ms-2"><?= count($pengelola_bantuan) ?></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link py-3" id="tab-jenis-link" data-bs-toggle="tab" href="#tab-jenis" role="tab">
+                            <i class="bi bi-clipboard2-check me-2"></i>Jenis Penelitian
+                            <span class="badge bg-primary-soft text-primary rounded-pill ms-2"><?= count($jenis_penelitian) ?></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link py-3" id="tab-kontribusi-link" data-bs-toggle="tab" href="#tab-kontribusi" role="tab">
+                            <i class="bi bi-building-up me-2"></i>Kontribusi Prodi
+                            <span class="badge bg-primary-soft text-primary rounded-pill ms-2"><?= count($kontribusi_prodi) ?></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -65,6 +86,15 @@
 
                     <!-- Tab Tema Penelitian -->
                     <?= view('admin/proposal/partials/_tab_tema_penelitian', ['tema_penelitian' => $tema_penelitian]) ?>
+
+                    <!-- Tab Pengelola Bantuan -->
+                    <?= view('admin/proposal/partials/_tab_pengelola_bantuan', ['pengelola_bantuan' => $pengelola_bantuan]) ?>
+
+                    <!-- Tab Jenis Penelitian -->
+                    <?= view('admin/proposal/partials/_tab_jenis_penelitian', ['jenis_penelitian' => $jenis_penelitian]) ?>
+
+                    <!-- Tab Kontribusi Prodi -->
+                    <?= view('admin/proposal/partials/_tab_kontribusi_prodi', ['kontribusi_prodi' => $kontribusi_prodi]) ?>
                 </div>
             </div>
         </div>
@@ -75,5 +105,8 @@
 <?= view('admin/proposal/partials/_modals_bidang_ilmu') ?>
 <?= view('admin/proposal/partials/_modals_klaster_bantuan') ?>
 <?= view('admin/proposal/partials/_modals_tema_penelitian') ?>
+<?= view('admin/proposal/partials/_modals_pengelola_bantuan') ?>
+<?= view('admin/proposal/partials/_modals_jenis_penelitian') ?>
+<?= view('admin/proposal/partials/_modals_kontribusi_prodi') ?>
 
 <?= $this->endSection() ?>

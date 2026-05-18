@@ -294,6 +294,24 @@ $routes->group('admin/master-data-proposal', ['filter' => 'auth:admin.access'], 
     $routes->post('store-tema-penelitian', 'Admin\Proposal\MasterDataProposalController::storeTemaPenelitian');
     $routes->put('update-tema-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateTemaPenelitian/$1');
     $routes->delete('delete-tema-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteTemaPenelitian/$1');
+
+    // Pengelola Bantuan
+    $routes->get('json-pengelola-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonPengelolaBantuan/$1');
+    $routes->post('store-pengelola-bantuan', 'Admin\Proposal\MasterDataProposalController::storePengelolaBantuan');
+    $routes->put('update-pengelola-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::updatePengelolaBantuan/$1');
+    $routes->delete('delete-pengelola-bantuan/(:segment)', 'Admin\Proposal\MasterDataProposalController::deletePengelolaBantuan/$1');
+
+    // Jenis Penelitian
+    $routes->get('json-jenis-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonJenisPenelitian/$1');
+    $routes->post('store-jenis-penelitian', 'Admin\Proposal\MasterDataProposalController::storeJenisPenelitian');
+    $routes->put('update-jenis-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateJenisPenelitian/$1');
+    $routes->delete('delete-jenis-penelitian/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteJenisPenelitian/$1');
+
+    // Kontribusi Prodi
+    $routes->get('json-kontribusi-prodi/(:segment)', 'Admin\Proposal\MasterDataProposalController::jsonKontribusiProdi/$1');
+    $routes->post('store-kontribusi-prodi', 'Admin\Proposal\MasterDataProposalController::storeKontribusiProdi');
+    $routes->put('update-kontribusi-prodi/(:segment)', 'Admin\Proposal\MasterDataProposalController::updateKontribusiProdi/$1');
+    $routes->delete('delete-kontribusi-prodi/(:segment)', 'Admin\Proposal\MasterDataProposalController::deleteKontribusiProdi/$1');
 });
 
 // ============================================================
