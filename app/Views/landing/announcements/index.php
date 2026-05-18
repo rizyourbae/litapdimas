@@ -57,7 +57,7 @@
                     <div class="col-lg-4 col-md-6 animate-up" style="animation-delay: <?= 0.1 * ($index + 1) ?>s;">
                         <div class="announcement-card position-relative">
                             <?php if ($row['image']): ?>
-                                <img src="<?= base_url($row['image']) ?>" class="announcement-img w-100" alt="<?= esc($row['title']) ?>">
+                                <img src="<?= route_to('media.serve', 'announcements', $row['image']) ?>" class="announcement-img" alt="<?= esc($row['title']) ?>">
                             <?php else: ?>
                                 <div class="announcement-img w-100 d-flex align-items-center justify-content-center bg-emerald-light" style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);">
                                     <i class="bi bi-megaphone text-white opacity-25" style="font-size: 5rem;"></i>

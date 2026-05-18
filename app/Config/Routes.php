@@ -25,6 +25,7 @@ $routes->get('uploads/(:segment)/(:any)', 'SecureFileController::generalUpload/$
 $routes->get('/', 'HomeController::index');
 $routes->get('pengumuman', 'AnnouncementController::index', ['as' => 'announcements.index']);
 $routes->get('pengumuman/(:any)', 'AnnouncementController::show/$1', ['as' => 'announcements.show']);
+$routes->get('media/(:segment)/(:any)', 'HomeController::mediaServe/$1/$2', ['as' => 'media.serve']);
 
 // Auth Routes
 $routes->match(['GET', 'POST'], 'login', 'AuthController::login');

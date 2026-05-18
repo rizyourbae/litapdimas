@@ -3,14 +3,17 @@
 namespace App\Services\CMS;
 
 use App\Models\Master\AnnouncementModel;
+use App\Libraries\Storage;
 
 class AnnouncementService
 {
     private AnnouncementModel $model;
+    protected Storage $storage;
 
     public function __construct()
     {
         $this->model = new AnnouncementModel();
+        $this->storage = new Storage();
     }
 
     /**
@@ -53,20 +56,14 @@ class AnnouncementService
     public function store(array $input, $imageFile, $attachFile): void
     {
         helper('text');
-        $input['slug'] = url_title($input['title'], '-', true) . '-' . random_string('alnum', 4);
+        $input['slug'] = url_title($input['title'], '-', true);
         
         // 1. Handle Image
-        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
-            $newName = $imageFile->getRandomName();
-            $imageFile->move(FCPATH . 'uploads/announcements', $newName);
-            $input['image'] = 'uploads/announcements/' . $newName;
-        }
+        $input['image'] = $this->handleFileUpload('announcements', $imageFile);
 
         // 2. Handle Attachment
         if ($attachFile && $attachFile->isValid() && !$attachFile->hasMoved()) {
-            $newName = $attachFile->getRandomName();
-            $attachFile->move(FCPATH . 'uploads/attachments', $newName);
-            $input['file_attachment'] = 'uploads/attachments/' . $newName;
+            $input['file_attachment'] = $this->handleFileUpload('attachments', $attachFile);
         }
 
         $input['is_active'] = isset($input['is_active']) ? 1 : 0;
@@ -92,22 +89,29 @@ class AnnouncementService
 
         // 1. Handle Image Baru
         if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
-            if ($existing['image'] && file_exists(FCPATH . $existing['image'])) {
-                @unlink(FCPATH . $existing['image']);
+            $input['image'] = $this->handleFileUpload('announcements', $imageFile);
+
+            if ($existing['image']) {
+                try {
+                    $this->storage->deleteObject($existing['image']);
+                } catch (\Exception $e) {
+                    log_message('error', 'Gagal menghapus file gambar lama: ' . $e->getMessage());
+                }
             }
-            $newName = $imageFile->getRandomName();
-            $imageFile->move(FCPATH . 'uploads/announcements', $newName);
-            $input['image'] = 'uploads/announcements/' . $newName;
         }
 
         // 2. Handle Attachment Baru
         if ($attachFile && $attachFile->isValid() && !$attachFile->hasMoved()) {
-            if ($existing['file_attachment'] && file_exists(FCPATH . $existing['file_attachment'])) {
-                @unlink(FCPATH . $existing['file_attachment']);
+            $input['file_attachment'] = $this->handleFileUpload('attachments', $attachFile);
+
+             // Hapus file lama jika ada
+             if ($existing['file_attachment']) {
+                try {
+                    $this->storage->deleteObject($existing['file_attachment']);
+                } catch (\Exception $e) {
+                    log_message('error', 'Gagal menghapus file attachment lama: ' . $e->getMessage());
+                }
             }
-            $newName = $attachFile->getRandomName();
-            $attachFile->move(FCPATH . 'uploads/attachments', $newName);
-            $input['file_attachment'] = 'uploads/attachments/' . $newName;
         }
 
         $input['is_active'] = isset($input['is_active']) ? 1 : 0;
@@ -125,6 +129,50 @@ class AnnouncementService
         $existing = $this->getByUuid($uuid);
         if (!$existing) throw new \Exception('Pengumuman tidak ditemukan.');
 
+        if($existing['image']){
+            try {
+                $this->storage->deleteObject($existing['image']);
+            } catch (\Exception $e) {
+                log_message('error', 'Gagal menghapus file gambar: ' . $e->getMessage());
+            }
+        }
         $this->model->delete($existing['id']);
+    }
+
+    private function handleFileUpload(string $folder, $file)
+    {
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $fileName = pathinfo($file->getRandomName(), PATHINFO_FILENAME);
+            
+            try {
+                $fileArray = [
+                    'tmp_name' => $file->getTempName(),
+                    'size'     => $file->getSize(),
+                    'name'     => $file->getClientName(),
+                ];
+                
+                $upload = $this->storage->putObject(
+                    $fileArray,
+                    $folder,
+                    $fileName,
+                    Storage::SHR_PUBLIC,
+                );
+            } catch (\Exception $e) {
+                $upload = ['status' => 0, 'message' => $e->getMessage()];
+            }
+
+            if (!isset($upload['status']) || $upload['status'] != 1) {
+                $errorMsg = $upload['message'] ?? 'Gagal mengunggah berkas.';
+                throw new \Exception($errorMsg);
+            }
+
+            $objectName = $upload['data']['object_name'] ?? null;
+            if (!$objectName) {
+                throw new \Exception('Gagal mendapatkan nama berkas dari penyimpanan.');
+            }
+
+            return $objectName;
+        }
+        throw new \Exception('File tidak valid atau gagal diupload.');
     }
 }

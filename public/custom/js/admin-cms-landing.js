@@ -106,6 +106,7 @@ $(document).ready(function() {
     const formBanner = $('#formBanner');
     const modalBannerTitle = $('#modalBannerTitle');
     const bannerPreview = $('#banner_preview');
+    const bannerPreviewUrl = `${baseUrl}` + 'media/banners/';
     const bannerPlaceholder = $('#banner_placeholder');
 
     // --- TAMBAH BANNER ---
@@ -139,7 +140,7 @@ $(document).ready(function() {
             $('#banner_active').prop('checked', data.is_active == 1);
             
             // Show current image
-            bannerPreview.attr('src', `${baseUrl}${data.image}`).removeClass('d-none');
+            bannerPreview.attr('src', bannerPreviewUrl + `${data.image}`).removeClass('d-none');
             bannerPlaceholder.addClass('d-none');
             
             modalBanner.show();
