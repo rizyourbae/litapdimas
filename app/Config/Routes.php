@@ -31,6 +31,7 @@ $routes->get('media/(:segment)/(:any)', 'HomeController::mediaServe/$1/$2', ['as
 $routes->match(['GET', 'POST'], 'login', 'AuthController::login');
 $routes->match(['GET', 'POST'], 'register', 'AuthController::register');
 $routes->get('logout', 'AuthController::logout');
+$routes->get('auth/captcha', 'CaptchaController::generate', ['as' => 'auth.captcha']);
 
 // ============================================================
 // Smart Dashboard Redirect (berdasarkan role)

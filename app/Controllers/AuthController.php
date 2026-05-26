@@ -14,10 +14,8 @@ class AuthController extends BaseController
         if ($this->request->is('post')) {
             $username = $this->request->getPost('username');
             $password = $this->request->getPost('password');
-            $captchaInput = $this->request->getPost('captcha');
-            $captchaSession = session()->get('captcha_phrase');
 
-            if (!$captchaInput || strtolower($captchaInput) !== strtolower((string)$captchaSession)) {
+            if (!$this->isCaptchaValid($this->request->getPost('captcha'))) {
                 return redirect()->back()->withInput()->with('error', 'Kode Captcha tidak valid.');
             }
 
@@ -29,17 +27,9 @@ class AuthController extends BaseController
             if (service('auth')->attempt($username, $password)) {
                 $user = service('auth')->user();
                 $displayName = $user['nama_lengkap'] ?? $user['username'] ?? 'User';
-                $auth = service('auth');
-
-                if ($auth->hasRole('admin')) {
-                    $redirectTo = 'admin/dashboard';
-                } elseif ($auth->hasRole('reviewer')) {
-                    $redirectTo = 'reviewer/dashboard';
-                } elseif ($auth->hasRole('dosen')) {
-                    $redirectTo = 'dosen/dashboard';
-                } else {
-                    $redirectTo = 'dashboard';
-                }
+                
+                // OCP: Delegasikan penentuan rute ke metode terpisah
+                $redirectTo = $this->getDashboardRoute(service('auth'));
 
                 $this->auditLog->log('LOGIN', 'user', (string) $user['id'], 'User login berhasil');
                 return redirect()->to($redirectTo)->with('welcome', 'Selamat datang, ' . $displayName . '!');
@@ -52,14 +42,7 @@ class AuthController extends BaseController
         }
 
         // GET request: tampilkan form
-        $builder = new \Gregwar\Captcha\CaptchaBuilder;
-        $builder->build();
-        session()->set('captcha_phrase', $builder->getPhrase());
-
-        return view('auth/login', [
-            'title' => 'LOGIN',
-            'captcha' => $builder->inline()
-        ]);
+        return view('auth/login', ['title' => 'LOGIN']);
     }
 
     public function register()
@@ -71,10 +54,8 @@ class AuthController extends BaseController
 
         if ($this->request->is('post')) {
             $data = $this->request->getPost();
-            $captchaInput = $this->request->getPost('captcha');
-            $captchaSession = session()->get('captcha_phrase');
 
-            if (!$captchaInput || strtolower($captchaInput) !== strtolower((string)$captchaSession)) {
+            if (!$this->isCaptchaValid($this->request->getPost('captcha'))) {
                 return redirect()->back()->withInput()->with('error', 'Kode Captcha tidak valid.');
             }
 
@@ -101,14 +82,8 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal mendaftar. Silakan coba lagi nanti.');
         }
 
-        $builder = new \Gregwar\Captcha\CaptchaBuilder;
-        $builder->build();
-        session()->set('captcha_phrase', $builder->getPhrase());
-
-        return view('auth/register', [
-            'title' => 'REGISTER',
-            'captcha' => $builder->inline()
-        ]);
+        // GET request: tampilkan form
+        return view('auth/register', ['title' => 'REGISTER']);
     }
 
     public function logout()
@@ -119,5 +94,37 @@ class AuthController extends BaseController
         }
         service('auth')->logout();
         return redirect()->to('login');
+    }
+
+    /**
+     * Validasi kode captcha.
+     * Menerapkan asas DRY (Don't Repeat Yourself) agar tidak ditulis berulang.
+     */
+    private function isCaptchaValid(?string $input): bool
+    {
+        $sessionCaptcha = session()->get('captcha_phrase');
+        return $input && strtolower($input) === strtolower((string)$sessionCaptcha);
+    }
+
+    /**
+     * Menentukan rute dashboard berdasarkan role user.
+     * Menerapkan asas OCP (Open-Closed Principle). Jika ada role baru, 
+     * kita hanya perlu menambahkan mapping di array ini tanpa mengubah if-else bercabang.
+     */
+    private function getDashboardRoute($auth): string
+    {
+        $roleRoutes = [
+            'admin'    => 'admin/dashboard',
+            'reviewer' => 'reviewer/dashboard',
+            'dosen'    => 'dosen/dashboard',
+        ];
+
+        foreach ($roleRoutes as $role => $route) {
+            if ($auth->hasRole($role)) {
+                return $route;
+            }
+        }
+
+        return 'dashboard';
     }
 }

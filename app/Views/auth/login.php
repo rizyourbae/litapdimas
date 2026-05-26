@@ -18,8 +18,11 @@
     </div>
 
     <div class="mb-3 d-flex align-items-center gap-3">
-        <div class="border rounded p-1 bg-white">
-            <img src="<?= $captcha ?? '' ?>" alt="Captcha" class="img-fluid" style="min-width: 150px; height: 50px;">
+        <div class="border rounded p-1 bg-white position-relative">
+            <img src="<?= route_to('auth.captcha') ?>" alt="Captcha" class="img-fluid" id="captcha-img" style="min-width: 150px; height: 50px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-light position-absolute top-0 end-0 m-1 rounded-circle" onclick="document.getElementById('captcha-img').src = '<?= route_to('auth.captcha') ?>?t=' + Date.now();" title="Refresh Captcha" style="opacity: 0.8;">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
         </div>
         <div class="form-floating flex-grow-1">
             <input type="text" class="form-control" id="captcha" name="captcha" placeholder="Kode Captcha" required autocomplete="off">
