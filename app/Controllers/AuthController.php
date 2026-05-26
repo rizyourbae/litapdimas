@@ -14,6 +14,12 @@ class AuthController extends BaseController
         if ($this->request->is('post')) {
             $username = $this->request->getPost('username');
             $password = $this->request->getPost('password');
+            $captchaInput = $this->request->getPost('captcha');
+            $captchaSession = session()->get('captcha_phrase');
+
+            if (!$captchaInput || strtolower($captchaInput) !== strtolower((string)$captchaSession)) {
+                return redirect()->back()->withInput()->with('error', 'Kode Captcha tidak valid.');
+            }
 
             // Validasi input
             if (empty($username) || empty($password)) {
@@ -46,7 +52,14 @@ class AuthController extends BaseController
         }
 
         // GET request: tampilkan form
-        return view('auth/login', ['title' => 'LOGIN']);
+        $builder = new \Gregwar\Captcha\CaptchaBuilder;
+        $builder->build();
+        session()->set('captcha_phrase', $builder->getPhrase());
+
+        return view('auth/login', [
+            'title' => 'LOGIN',
+            'captcha' => $builder->inline()
+        ]);
     }
 
     public function register()
@@ -58,6 +71,12 @@ class AuthController extends BaseController
 
         if ($this->request->is('post')) {
             $data = $this->request->getPost();
+            $captchaInput = $this->request->getPost('captcha');
+            $captchaSession = session()->get('captcha_phrase');
+
+            if (!$captchaInput || strtolower($captchaInput) !== strtolower((string)$captchaSession)) {
+                return redirect()->back()->withInput()->with('error', 'Kode Captcha tidak valid.');
+            }
 
             // Validasi sederhana (SOLID: Controller handle basic request validation)
             $rules = [
@@ -82,7 +101,14 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal mendaftar. Silakan coba lagi nanti.');
         }
 
-        return view('auth/register', ['title' => 'REGISTER']);
+        $builder = new \Gregwar\Captcha\CaptchaBuilder;
+        $builder->build();
+        session()->set('captcha_phrase', $builder->getPhrase());
+
+        return view('auth/register', [
+            'title' => 'REGISTER',
+            'captcha' => $builder->inline()
+        ]);
     }
 
     public function logout()

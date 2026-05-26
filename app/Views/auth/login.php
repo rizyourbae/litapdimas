@@ -17,6 +17,16 @@
         </button>
     </div>
 
+    <div class="mb-3 d-flex align-items-center gap-3">
+        <div class="border rounded p-1 bg-white">
+            <img src="<?= $captcha ?? '' ?>" alt="Captcha" class="img-fluid" style="min-width: 150px; height: 50px;">
+        </div>
+        <div class="form-floating flex-grow-1">
+            <input type="text" class="form-control" id="captcha" name="captcha" placeholder="Kode Captcha" required autocomplete="off">
+            <label for="captcha"><i class="bi bi-shield-check me-2"></i>Kode Captcha</label>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
